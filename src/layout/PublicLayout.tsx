@@ -1,21 +1,17 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router";
 
-type PublicLayOutProps = {
-    children: React.ReactNode
-}
-
-// for all user it just a template 
-const PublicLayout = ({children} : PublicLayOutProps) => {
+// for all user it just a template
+const PublicLayout = () => {
   return (
     <div>
-        {/* Include Nav */}
-        
-        {children}
-         
-        
-        {/* Include Footer */}
-        t</div>
-  )
-}
+      {/* Include Nav */}
 
-export default PublicLayout
+      <Outlet />
+
+      {/* Include Footer */}
+    </div>
+  );
+};
+
+export default PublicLayout;

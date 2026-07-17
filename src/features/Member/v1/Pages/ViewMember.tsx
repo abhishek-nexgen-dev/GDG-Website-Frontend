@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewMember = () => {
-  return (
-    <div>ViewMember</div>
-  )
-}
+  return <div>ViewMember</div>;
+};
 
-export default ViewMember
+export default ViewMember;

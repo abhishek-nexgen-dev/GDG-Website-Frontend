@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CreateNewMember = () => {
-  return (
-    <div>CreateNewMember</div>
-  )
-}
+  return <div>CreateNewMember</div>;
+};
 
-export default CreateNewMember
+export default CreateNewMember;

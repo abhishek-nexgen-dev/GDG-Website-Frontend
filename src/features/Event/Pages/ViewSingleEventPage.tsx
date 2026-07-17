@@ -1,11 +1,7 @@
-import React from 'react'
-
-
+import React from "react";
 
 const ViewSingleEventPage = () => {
-  return (
-    <div>ViewSingleEventPage</div>
-  )
-}
+  return <div>ViewSingleEventPage</div>;
+};
 
-export default ViewSingleEventPage
+export default ViewSingleEventPage;

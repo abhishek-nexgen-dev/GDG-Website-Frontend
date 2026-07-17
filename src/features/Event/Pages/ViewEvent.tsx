@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewEvent = () => {
-  return (
-    <div>ViewEvent</div>
-  )
-}
+  return <div>ViewEvent</div>;
+};
 
-export default ViewEvent
+export default ViewEvent;
