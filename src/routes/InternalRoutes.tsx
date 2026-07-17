@@ -9,7 +9,7 @@ const InternalRoutes = () => {
     <Routes>
       <Route path="/gdgranchi" element={<AuthLayout />}>
         <Route index element={<DashboardPage />} />
-        <Route path="/create/new/Member" element={<CreateNewMember />} />
+        <Route path="create/new/Member" element={<CreateNewMember />} />
       </Route>
     </Routes>
   );
