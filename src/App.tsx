@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes } from "react-router";
+import { BrowserRouter } from "react-router";
 import PublicRoutes from "./routes/PublicRoutes";
 import InternalRoutes from "./routes/InternalRoutes";
 
