@@ -1,5 +1,3 @@
-
-
 const CreateNewMember = () => {
   return <div>CreateNewMember</div>;
 };

@@ -1,5 +1,3 @@
-
-
 const ManageEvent = () => {
   return <div>ManageEvent</div>;
 };

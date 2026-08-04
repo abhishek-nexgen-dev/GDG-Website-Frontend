@@ -1,5 +1,3 @@
-
-
 const ViewEvent = () => {
   return <div>ViewEvent</div>;
 };

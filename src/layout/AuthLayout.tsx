@@ -1,4 +1,3 @@
-
 import { Outlet } from "react-router";
 
 // for Authenticated User
