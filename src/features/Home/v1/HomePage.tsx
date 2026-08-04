@@ -1,4 +1,4 @@
-import React from "react";
+
 import HeroSec from "./Section/HeroSec";
 
 const HomePage = () => {
