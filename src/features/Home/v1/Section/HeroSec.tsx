@@ -17,22 +17,22 @@ const HeroSec = () => {
       </div>
 
       <div className="Part2 h-[60%] w-1/2 flex items-center justify-end ">
-          <Stack
-            randomRotation={false}
-            sensitivity={200}
-            sendToBackOnClick={true}
-            autoplay
-            autoplayDelay={3000}
-            pauseOnHover
-            cards={images.map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt={`card-${i + 1}`}
-                className="h-full w-[95%] rounded-xl object-cover"
-              />
-            ))}
-          />
+        <Stack
+          randomRotation={false}
+          sensitivity={200}
+          sendToBackOnClick={true}
+          autoplay
+          autoplayDelay={3000}
+          pauseOnHover
+          cards={images.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`card-${i + 1}`}
+              className="h-full w-[95%] rounded-xl object-cover"
+            />
+          ))}
+        />
       </div>
     </div>
   );

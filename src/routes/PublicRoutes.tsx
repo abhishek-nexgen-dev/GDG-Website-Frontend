@@ -2,12 +2,14 @@ import { Route, Routes } from "react-router";
 import PublicLayout from "../layout/PublicLayout";
 import HomePage from "../features/Home/v1/HomePage";
 import ViewSingleEventPage from "../features/Event/Pages/ViewSingleEventPage";
+import GalleryPage from "../features/Image/Pages/GalleryPage";
 
 const PublicRoutes = () => {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="/events/Gallery" element={<GalleryPage />} />
         <Route path="/event/:Slug" element={<ViewSingleEventPage />} />
       </Route>
     </Routes>
