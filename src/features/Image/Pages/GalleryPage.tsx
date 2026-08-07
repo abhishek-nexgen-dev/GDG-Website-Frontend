@@ -1,6 +1,5 @@
-import React from "react";
+
 import GalleryCard from "../Components/GalleryCard";
-import { BsCalendarEventFill } from "react-icons/bs";
 import GalleryHero from "../Components/GalleryHero";
 
 const GalleryPage = () => {

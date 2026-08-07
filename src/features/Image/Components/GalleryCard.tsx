@@ -1,4 +1,5 @@
-import React from "react";
+
+import { Link } from "react-router";
 
 type GalleryCardProps = {
   title?: string;
@@ -14,7 +15,10 @@ const GalleryCard = ({
   imagesCount = 20,
 }: GalleryCardProps) => {
   return (
-    <div className="group relative aspect-auto w-[90%] overflow-hidden rounded-3xl">
+    <Link
+      to={`/events/Gallery/${title}`}
+      className="group relative aspect-auto w-[90%] overflow-hidden rounded-3xl"
+    >
       {/* Image */}
       <div className="h-full w-full overflow-hidden rounded-3xl">
         <img
@@ -43,7 +47,7 @@ const GalleryCard = ({
           <span className="text-sm font-medium text-white">{imagesCount}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
