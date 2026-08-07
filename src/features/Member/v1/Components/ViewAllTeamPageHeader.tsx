@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal, ShieldCheck, Users } from "lucide-react";
+import { Search,  ShieldCheck, Users } from "lucide-react";
 import { HiUserGroup } from "react-icons/hi2";
 import DropDown from "../../../../Components/DropDown";
 import { useState } from "react";

@@ -1,4 +1,3 @@
-import React from "react";
 import ViewAllTeamPageHeader from "../Components/ViewAllTeamPageHeader";
 
 const ViewAllTeamPage = () => {

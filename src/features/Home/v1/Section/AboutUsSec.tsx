@@ -7,36 +7,7 @@ import Typed from "typed.js";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const features = [
-  {
-    icon: Users,
-    title: "Community",
-    description:
-      "Connect with passionate developers, students, and professionals who love learning and sharing knowledge.",
-    color: "#EA4335",
-  },
-  {
-    icon: Code2,
-    title: "Workshops",
-    description:
-      "Hands-on sessions to build practical skills with Google technologies and modern development tools.",
-    color: "#34A853",
-  },
-  {
-    icon: Mic,
-    title: "Tech Talks",
-    description:
-      "Gain insights from Google Developer Experts and experienced industry professionals.",
-    color: "#FBBC04",
-  },
-  {
-    icon: Rocket,
-    title: "Hackathons",
-    description:
-      "Collaborate, innovate, and build impactful solutions while solving real-world challenges.",
-    color: "#4285F4",
-  },
-];
+
 
 const AboutUsSec = () => {
   const typedRef = useRef(null);
