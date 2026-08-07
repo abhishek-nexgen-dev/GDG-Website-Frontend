@@ -9,7 +9,7 @@ const PublicRoutes = () => {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route index element={<HomePage />} />
+        <Route index path="/" element={<HomePage />} />
         <Route path="/events/Gallery" element={<GalleryPage />} />
         <Route path="/events/Gallery/:GalleryName" element={<ImagePage />} />
         <Route path="/event/:Slug" element={<ViewSingleEventPage />} />

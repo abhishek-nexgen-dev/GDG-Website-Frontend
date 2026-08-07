@@ -1,16 +1,23 @@
 import { Outlet } from "react-router";
-import Nav from "../Components/Nav";
 
-// for all user it just a template
+import Nav from "../Components/Nav";
+import { Footer } from "../Components/Footer";
+import { BackgroundWatermark } from "../Components/BackgroundWatermark";
+
 const PublicLayout = () => {
   return (
-    <div className="bg-[#010101] w-full flex flex-col overflow-x-hidden">
-      {/* Include Nav */}
+    <div className="min-h-screen flex flex-col bg-[#010101] overflow-x-hidden">
+      {/* Navigation */}
       <Nav />
 
-      <Outlet />
+      {/* Page Content */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
 
-      {/* Include Footer */}
+      {/* Footer */}
+      <BackgroundWatermark />
+      <Footer />
     </div>
   );
 };

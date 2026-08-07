@@ -402,8 +402,6 @@ const ImagePage = () => {
             Every photo tells a story of innovation, teamwork, and unforgettable memories. Explore
             the moments that made RanchiHacks 2025 an inspiring journey for every builder.
           </p>
-
-         
         </div>
 
         {/* Gallery */}

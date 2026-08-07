@@ -1,4 +1,6 @@
 import { Code2, Mic, Rocket, Users } from "lucide-react";
+import { useEffect, useRef } from "react";
+import Typed from "typed.js";
 
 const features = [
   {
@@ -32,6 +34,20 @@ const features = [
 ];
 
 const AboutUsSec = () => {
+  const typedRef = useRef(null);
+
+  useEffect(() => {
+    const typed = new Typed(typedRef.current, {
+      strings: ["developers.", "innovators.", "leaders."],
+      typeSpeed: 20,
+      backSpeed: 30,
+      loop: true,
+    });
+    return () => {
+      typed.destroy();
+    };
+  }, []);
+
   return (
     <section className="  w-full flex flex-col">
       {/* Content */}
@@ -56,7 +72,7 @@ const AboutUsSec = () => {
         <h2 className="max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
           Building the next <br />
           <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#34A853] bg-clip-text text-transparent">
-            generation of developers.
+            generation of <span ref={typedRef}></span>
           </span>
         </h2>
 
