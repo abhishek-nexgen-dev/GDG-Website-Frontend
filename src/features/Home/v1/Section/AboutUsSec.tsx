@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Code2, Mic, Rocket, Users } from "lucide-react";
 import { useEffect, useRef } from "react";
 import Typed from "typed.js";
 
