@@ -16,7 +16,9 @@ const PublicLayout = () => {
       </main>
 
       {/* Footer */}
-      <BackgroundWatermark />
+      <div className="bg-black/15 h-[35vh] w-screen">
+        <BackgroundWatermark />
+      </div>
       <Footer />
     </div>
   );

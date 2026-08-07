@@ -1,22 +1,12 @@
-import {
-  animate,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
+import { animate, motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 
 export function BackgroundWatermark() {
   const mouseX = useMotionValue(-300);
   const mouseY = useMotionValue(-300);
 
-  // Radius animation
   const radius = useMotionValue(0);
-
-  // Opacity animation
   const opacity = useMotionValue(0);
 
-  // Slower, smoother spring
   const x = useSpring(mouseX, {
     stiffness: 90,
     damping: 22,
@@ -35,21 +25,21 @@ export function BackgroundWatermark() {
   });
 
   const mask = useMotionTemplate`
-      radial-gradient(
-          ${r}px circle at ${x}px ${y}px,
-          rgba(255,255,255,1) 0%,
-          rgba(255,255,255,.95) 35%,
-          rgba(255,255,255,.75) 55%,
-          rgba(255,255,255,.35) 72%,
-          transparent 100%
-      )
+    radial-gradient(
+      ${r}px circle at ${x}px ${y}px,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,.95) 35%,
+      rgba(255,255,255,.7) 60%,
+      rgba(255,255,255,.2) 80%,
+      transparent 100%
+    )
   `;
 
   return (
     <section
-      className="relative flex h-[260px] items-center justify-center overflow-hidden select-none"
+      className="relative flex h-[320px] items-center justify-center overflow-hidden select-none"
       onMouseEnter={() => {
-        animate(radius, 220, {
+        animate(radius, 240, {
           duration: 0.45,
           ease: "easeOut",
         });
@@ -75,65 +65,93 @@ export function BackgroundWatermark() {
         });
       }}
     >
-      {/* Outline */}
-      <span
-        className="
-          gdg-ranchi-txt
-          absolute
-          whitespace-nowrap
-          text-[90px]
-          sm:text-[140px]
-          lg:text-[200px]
-          font-black
-          tracking-[-0.05em]
-          leading-none
-          text-transparent
-          pointer-events-none
-          antialiased
+      {/* Background Glow */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute h-[420px] w-[420px] rounded-full bg-google-blue/10 blur-[140px]"
+      />
 
-        "
+      {/* Outline */}
+      <div
+        className="
+    absolute
+    flex
+    items-center
+    gap-5
+    whitespace-nowrap
+    pointer-events-none
+  "
         style={{
-          WebkitTextStroke: "1px rgba(255,255,255,.09)",
-          fontKerning: "normal",
-          textRendering: "geometricPrecision",
+          WebkitTextStroke: "1px rgba(255,255,255,.08)",
         }}
       >
-        GDG RANCHI
-      </span>
+        <span
+          className="
+      gdg-ranchi-txt
+      text-[72px]
+      sm:text-[120px]
+      lg:text-[180px]
+      xl:text-[220px]
+      font-black
+      tracking-[-0.05em]
+      leading-none
+      text-transparent
+    "
+        >
+          GDG RANCHI
+        </span>
+      </div>
 
-      {/* Reveal */}
-      <motion.span
+      {/* Spotlight Reveal */}
+      <motion.div
         style={{
           WebkitMaskImage: mask,
           maskImage: mask,
           opacity,
-          fontKerning: "normal",
-          textRendering: "geometricPrecision",
         }}
         className="
-          gdg-ranchi-txt
-          absolute
-          whitespace-nowrap
-          text-[90px]
-          sm:text-[140px]
-          lg:text-[200px]
-          font-black
-          tracking-[-0.05em]
-          leading-none
-          bg-gradient-to-r
-          from-google-blue
-          via-google-red
-          via-50%
-          to-google-green
-          bg-clip-text
-          text-transparent
-          pointer-events-none
-          antialiased
-          drop-shadow-[0_0_20px_rgba(66,133,244,.18)]
-        "
+    absolute
+    flex
+    items-center
+    gap-5
+    whitespace-nowrap
+    pointer-events-none
+  "
       >
-        GDG RANCHI
-      </motion.span>
+        <span
+          className="
+      gdg-ranchi-txt
+      text-[72px]
+      sm:text-[120px]
+      lg:text-[180px]
+      xl:text-[220px]
+      font-black
+      tracking-[-0.05em]
+      leading-none
+      bg-gradient-to-r
+      from-google-blue
+      via-google-red
+      via-50%
+      to-google-green
+      bg-clip-text
+      text-transparent
+      drop-shadow-[0_0_25px_rgba(66,133,244,.3)]
+    "
+        >
+          GDG RANCHI
+        </span>
+      </motion.div>
+
+      {/* Bottom Glow */}
+      <div className="absolute bottom-0 h-24 w-full bg-gradient-to-t from-black via-black/40 to-transparent" />
     </section>
   );
 }

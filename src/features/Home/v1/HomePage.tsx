@@ -1,6 +1,7 @@
 import AboutUsSec from "./Section/AboutUsSec";
 import Achievement from "./Section/Achievement";
 import HeroSec from "./Section/HeroSec";
+import WhatWeDoSec from "./Section/WhatWeDoSec";
 
 const HomePage = () => {
   return (
@@ -8,7 +9,8 @@ const HomePage = () => {
       <HeroSec />
       <Achievement />
       <AboutUsSec />
-      <div className="h-screen"></div>
+
+      <WhatWeDoSec />
     </div>
   );
 };

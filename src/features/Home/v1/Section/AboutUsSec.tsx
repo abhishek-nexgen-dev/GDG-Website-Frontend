@@ -1,6 +1,11 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Code2, Mic, Rocket, Users } from "lucide-react";
 import { useEffect, useRef } from "react";
 import Typed from "typed.js";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const features = [
   {
@@ -48,12 +53,43 @@ const AboutUsSec = () => {
     };
   }, []);
 
+  useGSAP(() => {
+    gsap.to(".about-content > *", {
+      y: -130,
+      opacity: 1,
+      // duration: 1,
+      stagger: 0.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".AboutUs-sec",
+        start: "top 0%",
+        end: "top right",
+        markers: true,
+      },
+    });
+
+    gsap.to(".Ellipse", {
+      y: "-18vw",
+      scale: 1.2,
+      x: "-15vw",
+      duration: 2,
+      ease: "elastic.inOut",
+      scrollTrigger: {
+        trigger: ".AboutUs-sec",
+        start: "top 0%",
+        end: "top right",
+        // markers: true,
+      },
+      scrub: 1.2,
+    });
+  });
+
   return (
-    <section className="  w-full flex flex-col">
+    <section className="AboutUs-sec relative w-full flex flex-col">
       {/* Content */}
       <div className="relative h-[70%] md:mt-[25vh] flex-1 px-6 py-16 sm:px-10 md:px-16 lg:px-[8%] lg:py-20 xl:px-[10%]">
         {/* Title */}
-        <div className="mb-5 flex items-center gap-2">
+        <div className=".about-content mb-5 flex items-center gap-2 opacity-0">
           <span className="h-3 w-3 rounded-full bg-[#EA4335]" />
           <span className="h-3 w-3 rounded-full bg-[#FBBC04]" />
           <span className="h-3 w-3 rounded-full bg-[#34A853]" />
@@ -64,7 +100,7 @@ const AboutUsSec = () => {
           </span>
         </div>
 
-        <div className="absolute right-0 bottom-0 w-[25%] ">
+        <div className="Ellipse absolute right-[-15vw] bottom-[-20vw] w-[25%] ">
           <img src="/Ellipse 6.svg" className="w-full h-full object-cover" />
         </div>
 
@@ -93,35 +129,6 @@ const AboutUsSec = () => {
           opportunity to grow. Join us to connect with like-minded people, explore new technologies,
           and build solutions that create a real impact in the community and beyond.
         </p>
-      </div>
-
-      {/* Features */}
-      <div className="border-y h-[30%] bg-black/90  border-white/10 px-6 py-8 sm:px-10 md:px-16 lg:px-[8%] xl:px-[10%]  border-0">
-        <div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-
-            return (
-              <div
-                key={feature.title}
-                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-2 hover:border-white/20 hover:bg-white/[0.05]"
-              >
-                <div
-                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl"
-                  style={{
-                    backgroundColor: `${feature.color}20`,
-                  }}
-                >
-                  <Icon size={28} style={{ color: feature.color }} />
-                </div>
-
-                <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
-
-                <p className="mt-3 text-sm leading-7 text-gray-400">{feature.description}</p>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </section>
   );

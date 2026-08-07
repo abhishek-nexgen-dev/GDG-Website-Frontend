@@ -1,21 +1,21 @@
 export const navLinks = [
-  { label: "Home", href: "#home" },
+  { label: "Home", href: "/" },
   { label: "Events", href: "#events" },
-  { label: "Community", href: "#community" },
-  { label: "Projects", href: "#projects" },
+  { label: "Gallery", href: "/events/Gallery" },
+  { label: "Team", href: "/teams" },
   { label: "About Us", href: "#about" },
   { label: "Blog", href: "#blog" },
   { label: "Contact", href: "#contact" },
 ] as const;
 
 export const stripNavItems = [
-  { label: "Home", href: "#home", icon: "home" },
-  { label: "About Us", href: "#about", icon: "about" },
-  { label: "Community", href: "#community", icon: "community" },
-  { label: "Events", href: "#events", icon: "events" },
-  { label: "Projects", href: "#projects", icon: "projects" },
-  { label: "Blog", href: "#blog", icon: "blog" },
-  { label: "Contact Us", href: "#contact", icon: "contact" },
+  { label: "Home", href: "/" },
+  { label: "Events", href: "#events" },
+  { label: "Gallery", href: "/events/Gallery" },
+  { label: "Team", href: "/teams" },
+  { label: "About Us", href: "#about" },
+  { label: "Blog", href: "#blog" },
+  { label: "Contact", href: "#contact" },
 ] as const;
 
 export const footerExplore = [

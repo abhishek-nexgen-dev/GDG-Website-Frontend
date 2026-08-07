@@ -9,7 +9,7 @@ const images = [
 
 const HeroSec = () => {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden bg-black">
+    <section className="relative flex min-h-screen items-center overflow-hidden ">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-16 px-6 py-20 lg:px-12">
         {/* Left */}
         <div className="max-w-xl">
@@ -28,9 +28,9 @@ const HeroSec = () => {
           </h1>
 
           <p className="mt-8 max-w-lg text-lg leading-8 text-white/65">
-            Join a thriving community of developers. Learn modern technologies,
-            build real-world projects, participate in workshops, hackathons, and
-            grow together with Google technologies.
+            Join a thriving community of developers. Learn modern technologies, build real-world
+            projects, participate in workshops, hackathons, and grow together with Google
+            technologies.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
@@ -42,8 +42,6 @@ const HeroSec = () => {
               Explore Events
             </button>
           </div>
-
-          
         </div>
 
         {/* Right */}
