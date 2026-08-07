@@ -1,4 +1,3 @@
-
 import GalleryCard from "../Components/GalleryCard";
 import GalleryHero from "../Components/GalleryHero";
 

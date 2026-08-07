@@ -1,4 +1,3 @@
-
 import ParticleText from "../../../Components/ParticleText";
 import Masonry from "../../../Components/Masonry";
 
@@ -368,30 +367,43 @@ export const images: GalleryItem[] = [
 const ImagePage = () => {
   return (
     <section className="relative min-h-screen w-full  bg-black">
-     
-
-      <div className="relative z-10 w-[80%] mx-auto py-[18vh]">
+      <div className="relative z-10 w-[80%] mx-auto py-[13vh]">
         {/* Header */}
-        <div className="mb-36">
-          <div className="h-[120px] w-full">
+        <div className="relative mb-[7vh] mx-auto max-w-5xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-sm font-medium text-white/70">RanchiHacks 2025 Gallery</span>
+          </div>
+
+          {/* Title */}
+          <div className="mt-8">
             <ParticleText
               text="Ranchi Hacks 2025"
               particleSize={1.6}
-              density={5}
+              density={6}
               color="white"
               highlightColor="#4285F4"
               scatter={120}
               gatherDuration={1200}
-              stagger={180}
+              stagger={150}
               pointerRepel={20}
               repelRadius={90}
               idleDrift={0.25}
               trigger="mount"
-              fontSize="clamp(3rem,6vw,7.5rem)"
+              fontSize="clamp(3.5rem,7vw,8rem)"
               fontWeight={800}
               glow={false}
             />
           </div>
+
+          {/* Subtitle */}
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/60 md:text-lg">
+            Every photo tells a story of innovation, teamwork, and unforgettable memories. Explore
+            the moments that made RanchiHacks 2025 an inspiring journey for every builder.
+          </p>
+
+         
         </div>
 
         {/* Gallery */}

@@ -457,7 +457,7 @@ const ParticleText = ({
   return (
     <div
       ref={containerRef}
-      className={`relative block h-full min-h-[240px] w-full overflow-hidden touch-none ${className}`}
+      className={`relative block h-full min-h-[150px] w-full overflow-hidden touch-none ${className}`}
       style={style}
       aria-label={text}
     >
