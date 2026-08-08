@@ -6,8 +6,6 @@ import Typed from "typed.js";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-
-
 const AboutUsSec = () => {
   const typedRef = useRef(null);
 
@@ -42,7 +40,7 @@ const AboutUsSec = () => {
       y: "-18vw",
       scale: 1.2,
       x: "-15vw",
-      duration: 2,
+      duration: 1,
       ease: "elastic.inOut",
       scrollTrigger: {
         trigger: ".AboutUs-sec",

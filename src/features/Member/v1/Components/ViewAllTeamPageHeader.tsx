@@ -1,4 +1,4 @@
-import { Search,  ShieldCheck, Users } from "lucide-react";
+import { Search, ShieldCheck, Users } from "lucide-react";
 import { HiUserGroup } from "react-icons/hi2";
 import DropDown from "../../../../Components/DropDown";
 import { useState } from "react";
@@ -7,7 +7,7 @@ const ViewAllTeamPageHeader = () => {
   const [role, setRole] = useState("");
 
   return (
-    <section className="relative z-10 md:px-16 lg:px-[8%] lg:py-[15vh] xl:px-[10%]">
+    <section className="relative z-10 md:px-16 lg:px-[8%] lg:pt-[15vh] xl:px-[10%]">
       {/* Hero */}
       <div className="grid items-center gap-16 lg:grid-cols-2">
         {/* Left */}

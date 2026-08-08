@@ -130,6 +130,7 @@ export function BackgroundWatermark() {
           className="
       gdg-ranchi-txt
       text-[72px]
+      border-white
       sm:text-[120px]
       lg:text-[180px]
       xl:text-[220px]

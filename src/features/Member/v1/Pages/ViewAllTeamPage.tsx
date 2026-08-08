@@ -1,4 +1,6 @@
+import TeamCard from "../Components/TeamCard";
 import ViewAllTeamPageHeader from "../Components/ViewAllTeamPageHeader";
+import teamMembers from "../Constant/Team.Constant";
 
 const ViewAllTeamPage = () => {
   return (
@@ -27,14 +29,24 @@ const ViewAllTeamPage = () => {
       <ViewAllTeamPageHeader />
 
       {/* Team Grid */}
-      <section className="relative h-screen z-10 grid grid-cols-1 gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-        {/* <TeamCard />
-        <TeamCard />
-        <TeamCard />
-        <TeamCard />
-        <TeamCard />
-        <TeamCard /> */}
-      </section>
+
+      <div className="flex flex-col relative z-10  gap-[2vw] px-6 py-16  lg:px-[8%] xl:px-[10%]">
+        <h1 className="w-full text-center text-[3vh] font-extrabold">
+          Organizers & <span className="text-blue-500">Co Organizers</span>
+        </h1>
+
+        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 py-16 sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
+          {teamMembers.map((data) => (
+            <TeamCard
+              key={data.id}
+              FullName={data.name}
+              Role={data.role}
+              imageUrl={data.image}
+              SocialLink={data.socialLinks}
+            />
+          ))}
+        </section>
+      </div>
     </div>
   );
 };
