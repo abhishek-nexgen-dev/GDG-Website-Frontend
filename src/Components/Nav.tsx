@@ -47,9 +47,9 @@ function Nav() {
             )}
           >
             {/* Logo */}
-            <div className="min-w-0 justify-self-start">
+            <Link to="/" className="min-w-0 justify-self-start">
               <Logo size={scrolled ? "sm" : "md"} />
-            </div>
+            </Link>
 
             {/* Desktop nav — centered */}
             <nav
@@ -87,7 +87,7 @@ function Nav() {
             <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
               <div className="hidden lg:block">
                 <Button variant="outline" size="sm" showArrow href="#community">
-                  Join Us
+                  Login
                 </Button>
               </div>
 

@@ -1,6 +1,7 @@
-import TeamCard from "../Components/TeamCard";
+
 import ViewAllTeamPageHeader from "../Components/ViewAllTeamPageHeader";
-import teamMembers from "../Constant/Team.Constant";
+
+import { AllTeam } from "../section/AllTeam";
 
 const ViewAllTeamPage = () => {
   return (
@@ -12,7 +13,7 @@ const ViewAllTeamPage = () => {
       <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-purple-600/10 blur-[140px]" />
 
       {/* Grid Background */}
-      <div className="absolute inset-0 opacity-[0.05]">
+      <div className="absolute inset-0 opacity-[0.08]">
         <div
           className="h-full w-full"
           style={{
@@ -28,25 +29,9 @@ const ViewAllTeamPage = () => {
       {/* Header */}
       <ViewAllTeamPageHeader />
 
+      <AllTeam />
+
       {/* Team Grid */}
-
-      <div className="flex flex-col relative z-10  gap-[2vw] px-6 py-16  lg:px-[8%] xl:px-[10%]">
-        <h1 className="w-full text-center text-[3vh] font-extrabold">
-          Organizers & <span className="text-blue-500">Co Organizers</span>
-        </h1>
-
-        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 py-16 sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-          {teamMembers.map((data) => (
-            <TeamCard
-              key={data.id}
-              FullName={data.name}
-              Role={data.role}
-              imageUrl={data.image}
-              SocialLink={data.socialLinks}
-            />
-          ))}
-        </section>
-      </div>
     </div>
   );
 };

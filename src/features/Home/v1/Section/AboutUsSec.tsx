@@ -57,7 +57,7 @@ const AboutUsSec = () => {
       {/* Content */}
       <div className="relative h-[70%] md:mt-[25vh] flex-1 px-6 py-16 sm:px-10 md:px-16 lg:px-[8%] lg:py-20 xl:px-[10%]">
         {/* Title */}
-        <div className=".about-content mb-5 flex items-center gap-2 opacity-0">
+        <div className=".about-content mb-5 flex items-center gap-2 ">
           <span className="h-3 w-3 rounded-full bg-[#EA4335]" />
           <span className="h-3 w-3 rounded-full bg-[#FBBC04]" />
           <span className="h-3 w-3 rounded-full bg-[#34A853]" />

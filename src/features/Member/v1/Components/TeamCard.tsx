@@ -1,6 +1,5 @@
 import React from "react";
 
-
 type SocialLink = {
   name: string;
   icon: React.ReactNode;
@@ -15,8 +14,6 @@ type TeamCardProps = {
 };
 
 const TeamCard = ({ imageUrl, FullName, Role, SocialLink }: TeamCardProps) => {
- 
-
   return (
     <div className="group relative flex h-[50vh] w-[18vw] min-w-[260px] flex-col overflow-visible">
       <div

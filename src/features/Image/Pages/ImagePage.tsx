@@ -1,6 +1,7 @@
 import ParticleText from "../../../Components/ParticleText";
 import Masonry from "../../../Components/Masonry";
 import { memo } from "react";
+import ImagePageEffect from "../Components/ImagePageEffect";
 
 export interface GalleryItem {
   id: string;
@@ -367,18 +368,8 @@ export const images: GalleryItem[] = [
 
 const ImagePage = () => {
   return (
-    <section className="relative min-h-screen w-full  bg-black">
-      <div className="absolute left-0 top-[60%] -translate-y-1/2 overflow-visible">
-        {/* Layer 1: Deep Blue Base */}
-        <div className="absolute -left-10 top-0 h-[400px] w-[400px] rounded-full bg-blue-600 blur-[90px] opacity-40 animate-pulse"></div>
-
-        {/* Layer 2: Red/Pink Accent for GDG vibrancy */}
-        <div className="absolute -right-10 top-10 h-[350px] w-[350px] rounded-full bg-red-500 blur-[80px] opacity-30 mix-blend-screen animate-pulse delay-300"></div>
-
-        {/* Layer 3: Yellow/Green Highlight */}
-        <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-400 blur-[70px] opacity-20 mix-blend-overlay"></div>
-      </div>
-
+    <section className="relative min-h-screen w-full  bg-[#010101]">
+      <ImagePageEffect />
       <div className="relative z-10 w-[80%] mx-auto py-[13vh]">
         {/* Header */}
         <div className="relative mb-[7vh] mx-auto max-w-5xl text-center">
