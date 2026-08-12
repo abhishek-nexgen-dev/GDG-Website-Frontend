@@ -85,11 +85,11 @@ function Nav() {
 
             {/* CTA + mobile menu */}
             <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
-              <div className="hidden lg:block">
+              <Link to="/login" className="hidden lg:block">
                 <Button variant="outline" size="sm" showArrow href="#community">
                   Login
                 </Button>
-              </div>
+              </Link>
 
               <button
                 type="button"

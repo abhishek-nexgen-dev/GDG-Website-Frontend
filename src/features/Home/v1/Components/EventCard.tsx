@@ -1,4 +1,3 @@
-
 import BorderGlow from "../../../../Components/BorderGlow";
 
 const EventCard = () => {

@@ -37,7 +37,7 @@ export function BackgroundWatermark() {
 
   return (
     <section
-      className="relative flex h-[320px] items-center justify-center overflow-hidden select-none"
+      className="relative flex h-[320px] items-center justify-center overflow-hidden select-none z-50"
       onMouseEnter={() => {
         animate(radius, 240, {
           duration: 0.45,
