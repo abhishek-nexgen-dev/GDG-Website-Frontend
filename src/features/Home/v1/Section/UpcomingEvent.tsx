@@ -1,4 +1,3 @@
-
 import EventCard from "../Components/EventCard";
 
 const UpcomingEvent = () => {

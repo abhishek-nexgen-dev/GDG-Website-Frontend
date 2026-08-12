@@ -1,4 +1,3 @@
-
 import TeamCard from "../Components/TeamCard";
 import teamMembers from "../Constant/Team.Constant";
 

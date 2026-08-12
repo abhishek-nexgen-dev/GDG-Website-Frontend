@@ -1,4 +1,3 @@
-
 import ViewAllTeamPageHeader from "../Components/ViewAllTeamPageHeader";
 
 import { AllTeam } from "../section/AllTeam";
