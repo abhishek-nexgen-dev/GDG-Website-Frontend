@@ -1,21 +1,27 @@
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
 import Nav from "../Components/Nav";
 import { Footer } from "../Components/Footer";
 import { BackgroundWatermark } from "../Components/BackgroundWatermark";
+import { useState } from "react";
 
 const PublicLayout = () => {
+  const [isUnderMaintenance] = useState(true);
+
+  if (isUnderMaintenance) {
+    return <Navigate to="/maintenance" replace />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#010101] overflow-x-hidden">
-      {/* Navigation */}
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[#010101]">
       <Nav />
 
-      {/* Page Content */}
       <main className="flex-1">
         <Outlet />
       </main>
 
       <BackgroundWatermark />
+
       <Footer />
     </div>
   );

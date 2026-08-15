@@ -7,6 +7,7 @@ import ImagePage from "../features/Image/Pages/ImagePage";
 import ViewAllTeamPage from "../features/Member/v1/Pages/ViewAllTeamPage";
 import LoginPage from "../features/Auth/v1/Page/LoginPage";
 import ForgotPasswordOtp from "../features/Auth/v1/Page/ForgotPasswordOtp";
+import MaintenancePage from "../features/Maintenance/MaintenancePage";
 
 const PublicRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const PublicRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot" element={<ForgotPasswordOtp />} />
       </Route>
+      <Route path="/maintenance" element={<MaintenancePage />} />
     </Routes>
   );
 };

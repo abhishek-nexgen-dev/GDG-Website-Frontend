@@ -63,9 +63,8 @@ const InternalNav = () => {
 
       <div className="block lg:hidden" onClick={() => setOpen((prev) => !prev)}>
         {isSideBarOpen ? (
-          <X className="block lg:hidden"/>
+          <X className="block lg:hidden" />
         ) : (
-          
           <MenuIcon className="block lg:hidden" />
         )}
       </div>
