@@ -1,4 +1,4 @@
-import React, { useEffect, useEffectEvent, useState } from "react";
+import { useEffect,  useState } from "react";
 import { MenuIcon, MoreVertical, X } from "lucide-react";
 
 import { FaArrowLeft } from "react-icons/fa";

@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import sideBarConstant from "../constant/sideBarConstant";
 import { NavLink } from "react-router";
-import { LogOut, Settings, Headphones, ChevronDown } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import gsap from "gsap";
 import useNavStore from "../store/nav.store";
 
-type SideBar_Props = {
-  isOpenMenu: boolean;
-};
 
-const InternalSideBar = ({ isOpenMenu }: SideBar_Props) => {
+
+const InternalSideBar = () => {
   let isOpen = useNavStore((state) => state.isSideBarOpen);
 
   const sidebarRef = useRef(null);
