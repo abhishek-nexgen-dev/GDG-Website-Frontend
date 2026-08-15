@@ -103,7 +103,7 @@ export function BackgroundWatermark() {
       font-black
       tracking-[-0.05em]
       leading-none
-      text-transparent
+      text-gray-900
     "
         >
           GDG RANCHI

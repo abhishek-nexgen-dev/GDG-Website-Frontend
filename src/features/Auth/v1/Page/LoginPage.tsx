@@ -9,12 +9,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const LoginPage = () => {
   useGSAP(() => {
-  
-
-
     gsap.to(".Form_Container", {
       opacity: 1,
-
     });
   }, []);
 

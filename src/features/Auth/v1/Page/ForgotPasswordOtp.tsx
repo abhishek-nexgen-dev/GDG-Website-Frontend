@@ -6,17 +6,11 @@ import ForgotPasswordRight from "../Components/ForgotPasswordRight";
 gsap.registerPlugin(useGSAP);
 
 const ForgotPasswordOtp = () => {
-
-   useGSAP(() => {
-  
-
-
+  useGSAP(() => {
     gsap.to(".Form_Container", {
       opacity: 1,
-
     });
   }, []);
-
 
   return (
     <div className="Forgot-Password-Page relative flex min-h-screen w-full items-center justify-center bg-bg-primary p-4 text-white sm:p-6 lg:p-8">
