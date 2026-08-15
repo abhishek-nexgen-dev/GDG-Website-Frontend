@@ -8,7 +8,7 @@ const AuthLayout = () => {
     <div className="w-screen flex flex-col">
       <InternalNav />
       <div className="flex gap-4">
-        <InternalSideBar isOpenMenu={false} />
+        <InternalSideBar />
 
         <Outlet />
       </div>
