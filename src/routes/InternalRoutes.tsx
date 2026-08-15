@@ -6,8 +6,8 @@ import CreateNewMember from "../features/Member/v1/Pages/CreateNewMember";
 const InternalRoutes = () => {
   return (
     <Routes>
-      <Route path="/gdgranchi" element={<AuthLayout />}>
-        <Route index element={<DashboardPage />} />
+      <Route path="/member" element={<AuthLayout />}>
+        <Route index path="dashboard" element={<DashboardPage />} />
         <Route path="create/new/Member" element={<CreateNewMember />} />
       </Route>
     </Routes>
