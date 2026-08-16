@@ -134,9 +134,7 @@ const MemberTable = ({
                   <tr
                     key={member.id}
                     className={`group transition-colors ${
-                      isSelected
-                        ? "bg-[#182a20] hover:bg-[#1c3326]"
-                        : "hover:bg-[#1b2027]"
+                      isSelected ? "bg-[#182a20] hover:bg-[#1c3326]" : "hover:bg-[#1b2027]"
                     }`}
                   >
                     {/* Checkbox */}
@@ -317,4 +315,3 @@ const MemberTable = ({
 };
 
 export default MemberTable;
-

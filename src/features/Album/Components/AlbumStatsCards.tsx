@@ -67,7 +67,9 @@ const AlbumStatsCards = ({ stats }: AlbumStatsCardsProps) => {
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium text-white/50">{card.title}</p>
               <h3 className="mt-0.5 text-2xl font-bold tracking-tight text-white">{card.value}</h3>
-              <p className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${card.subtitleColor}`}>
+              <p
+                className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${card.subtitleColor}`}
+              >
                 <span>{card.subtitle}</span>
               </p>
             </div>

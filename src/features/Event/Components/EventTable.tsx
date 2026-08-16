@@ -218,7 +218,9 @@ const EventTable = ({ events, onViewEvent, onEditEvent, onDeleteEvent }: EventTa
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-semibold text-white">
                           {event.registrations}{" "}
-                          <span className="text-white/40 font-normal">/ {event.maxRegistrations}</span>
+                          <span className="text-white/40 font-normal">
+                            / {event.maxRegistrations}
+                          </span>
                         </span>
                       </div>
 

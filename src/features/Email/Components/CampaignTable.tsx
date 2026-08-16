@@ -131,8 +131,12 @@ const CampaignTable = ({
                     {camp.status === "Sent" ? (
                       <div className="min-w-[140px]">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-white/60">Open: <strong className="text-white">{camp.openRate}</strong></span>
-                          <span className="text-white/60">CTR: <strong className="text-[#60a5fa]">{camp.clickRate}</strong></span>
+                          <span className="text-white/60">
+                            Open: <strong className="text-white">{camp.openRate}</strong>
+                          </span>
+                          <span className="text-white/60">
+                            CTR: <strong className="text-[#60a5fa]">{camp.clickRate}</strong>
+                          </span>
                         </div>
                         <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-[#121519]">
                           <div
@@ -201,9 +205,7 @@ const CampaignTable = ({
                       <div className="relative">
                         <button
                           type="button"
-                          onClick={() =>
-                            setActiveMenuId(activeMenuId === camp.id ? null : camp.id)
-                          }
+                          onClick={() => setActiveMenuId(activeMenuId === camp.id ? null : camp.id)}
                           className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition-colors hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
                         >
                           <MoreVertical size={14} />

@@ -67,11 +67,7 @@ const UploadImagesPage = () => {
 
             {previewUrl ? (
               <div className="relative h-40 w-full overflow-hidden rounded-xl">
-                <img
-                  src={previewUrl}
-                  alt="Upload preview"
-                  className="h-full w-full object-cover"
-                />
+                <img src={previewUrl} alt="Upload preview" className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <span className="text-xs font-semibold text-white">Click to replace photo</span>
                 </div>
@@ -163,7 +159,9 @@ const UploadImagesPage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">Tags (comma separated)</label>
+            <label className="block text-xs font-medium text-white/60 mb-1.5">
+              Tags (comma separated)
+            </label>
             <input
               type="text"
               value={tagsInput}

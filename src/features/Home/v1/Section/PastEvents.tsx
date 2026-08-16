@@ -1,7 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import SingleEventCard from "../Components/SingleEventCard";
 
-
 export const PastEvents_Constant = [
   {
     id: 1,
@@ -128,26 +127,21 @@ const PastEvents = () => {
         {/* Divider */}
         <div className="mt-10 h-px w-full bg-gradient-to-r from-white/10 via-white/[0.05] to-transparent lg:mt-12" />
 
-
-        
-
         <div className="w-full h-full flex flex-col gap-[7vh] ">
-
-           {PastEvents_Constant.map((el)=>{
-              return (
-                    <SingleEventCard
-          title={el.title}
-          category={el.category}
-          description={el.description}
-          date={el.date}
-          time={el.time}
-          location={el.location}
-          registrationStatus={el.registrationStatus}
-          image={el.image}
-        />
-
-              ) 
-           })}
+          {PastEvents_Constant.map((el) => {
+            return (
+              <SingleEventCard
+                title={el.title}
+                category={el.category}
+                description={el.description}
+                date={el.date}
+                time={el.time}
+                location={el.location}
+                registrationStatus={el.registrationStatus}
+                image={el.image}
+              />
+            );
+          })}
         </div>
 
         {/* Event Cards */}

@@ -43,4 +43,3 @@ const InternalRoutes = () => {
 };
 
 export default InternalRoutes;
-

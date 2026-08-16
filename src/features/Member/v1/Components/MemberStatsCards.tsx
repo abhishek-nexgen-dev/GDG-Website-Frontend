@@ -74,4 +74,3 @@ const MemberStatsCards = ({ stats }: MemberStatsCardsProps) => {
 };
 
 export default MemberStatsCards;
-

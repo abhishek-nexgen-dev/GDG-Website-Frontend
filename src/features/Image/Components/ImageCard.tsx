@@ -10,13 +10,7 @@ interface ImageCardProps {
   onDeleteImage?: (id: string) => void;
 }
 
-const ImageCard = ({
-  image,
-  isSelected,
-  onSelect,
-  onViewImage,
-  onDeleteImage,
-}: ImageCardProps) => {
+const ImageCard = ({ image, isSelected, onSelect, onViewImage, onDeleteImage }: ImageCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -26,7 +20,10 @@ const ImageCard = ({
       }`}
     >
       {/* Top Image Preview */}
-      <div className="relative h-44 w-full cursor-pointer overflow-hidden bg-[#121519]" onClick={() => onViewImage(image)}>
+      <div
+        className="relative h-44 w-full cursor-pointer overflow-hidden bg-[#121519]"
+        onClick={() => onViewImage(image)}
+      >
         <img
           src={image.url}
           alt={image.fileName}
@@ -34,10 +31,7 @@ const ImageCard = ({
         />
 
         {/* Checkbox Overlay (Top-Left) */}
-        <div
-          className="absolute left-2.5 top-2.5 z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="absolute left-2.5 top-2.5 z-10" onClick={(e) => e.stopPropagation()}>
           <label className="relative flex h-5 w-5 cursor-pointer items-center justify-center rounded-md border border-white/20 bg-black/60 backdrop-blur-sm transition-colors hover:border-white/40">
             <input
               type="checkbox"
@@ -80,10 +74,7 @@ const ImageCard = ({
 
               {isMenuOpen && (
                 <>
-                  <div
-                    className="fixed inset-0 z-20"
-                    onClick={() => setIsMenuOpen(false)}
-                  />
+                  <div className="fixed inset-0 z-20" onClick={() => setIsMenuOpen(false)} />
                   <div className="absolute right-0 top-7 z-30 w-36 rounded-xl border border-[#2b323d] bg-[#1b2027] p-1.5 shadow-xl">
                     <button
                       type="button"

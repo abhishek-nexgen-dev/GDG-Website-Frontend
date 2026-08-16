@@ -189,7 +189,9 @@ const SendBulkEmailPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1.5">Sender Info</label>
+                <label className="block text-xs font-medium text-white/60 mb-1.5">
+                  Sender Info
+                </label>
                 <input
                   type="text"
                   value={`${senderName} <${senderEmail}>`}
@@ -338,8 +340,18 @@ const SendBulkEmailPage = () => {
           <div className="overflow-hidden rounded-2xl border border-[#2b323d] bg-white text-black shadow-2xl">
             <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
               <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>From: <strong>{senderName} &lt;{senderEmail}&gt;</strong></span>
-                <span>Audience: <strong>{audienceType} ({recipientCount} recipients)</strong></span>
+                <span>
+                  From:{" "}
+                  <strong>
+                    {senderName} &lt;{senderEmail}&gt;
+                  </strong>
+                </span>
+                <span>
+                  Audience:{" "}
+                  <strong>
+                    {audienceType} ({recipientCount} recipients)
+                  </strong>
+                </span>
               </div>
               <h2 className="mt-2 text-lg font-bold text-gray-900">
                 {subject || "Your Subject Line Will Appear Here"}
@@ -362,7 +374,8 @@ const SendBulkEmailPage = () => {
               </div>
 
               <div className="mt-8 border-t border-gray-100 pt-4 text-xs text-gray-400">
-                You are receiving this email because you are a registered member of Google Developer Groups Ranchi.
+                You are receiving this email because you are a registered member of Google Developer
+                Groups Ranchi.
               </div>
             </div>
           </div>

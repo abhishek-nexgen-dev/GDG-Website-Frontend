@@ -57,10 +57,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }: AddMemberModalProps) =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/80 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/80 transition-opacity" onClick={onClose} />
 
       {/* Modal Card */}
       <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-[#232830] bg-[#161a1f] p-6 shadow-2xl">
@@ -123,9 +120,15 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }: AddMemberModalProps) =
                 onChange={(e) => setRole(e.target.value as MemberRole)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Member" className="bg-[#161a1f] text-white">Member</option>
-                <option value="Organizer" className="bg-[#161a1f] text-white">Organizer</option>
-                <option value="Admin" className="bg-[#161a1f] text-white">Admin</option>
+                <option value="Member" className="bg-[#161a1f] text-white">
+                  Member
+                </option>
+                <option value="Organizer" className="bg-[#161a1f] text-white">
+                  Organizer
+                </option>
+                <option value="Admin" className="bg-[#161a1f] text-white">
+                  Admin
+                </option>
               </select>
             </div>
 
@@ -136,9 +139,15 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }: AddMemberModalProps) =
                 onChange={(e) => setStatus(e.target.value as MemberStatus)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Active" className="bg-[#161a1f] text-white">Active</option>
-                <option value="Inactive" className="bg-[#161a1f] text-white">Inactive</option>
-                <option value="Offline" className="bg-[#161a1f] text-white">Offline</option>
+                <option value="Active" className="bg-[#161a1f] text-white">
+                  Active
+                </option>
+                <option value="Inactive" className="bg-[#161a1f] text-white">
+                  Inactive
+                </option>
+                <option value="Offline" className="bg-[#161a1f] text-white">
+                  Offline
+                </option>
               </select>
             </div>
           </div>
@@ -214,4 +223,3 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }: AddMemberModalProps) =
 };
 
 export default AddMemberModal;
-

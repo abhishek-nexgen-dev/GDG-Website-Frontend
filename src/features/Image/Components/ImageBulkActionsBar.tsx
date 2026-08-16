@@ -71,9 +71,7 @@ const ImageBulkActionsBar = ({
             type="button"
             onClick={() => onViewModeChange("grid")}
             className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
-              viewMode === "grid"
-                ? "bg-[#153e25] text-[#4ade80]"
-                : "text-white/40 hover:text-white"
+              viewMode === "grid" ? "bg-[#153e25] text-[#4ade80]" : "text-white/40 hover:text-white"
             }`}
           >
             <LayoutGrid size={14} />
@@ -82,9 +80,7 @@ const ImageBulkActionsBar = ({
             type="button"
             onClick={() => onViewModeChange("list")}
             className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${
-              viewMode === "list"
-                ? "bg-[#153e25] text-[#4ade80]"
-                : "text-white/40 hover:text-white"
+              viewMode === "list" ? "bg-[#153e25] text-[#4ade80]" : "text-white/40 hover:text-white"
             }`}
           >
             <List size={14} />

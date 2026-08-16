@@ -1,11 +1,13 @@
-import { useState, useMemo } from "react";
-import { Plus, Download } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Download, Plus } from "lucide-react";
+
 import {
   initialMembersList,
   type MemberItem,
   type MemberRole,
   type MemberStatus,
 } from "../data/members.data";
+
 import MemberStatsCards from "../Components/MemberStatsCards";
 import MemberFilterBar from "../Components/MemberFilterBar";
 import MemberTable from "../Components/MemberTable";
@@ -13,242 +15,488 @@ import MemberPagination from "../Components/MemberPagination";
 import AddMemberModal from "../Components/AddMemberModal";
 import MemberDetailsModal from "../Components/MemberDetailsModal";
 
+const ALL_FILTER = "All";
+const DEFAULT_PAGE_SIZE = 10;
+
+const formatJoinedDate = () =>
+  new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+const isJoinedThisMonth = (joinedOn: string) => {
+  const date = new Date(joinedOn);
+
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  const now = new Date();
+
+  return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+};
+
+const escapeCsvValue = (value: unknown) => {
+  const stringValue = String(value ?? "");
+
+  if (!/[",\n\r]/.test(stringValue)) {
+    return stringValue;
+  }
+
+  return `"${stringValue.replace(/"/g, '""')}"`;
+};
+
 const MembersDashboardPage = () => {
   const [members, setMembers] = useState<MemberItem[]>(initialMembersList);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRole, setSelectedRole] = useState("All");
-  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedRole, setSelectedRole] = useState(ALL_FILTER);
+  const [selectedStatus, setSelectedStatus] = useState(ALL_FILTER);
+
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
-  // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<MemberItem | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
-  // Filtered members
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+
   const filteredMembers = useMemo(() => {
     return members.filter((member) => {
-      // Search matching (name, email, role)
-      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        !q ||
-        member.name.toLowerCase().includes(q) ||
-        member.email.toLowerCase().includes(q) ||
-        member.role.toLowerCase().includes(q);
+        !normalizedSearchQuery ||
+        member.name.toLowerCase().includes(normalizedSearchQuery) ||
+        member.email.toLowerCase().includes(normalizedSearchQuery) ||
+        member.role.toLowerCase().includes(normalizedSearchQuery);
 
-      // Role matching
-      const matchesRole = selectedRole === "All" || member.role === selectedRole;
+      const matchesRole = selectedRole === ALL_FILTER || member.role === selectedRole;
 
-      // Status matching
-      const matchesStatus = selectedStatus === "All" || member.status === selectedStatus;
+      const matchesStatus = selectedStatus === ALL_FILTER || member.status === selectedStatus;
 
       return matchesSearch && matchesRole && matchesStatus;
     });
-  }, [members, searchQuery, selectedRole, selectedStatus]);
+  }, [members, normalizedSearchQuery, selectedRole, selectedStatus]);
 
-  // Paginated members
-  const totalPages = Math.ceil(filteredMembers.length / pageSize) || 1;
+  const totalPages = Math.max(1, Math.ceil(filteredMembers.length / pageSize));
+
+  /**
+   * Prevent the UI from pointing to a page that no longer exists
+   * after deleting members, filtering, or changing page size.
+   */
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
   const paginatedMembers = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredMembers.slice(start, start + pageSize);
-  }, [filteredMembers, currentPage, pageSize]);
+    const startIndex = (safeCurrentPage - 1) * pageSize;
 
-  // Dynamic stats calculated from state
+    return filteredMembers.slice(startIndex, startIndex + pageSize);
+  }, [filteredMembers, safeCurrentPage, pageSize]);
+
+  const visibleMemberIds = useMemo(
+    () => paginatedMembers.map((member) => member.id),
+    [paginatedMembers],
+  );
+
+  const selectedMember = useMemo(
+    () =>
+      selectedMemberId ? (members.find((member) => member.id === selectedMemberId) ?? null) : null,
+    [members, selectedMemberId],
+  );
+
+  const hasActiveFilters =
+    searchQuery.trim() !== "" || selectedRole !== ALL_FILTER || selectedStatus !== ALL_FILTER;
+
+  const isCurrentPageFullySelected =
+    visibleMemberIds.length > 0 && visibleMemberIds.every((id) => selectedIds.includes(id));
+
+  /* -------------------------------------------------------------------------- */
+  /* Statistics                                                                 */
+  /* -------------------------------------------------------------------------- */
+
   const computedStats = useMemo(() => {
-    const total = members.length;
-    const active = members.filter((m) => m.status === "Active").length;
-    const organizers = members.filter((m) => m.role === "Organizer" || m.role === "Admin").length;
-    const offline = members.filter((m) => m.status === "Offline").length;
+    const totalMembers = members.length;
+
+    const activeMembers = members.filter((member) => member.status === "Active").length;
+
+    const organizers = members.filter(
+      (member) => member.role === "Organizer" || member.role === "Admin",
+    ).length;
+
+    const offlineMembers = members.filter((member) => member.status === "Offline").length;
+
+    const newThisMonth = members.filter((member) => isJoinedThisMonth(member.joinedOn)).length;
+
+    const percentage = (value: number) =>
+      totalMembers > 0
+        ? `${Math.round((value / totalMembers) * 100)}% of members`
+        : "0% of members";
 
     return {
-      totalMembers: { value: total, trend: "▲ 12 this month" },
-      activeMembers: { value: active, trend: "▲ 8 this month" },
-      organizers: { value: organizers, trend: "▲ 2 this month" },
-      newThisMonth: { value: 15, trend: "▲ 15 this month" },
-      offlineMembers: { value: offline, trend: "▲ 4 this month" },
+      totalMembers: {
+        value: totalMembers,
+        trend: "Current community size",
+      },
+
+      activeMembers: {
+        value: activeMembers,
+        trend: percentage(activeMembers),
+      },
+
+      organizers: {
+        value: organizers,
+        trend: percentage(organizers),
+      },
+
+      newThisMonth: {
+        value: newThisMonth,
+        trend: "Joined this month",
+      },
+
+      offlineMembers: {
+        value: offlineMembers,
+        trend: percentage(offlineMembers),
+      },
     };
   }, [members]);
 
-  // Selection handlers
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedIds(filteredMembers.map((m) => m.id));
-    } else {
-      setSelectedIds([]);
+  /* -------------------------------------------------------------------------- */
+  /* Pagination Safety                                                          */
+  /* -------------------------------------------------------------------------- */
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
     }
+  }, [currentPage, totalPages]);
+
+  /* -------------------------------------------------------------------------- */
+  /* Filter Handlers                                                            */
+  /* -------------------------------------------------------------------------- */
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+    setSelectedIds([]);
+  };
+
+  const handleRoleChange = (role: string) => {
+    setSelectedRole(role);
+    setCurrentPage(1);
+    setSelectedIds([]);
+  };
+
+  const handleStatusChange = (status: string) => {
+    setSelectedStatus(status);
+    setCurrentPage(1);
+    setSelectedIds([]);
+  };
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedRole(ALL_FILTER);
+    setSelectedStatus(ALL_FILTER);
+    setCurrentPage(1);
+    setSelectedIds([]);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /* Selection                                                                  */
+  /* -------------------------------------------------------------------------- */
+
+  const handleSelectAll = (checked: boolean) => {
+    if (!visibleMemberIds.length) {
+      return;
+    }
+
+    if (checked) {
+      setSelectedIds((previous) => Array.from(new Set([...previous, ...visibleMemberIds])));
+
+      return;
+    }
+
+    setSelectedIds((previous) => previous.filter((id) => !visibleMemberIds.includes(id)));
   };
 
   const handleSelectRow = (id: string, checked: boolean) => {
-    if (checked) {
-      setSelectedIds((prev) => [...prev, id]);
-    } else {
-      setSelectedIds((prev) => prev.filter((item) => item !== id));
-    }
+    setSelectedIds((previous) => {
+      if (checked) {
+        return previous.includes(id) ? previous : [...previous, id];
+      }
+
+      return previous.filter((selectedId) => selectedId !== id);
+    });
   };
 
-  // Add Member
+  const handleClearSelection = () => {
+    setSelectedIds([]);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /* Member Actions                                                             */
+  /* -------------------------------------------------------------------------- */
+
   const handleAddMember = (newMemberData: Omit<MemberItem, "id" | "joinedOn" | "events">) => {
     const newMember: MemberItem = {
       ...newMemberData,
-      id: `mem-${Date.now()}`,
-      joinedOn: new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
+      id: crypto.randomUUID(),
+      joinedOn: formatJoinedDate(),
       events: 0,
     };
-    setMembers((prev) => [newMember, ...prev]);
+
+    setMembers((previous) => [newMember, ...previous]);
+
+    setCurrentPage(1);
+    setSelectedIds([]);
+    setIsAddModalOpen(false);
   };
 
-  // Role & Status toggles
   const handleChangeRole = (id: string, newRole: MemberRole) => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, role: newRole } : m)),
+    setMembers((previous) =>
+      previous.map((member) => (member.id === id ? { ...member, role: newRole } : member)),
     );
   };
 
   const handleChangeStatus = (id: string, newStatus: MemberStatus) => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, status: newStatus } : m)),
+    setMembers((previous) =>
+      previous.map((member) => (member.id === id ? { ...member, status: newStatus } : member)),
     );
   };
 
-  // Delete Member
   const handleDeleteMember = (id: string) => {
-    setMembers((prev) => prev.filter((m) => m.id !== id));
-    setSelectedIds((prev) => prev.filter((itemId) => itemId !== id));
+    setMembers((previous) => previous.filter((member) => member.id !== id));
+
+    setSelectedIds((previous) => previous.filter((selectedId) => selectedId !== id));
+
+    if (selectedMemberId === id) {
+      setSelectedMemberId(null);
+    }
   };
 
-  // View Member Details
+  const handleDeleteSelected = () => {
+    if (!selectedIds.length) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete ${selectedIds.length} selected member${
+        selectedIds.length === 1 ? "" : "s"
+      }? This action cannot be undone.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const selectedSet = new Set(selectedIds);
+
+    setMembers((previous) => previous.filter((member) => !selectedSet.has(member.id)));
+
+    setSelectedIds([]);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /* Member Details                                                             */
+  /* -------------------------------------------------------------------------- */
+
   const handleViewMember = (member: MemberItem) => {
-    setSelectedMember(member);
-    setIsDetailsModalOpen(true);
+    setSelectedMemberId(member.id);
   };
 
-  // Export CSV
+  const handleCloseMemberDetails = () => {
+    setSelectedMemberId(null);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /* CSV Export                                                                 */
+  /* -------------------------------------------------------------------------- */
+
   const handleExportCSV = () => {
+    if (!filteredMembers.length) {
+      return;
+    }
+
     const headers = ["ID", "Name", "Email", "Role", "Status", "Joined On", "Events"];
-    const rows = filteredMembers.map((m) => [
-      m.id,
-      `"${m.name}"`,
-      m.email,
-      m.role,
-      m.status,
-      `"${m.joinedOn}"`,
-      m.events,
+
+    const rows = filteredMembers.map((member) => [
+      member.id,
+      member.name,
+      member.email,
+      member.role,
+      member.status,
+      member.joinedOn,
+      member.events,
     ]);
 
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = [headers, ...rows]
+      .map((row) => row.map(escapeCsvValue).join(","))
+      .join("\r\n");
+
+    const blob = new Blob([`\uFEFF${csvContent}`], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `gdg_ranchi_members_${Date.now()}.csv`);
+
+    link.href = url;
+    link.download = `gdg-ranchi-members-${Date.now()}.csv`;
+
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
+
+    URL.revokeObjectURL(url);
   };
 
-  const hasActiveFilters = searchQuery !== "" || selectedRole !== "All" || selectedStatus !== "All";
-
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSelectedRole("All");
-    setSelectedStatus("All");
-    setCurrentPage(1);
-  };
+  /* -------------------------------------------------------------------------- */
+  /* Render                                                                     */
+  /* -------------------------------------------------------------------------- */
 
   return (
-    <div className="min-h-full w-full py-5 px-4 sm:px-6 lg:px-8 text-white max-w-full">
-      {/* Header Section */}
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
+    <main className="w-full min-w-0 px-4 py-5 text-white sm:px-6 lg:px-8">
+      {/* -------------------------------------------------------------------- */}
+      {/* Header                                                               */}
+      {/* -------------------------------------------------------------------- */}
+
+      <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Members</h1>
-          <p className="mt-1 text-xs text-white/50 sm:text-sm">
-            Manage and organize all community members
-          </p>
+
+          <p className="mt-1 text-sm text-white/50">Manage and organize your community members.</p>
         </div>
 
-        {/* Header Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-2 rounded-xl border border-[#232830] bg-[#161a1f] px-4 py-2.5 text-xs font-semibold text-white/90 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
+            disabled={!filteredMembers.length}
+            aria-label="Export members as CSV"
+            className="
+              inline-flex items-center justify-center gap-2
+              rounded-xl border border-white/10
+              bg-white/[0.03] px-4 py-2.5
+              text-sm font-medium text-white/80
+              transition-all duration-200
+              hover:border-white/15 hover:bg-white/[0.06] hover:text-white
+              focus:outline-none focus-visible:ring-2
+              focus-visible:ring-emerald-500/50
+              disabled:cursor-not-allowed disabled:opacity-40
+            "
           >
-            <Download size={15} strokeWidth={2} />
+            <Download size={16} strokeWidth={2} />
             <span>Export</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-[#22c55e] px-4 py-2.5 text-xs font-semibold text-black transition-colors hover:bg-[#16a34a]"
+            aria-label="Add a new member"
+            className="
+              inline-flex items-center justify-center gap-2
+              rounded-xl bg-emerald-500 px-4 py-2.5
+              text-sm font-semibold text-black
+              transition-all duration-200
+              hover:bg-emerald-400
+              active:scale-[0.98]
+              focus:outline-none focus-visible:ring-2
+              focus-visible:ring-emerald-500/50
+            "
           >
-            <Plus size={16} strokeWidth={2.5} />
+            <Plus size={17} strokeWidth={2.5} />
             <span>Add Member</span>
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* 5 Stats Cards Grid */}
-      <div className="mb-6">
+      {/* -------------------------------------------------------------------- */}
+      {/* Statistics                                                           */}
+      {/* -------------------------------------------------------------------- */}
+
+      <section className="mb-6">
         <MemberStatsCards stats={computedStats} />
-      </div>
+      </section>
 
-      {/* Search & Filter Bar */}
-      <div className="mb-4">
+      {/* -------------------------------------------------------------------- */}
+      {/* Filters                                                              */}
+      {/* -------------------------------------------------------------------- */}
+
+      <section className="mb-4">
         <MemberFilterBar
           searchQuery={searchQuery}
-          onSearchChange={(val) => {
-            setSearchQuery(val);
-            setCurrentPage(1);
-          }}
+          onSearchChange={handleSearchChange}
           selectedRole={selectedRole}
-          onRoleChange={(role) => {
-            setSelectedRole(role);
-            setCurrentPage(1);
-          }}
+          onRoleChange={handleRoleChange}
           selectedStatus={selectedStatus}
-          onStatusChange={(status) => {
-            setSelectedStatus(status);
-            setCurrentPage(1);
-          }}
+          onStatusChange={handleStatusChange}
           onResetFilters={handleResetFilters}
           hasActiveFilters={hasActiveFilters}
         />
-      </div>
+      </section>
 
-      {/* Selected items notification bar if rows are selected */}
+      {/* -------------------------------------------------------------------- */}
+      {/* Bulk Selection                                                       */}
+      {/* -------------------------------------------------------------------- */}
+
       {selectedIds.length > 0 && (
-        <div className="mb-4 flex items-center justify-between rounded-xl border border-[#1e5433] bg-[#153e25] px-4 py-2.5 text-xs text-[#4ade80]">
-          <span>{selectedIds.length} member(s) selected</span>
-          <div className="flex items-center gap-2">
+        <section
+          aria-label="Bulk member actions"
+          className="
+            mb-4 flex flex-col gap-3
+            rounded-xl border border-emerald-500/20
+            bg-emerald-500/[0.06] px-4 py-3
+            sm:flex-row sm:items-center sm:justify-between
+          "
+        >
+          <div className="flex items-center gap-2 text-sm">
+            <span className="font-semibold text-emerald-400">{selectedIds.length}</span>
+
+            <span className="text-white/60">
+              member{selectedIds.length === 1 ? "" : "s"} selected
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => {
-                setMembers((prev) => prev.filter((m) => !selectedIds.includes(m.id)));
-                setSelectedIds([]);
-              }}
-              className="rounded-lg bg-[#38181a] border border-[#522226] px-2.5 py-1 text-[11px] font-medium text-rose-300 transition hover:bg-[#481e22]"
+              onClick={handleDeleteSelected}
+              className="
+                rounded-lg border border-red-500/20
+                bg-red-500/10 px-3 py-1.5
+                text-xs font-medium text-red-300
+                transition-colors
+                hover:bg-red-500/15 hover:text-red-200
+                focus:outline-none focus-visible:ring-2
+                focus-visible:ring-red-500/40
+              "
             >
-              Delete Selected
+              Delete selected
             </button>
+
             <button
               type="button"
-              onClick={() => setSelectedIds([])}
-              className="text-white/60 hover:text-white"
+              onClick={handleClearSelection}
+              className="
+                rounded-lg px-2 py-1.5
+                text-xs font-medium text-white/50
+                transition-colors
+                hover:text-white
+                focus:outline-none focus-visible:ring-2
+                focus-visible:ring-white/20
+              "
             >
-              Deselect All
+              Clear selection
             </button>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Members Table */}
-      <div className="mb-4">
+      {/* -------------------------------------------------------------------- */}
+      {/* Members Table                                                        */}
+      {/* -------------------------------------------------------------------- */}
+
+      <section className="mb-4 min-w-0">
         <MemberTable
           members={paginatedMembers}
           selectedIds={selectedIds}
@@ -259,21 +507,31 @@ const MembersDashboardPage = () => {
           onChangeRole={handleChangeRole}
           onChangeStatus={handleChangeStatus}
         />
-      </div>
+      </section>
 
-      {/* Pagination Bar */}
-      <div>
+      {/* -------------------------------------------------------------------- */}
+      {/* Pagination                                                           */}
+      {/* -------------------------------------------------------------------- */}
+
+      <section>
         <MemberPagination
-          currentPage={currentPage}
+          currentPage={safeCurrentPage}
           totalPages={totalPages}
           totalMembers={filteredMembers.length}
           pageSize={pageSize}
           onPageChange={setCurrentPage}
-          onPageSizeChange={setPageSize}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setCurrentPage(1);
+            setSelectedIds([]);
+          }}
         />
-      </div>
+      </section>
 
-      {/* Modals */}
+      {/* -------------------------------------------------------------------- */}
+      {/* Modals                                                               */}
+      {/* -------------------------------------------------------------------- */}
+
       <AddMemberModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -281,14 +539,11 @@ const MembersDashboardPage = () => {
       />
 
       <MemberDetailsModal
-        isOpen={isDetailsModalOpen}
+        isOpen={Boolean(selectedMemberId)}
         member={selectedMember}
-        onClose={() => {
-          setIsDetailsModalOpen(false);
-          setSelectedMember(null);
-        }}
+        onClose={handleCloseMemberDetails}
       />
-    </div>
+    </main>
   );
 };
 

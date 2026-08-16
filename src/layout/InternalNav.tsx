@@ -72,5 +72,3 @@ const InternalNav = () => {
 };
 
 export default InternalNav;
-
-

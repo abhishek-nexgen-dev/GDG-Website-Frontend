@@ -121,4 +121,3 @@ const MemberFilterBar = ({
 };
 
 export default MemberFilterBar;
-

@@ -28,11 +28,7 @@ const ImageViewModal = ({ image, isOpen, onClose }: ImageViewModalProps) => {
 
         {/* Large Image Preview */}
         <div className="relative h-72 w-full overflow-hidden rounded-xl border border-[#2b323d] bg-black/60">
-          <img
-            src={image.url}
-            alt={image.fileName}
-            className="h-full w-full object-contain"
-          />
+          <img src={image.url} alt={image.fileName} className="h-full w-full object-contain" />
           <div className="absolute right-3 top-3">
             <span className="rounded-md border border-white/20 bg-black/60 px-2 py-0.5 text-[10px] font-bold uppercase text-white backdrop-blur-sm">
               {image.format}

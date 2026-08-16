@@ -1,9 +1,6 @@
 import { useState, useMemo } from "react";
 import { Upload, Download } from "lucide-react";
-import {
-  initialImagesList,
-  type ImageItem,
-} from "../data/images.data";
+import { initialImagesList, type ImageItem } from "../data/images.data";
 import ImageStatsCards from "../Components/ImageStatsCards";
 import ImageFilterBar from "../Components/ImageFilterBar";
 import ImageBulkActionsBar from "../Components/ImageBulkActionsBar";
@@ -154,10 +151,7 @@ const ManageImagesPage = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute(
-      "download",
-      `gdg_ranchi_images_${new Date().toISOString().slice(0, 10)}.csv`,
-    );
+    link.setAttribute("download", `gdg_ranchi_images_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -175,7 +169,9 @@ const ManageImagesPage = () => {
       {/* Header Section */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Manage Images</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Manage Images
+          </h1>
           <p className="mt-1 text-xs text-white/50 sm:text-sm">
             View, organize and manage all images across albums and events.
           </p>

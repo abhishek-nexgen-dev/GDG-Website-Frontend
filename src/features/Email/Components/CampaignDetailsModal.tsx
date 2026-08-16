@@ -34,9 +34,7 @@ const CampaignDetailsModal = ({ campaign, isOpen, onClose }: CampaignDetailsModa
             <span className="rounded-md border border-[#2b323d] bg-[#121519] px-2 py-0.5 text-[10px] font-semibold text-[#4ade80]">
               {campaign.audience}
             </span>
-            <h3 className="mt-1 text-lg font-bold text-white leading-tight">
-              {campaign.title}
-            </h3>
+            <h3 className="mt-1 text-lg font-bold text-white leading-tight">{campaign.title}</h3>
             <p className="mt-0.5 text-xs text-white/50">{campaign.subject}</p>
           </div>
         </div>
@@ -58,9 +56,7 @@ const CampaignDetailsModal = ({ campaign, isOpen, onClose }: CampaignDetailsModa
               <CheckCircle2 size={12} />
               <span>Delivered</span>
             </div>
-            <h4 className="mt-1 text-lg font-bold text-[#4ade80]">
-              {campaign.deliveryRate}
-            </h4>
+            <h4 className="mt-1 text-lg font-bold text-[#4ade80]">{campaign.deliveryRate}</h4>
           </div>
 
           <div className="rounded-xl border border-[#3b1f59] bg-[#28163d]/30 p-3 text-center">

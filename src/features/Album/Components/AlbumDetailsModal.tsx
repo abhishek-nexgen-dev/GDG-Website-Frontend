@@ -28,20 +28,14 @@ const AlbumDetailsModal = ({ album, isOpen, onClose }: AlbumDetailsModalProps) =
 
         {/* Thumbnail Preview Banner */}
         <div className="relative h-44 w-full overflow-hidden rounded-xl border border-[#2b323d]">
-          <img
-            src={album.thumbnail}
-            alt={album.title}
-            className="h-full w-full object-cover"
-          />
+          <img src={album.thumbnail} alt={album.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
             <div>
               <span className="rounded-md border border-white/20 bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
                 {album.eventName}
               </span>
-              <h3 className="mt-1 text-base font-bold text-white leading-tight">
-                {album.title}
-              </h3>
+              <h3 className="mt-1 text-base font-bold text-white leading-tight">{album.title}</h3>
             </div>
             <span className="rounded-lg border border-white/20 bg-black/60 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
               {album.imagesCount} Photos

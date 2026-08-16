@@ -138,10 +138,7 @@ const ManageAlbumsPage = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute(
-      "download",
-      `gdg_ranchi_albums_${new Date().toISOString().slice(0, 10)}.csv`,
-    );
+    link.setAttribute("download", `gdg_ranchi_albums_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -152,7 +149,9 @@ const ManageAlbumsPage = () => {
       {/* Header Section */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Manage Albums</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Manage Albums
+          </h1>
           <p className="mt-1 text-xs text-white/50 sm:text-sm">
             View, manage and organize all event albums
           </p>

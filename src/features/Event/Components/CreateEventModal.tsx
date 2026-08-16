@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { X, CalendarPlus, Sparkles } from "lucide-react";
-import type { EventItem, EventCategory, EventStatus, EventMode, EventVisibility } from "../data/events.data";
+import type {
+  EventItem,
+  EventCategory,
+  EventStatus,
+  EventMode,
+  EventVisibility,
+} from "../data/events.data";
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -113,11 +119,21 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
                 onChange={(e) => setCategory(e.target.value as EventCategory)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Hackathon" className="bg-[#161a1f] text-white">Hackathon</option>
-                <option value="Workshop" className="bg-[#161a1f] text-white">Workshop</option>
-                <option value="Meetup" className="bg-[#161a1f] text-white">Meetup</option>
-                <option value="Talk" className="bg-[#161a1f] text-white">Talk</option>
-                <option value="Bootcamp" className="bg-[#161a1f] text-white">Bootcamp</option>
+                <option value="Hackathon" className="bg-[#161a1f] text-white">
+                  Hackathon
+                </option>
+                <option value="Workshop" className="bg-[#161a1f] text-white">
+                  Workshop
+                </option>
+                <option value="Meetup" className="bg-[#161a1f] text-white">
+                  Meetup
+                </option>
+                <option value="Talk" className="bg-[#161a1f] text-white">
+                  Talk
+                </option>
+                <option value="Bootcamp" className="bg-[#161a1f] text-white">
+                  Bootcamp
+                </option>
               </select>
             </div>
 
@@ -128,8 +144,12 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
                 onChange={(e) => setMode(e.target.value as EventMode)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Offline" className="bg-[#161a1f] text-white">Offline</option>
-                <option value="Online" className="bg-[#161a1f] text-white">Online</option>
+                <option value="Offline" className="bg-[#161a1f] text-white">
+                  Offline
+                </option>
+                <option value="Online" className="bg-[#161a1f] text-white">
+                  Online
+                </option>
               </select>
             </div>
 
@@ -140,9 +160,15 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
                 onChange={(e) => setStatus(e.target.value as EventStatus)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="UPCOMING" className="bg-[#161a1f] text-white">Upcoming</option>
-                <option value="ONGOING" className="bg-[#161a1f] text-white">Ongoing</option>
-                <option value="COMPLETED" className="bg-[#161a1f] text-white">Completed</option>
+                <option value="UPCOMING" className="bg-[#161a1f] text-white">
+                  Upcoming
+                </option>
+                <option value="ONGOING" className="bg-[#161a1f] text-white">
+                  Ongoing
+                </option>
+                <option value="COMPLETED" className="bg-[#161a1f] text-white">
+                  Completed
+                </option>
               </select>
             </div>
           </div>
@@ -184,7 +210,9 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Location / City</label>
+              <label className="block text-xs font-medium text-white/60 mb-1.5">
+                Location / City
+              </label>
               <input
                 type="text"
                 value={location}
@@ -197,7 +225,9 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Tags (comma separated)</label>
+              <label className="block text-xs font-medium text-white/60 mb-1.5">
+                Tags (comma separated)
+              </label>
               <input
                 type="text"
                 value={tagsInput}
@@ -208,7 +238,9 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Max Registrations</label>
+              <label className="block text-xs font-medium text-white/60 mb-1.5">
+                Max Registrations
+              </label>
               <input
                 type="number"
                 value={maxRegistrations}
@@ -220,7 +252,9 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">Speakers (comma separated)</label>
+            <label className="block text-xs font-medium text-white/60 mb-1.5">
+              Speakers (comma separated)
+            </label>
             <input
               type="text"
               value={speakersInput}

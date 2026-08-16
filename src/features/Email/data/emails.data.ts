@@ -132,7 +132,8 @@ export const initialCampaignsList: EmailCampaignItem[] = [
     id: "cmp-101",
     title: "Jharkhand Tech Summit 2026 - Registration Open",
     subject: "🚀 Registrations Now Open for Jharkhand Tech Summit 2026!",
-    previewText: "Join 1,000+ developers at BIT Mesra for 24 hours of non-stop coding, talks, and swag.",
+    previewText:
+      "Join 1,000+ developers at BIT Mesra for 24 hours of non-stop coding, talks, and swag.",
     audience: "All Members",
     recipientCount: 2850,
     deliveredCount: 2835,

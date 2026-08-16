@@ -14,10 +14,7 @@ const MemberDetailsModal = ({ member, isOpen, onClose }: MemberDetailsModalProps
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/80 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/80 transition-opacity" onClick={onClose} />
 
       {/* Modal Card */}
       <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#232830] bg-[#161a1f] p-6 shadow-2xl">
@@ -168,4 +165,3 @@ const MemberDetailsModal = ({ member, isOpen, onClose }: MemberDetailsModalProps
 };
 
 export default MemberDetailsModal;
-

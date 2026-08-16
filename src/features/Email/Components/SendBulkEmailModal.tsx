@@ -1,18 +1,6 @@
 import { useState, useMemo } from "react";
-import {
-  X,
-  Send,
-  Sparkles,
-  Users,
-  Eye,
-  Edit3,
-  CheckCircle,
-} from "lucide-react";
-import {
-  emailTemplates,
-  type EmailCampaignItem,
-  type AudienceType,
-} from "../data/emails.data";
+import { X, Send, Sparkles, Users, Eye, Edit3, CheckCircle } from "lucide-react";
+import { emailTemplates, type EmailCampaignItem, type AudienceType } from "../data/emails.data";
 
 interface SendBulkEmailModalProps {
   isOpen: boolean;
@@ -418,8 +406,15 @@ const SendBulkEmailModal = ({ isOpen, onClose, onSendCampaign }: SendBulkEmailMo
               {/* Fake Email Client Header */}
               <div className="border-b border-gray-200 bg-gray-50 px-5 py-4">
                 <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>From: <strong>{senderName} &lt;{senderEmail}&gt;</strong></span>
-                  <span>To: <strong>recipient@example.com</strong></span>
+                  <span>
+                    From:{" "}
+                    <strong>
+                      {senderName} &lt;{senderEmail}&gt;
+                    </strong>
+                  </span>
+                  <span>
+                    To: <strong>recipient@example.com</strong>
+                  </span>
                 </div>
                 <h2 className="mt-2 text-base font-bold text-gray-900">
                   {subject || "Your Subject Line Will Appear Here"}
@@ -443,7 +438,8 @@ const SendBulkEmailModal = ({ isOpen, onClose, onSendCampaign }: SendBulkEmailMo
                 </div>
 
                 <div className="mt-6 border-t border-gray-100 pt-4 text-xs text-gray-400">
-                  You are receiving this email because you are a registered member of Google Developer Groups Ranchi.
+                  You are receiving this email because you are a registered member of Google
+                  Developer Groups Ranchi.
                 </div>
               </div>
             </div>

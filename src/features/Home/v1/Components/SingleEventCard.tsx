@@ -9,7 +9,6 @@ type SingleEventProps = {
   time: string;
   location: string;
   registrationStatus: string;
-  
 };
 
 const SingleEventCard = (event: SingleEventProps) => {

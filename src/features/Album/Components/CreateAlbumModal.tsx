@@ -98,7 +98,9 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">Short Description</label>
+            <label className="block text-xs font-medium text-white/60 mb-1.5">
+              Short Description
+            </label>
             <input
               type="text"
               value={description}
@@ -110,7 +112,9 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Associated Event</label>
+              <label className="block text-xs font-medium text-white/60 mb-1.5">
+                Associated Event
+              </label>
               <input
                 type="text"
                 value={eventName}
@@ -140,8 +144,12 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
                 onChange={(e) => setVisibility(e.target.value as AlbumVisibility)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Public" className="bg-[#161a1f] text-white">Public</option>
-                <option value="Private" className="bg-[#161a1f] text-white">Private</option>
+                <option value="Public" className="bg-[#161a1f] text-white">
+                  Public
+                </option>
+                <option value="Private" className="bg-[#161a1f] text-white">
+                  Private
+                </option>
               </select>
             </div>
 
@@ -152,9 +160,15 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
                 onChange={(e) => setStatus(e.target.value as AlbumStatus)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                <option value="Published" className="bg-[#161a1f] text-white">Published</option>
-                <option value="Draft" className="bg-[#161a1f] text-white">Draft</option>
-                <option value="Unpublished" className="bg-[#161a1f] text-white">Unpublished</option>
+                <option value="Published" className="bg-[#161a1f] text-white">
+                  Published
+                </option>
+                <option value="Draft" className="bg-[#161a1f] text-white">
+                  Draft
+                </option>
+                <option value="Unpublished" className="bg-[#161a1f] text-white">
+                  Unpublished
+                </option>
               </select>
             </div>
           </div>
@@ -173,7 +187,9 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">Tags (comma separated)</label>
+            <label className="block text-xs font-medium text-white/60 mb-1.5">
+              Tags (comma separated)
+            </label>
             <input
               type="text"
               value={tagsInput}
