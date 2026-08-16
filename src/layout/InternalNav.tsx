@@ -1,6 +1,5 @@
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import { MenuIcon, MoreVertical, X } from "lucide-react";
-
 import { FaArrowLeft } from "react-icons/fa";
 import useNavStore from "./store/nav.store";
 
@@ -12,23 +11,23 @@ const InternalNav = () => {
 
   useEffect(() => {
     sideBarController(isOpen);
-  }, [isOpen]);
+  }, [isOpen, sideBarController]);
 
   return (
-    <nav className=" flex w-full items-center justify-between  gap-6 fixed top-0 left-0 lg:relative border-b border-white/[0.08] bg-[#0b0c0e]  px-4 py-2.5 sm:px-5 z-50">
-      <div className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.025] px-5 py-2 text-white transition hover:bg-white/[0.05]">
+    <nav className="sticky top-0 left-0 z-40 flex h-16 w-full items-center justify-between gap-6 border-b border-white/[0.08] bg-[#0b0c0e]/95 px-4 backdrop-blur-md sm:px-6">
+      <div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-1.5 text-white transition hover:bg-white/[0.05]">
         <button
           type="button"
-          className="flex items-center justify-center rounded-lg p-1.5 text-white/45 transition hover:bg-white/10 hover:text-white"
+          className="flex items-center justify-center rounded-lg p-1 text-white/45 transition hover:bg-white/10 hover:text-white"
         >
-          <FaArrowLeft className="text-md font-semibold tracking-tight lg:text-[1.3vw]" />
+          <FaArrowLeft className="text-sm font-semibold tracking-tight lg:text-[1.1vw]" />
         </button>
 
-        <div className="h-5 w-px bg-white/10" />
+        <div className="h-4 w-px bg-white/10" />
 
-        <img src="/GDG_Logo.svg" alt="GDG Ranchi" className="h-full w-18 object-contain" />
+        <img src="/GDG_Logo.svg" alt="GDG Ranchi" className="h-5 w-auto object-contain" />
 
-        <span className="text-md font-semibold tracking-tight lg:text-[1.3vw]">GDG Ranchi</span>
+        <span className="text-sm font-semibold tracking-tight lg:text-[1.1vw]">GDG Ranchi</span>
       </div>
 
       {/* Profile Card */}
@@ -63,9 +62,9 @@ const InternalNav = () => {
 
       <div className="block lg:hidden" onClick={() => setOpen((prev) => !prev)}>
         {isSideBarOpen ? (
-          <X className="block lg:hidden" />
+          <X className="block lg:hidden text-white" />
         ) : (
-          <MenuIcon className="block lg:hidden" />
+          <MenuIcon className="block lg:hidden text-white" />
         )}
       </div>
     </nav>
@@ -73,3 +72,5 @@ const InternalNav = () => {
 };
 
 export default InternalNav;
+
+
