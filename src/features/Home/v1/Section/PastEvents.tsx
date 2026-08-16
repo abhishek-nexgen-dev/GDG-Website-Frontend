@@ -1,5 +1,6 @@
 import EventCard from "../Components/EventCard";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import SingleEventCard from "../Components/SingleEventCard";
 
 
@@ -91,10 +92,11 @@ export const PastEvents_Constant = [
 
 const PastEvents = () => {
   return (
-    <section className="relative overflow-hidden bg-[#050505] px-5 py-20 sm:px-8 sm:py-24 md:px-12 lg:px-[8%] lg:py-[12vh] xl:px-[10%]">
-      <div className="pointer-events-none absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-[#4285F4]/[0.035] blur-[120px]" />
-
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#34A853]/[0.035] blur-[130px]" />
+    <section className="relative bg-[#050505] px-5 py-20 sm:px-8 sm:py-24 md:px-12 lg:px-[8%] lg:py-[12vh] xl:px-[10%]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-[#4285F4]/[0.035] blur-[120px]" />
+        <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#34A853]/[0.035] blur-[130px]" />
+      </div>
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* Header */}
@@ -132,21 +134,30 @@ const PastEvents = () => {
 
         
 
-        <div className="w-full h-full flex flex-col gap-[7vh] ">
-
-           {PastEvents_Constant.map((el)=>{
+        <div className="relative flex flex-col gap-[7vh] pb-[10vh] lg:gap-14 max-w-5xl mx-auto">
+           {PastEvents_Constant.map((el, index)=>{
               return (
-                    <SingleEventCard
-          title={el.title}
-          category={el.category}
-          description={el.description}
-          date={el.date}
-          time={el.time}
-          location={el.location}
-          registrationStatus={el.registrationStatus}
-          image={el.image}
-        />
-
+                <motion.div
+                  key={el.id}
+                  className="sticky transition-all duration-300"
+                  style={{
+                    top: `${100 + index * 48}px`,
+                    zIndex: 10 + index,
+                  }}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                  <SingleEventCard
+                    title={el.title}
+                    category={el.category}
+                    description={el.description}
+                    date={el.date}
+                    time={el.time}
+                    location={el.location}
+                    registrationStatus={el.registrationStatus}
+                    image={el.image}
+                  />
+                </motion.div>
               ) 
            })}
         </div>

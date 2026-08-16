@@ -21,7 +21,7 @@ const SingleEventCard = (event: SingleEventProps) => {
       <div className="relative grid lg:grid-cols-[1.15fr_0.85fr]">
         <div className="relative min-h-[320px] overflow-hidden sm:min-h-[420px] lg:min-h-[520px]">
           <img
-            src={event.image}
+            src={event.image || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80"}
             alt={event.title}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
           />
