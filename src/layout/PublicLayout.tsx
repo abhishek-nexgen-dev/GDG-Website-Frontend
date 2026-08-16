@@ -6,7 +6,7 @@ import { BackgroundWatermark } from "../Components/BackgroundWatermark";
 import { useState } from "react";
 
 const PublicLayout = () => {
-  const [isUnderMaintenance] = useState(true);
+  const [isUnderMaintenance] = useState(false);
 
   if (isUnderMaintenance) {
     return <Navigate to="/maintenance" replace />;
