@@ -17,40 +17,26 @@ const QuickInfo = () => {
 
   return (
     <div className="space-y-6">
-
       {/* Category */}
       <div className="flex items-start gap-3">
-        <Layers3
-          size={15}
-          strokeWidth={1.7}
-          className="mt-0.5 shrink-0 text-white/30"
-        />
+        <Layers3 size={15} strokeWidth={1.7} className="mt-0.5 shrink-0 text-white/30" />
 
         <div className="min-w-0">
           <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">
             Category
           </p>
 
-          <p className="mt-1.5 text-sm font-medium text-white/70">
-            {event.category}
-          </p>
+          <p className="mt-1.5 text-sm font-medium text-white/70">{event.category}</p>
         </div>
       </div>
-
 
       {/* Tags */}
       {event.tags.length > 0 && (
         <div className="flex items-start gap-3">
-          <Tag
-            size={15}
-            strokeWidth={1.7}
-            className="mt-0.5 shrink-0 text-white/30"
-          />
+          <Tag size={15} strokeWidth={1.7} className="mt-0.5 shrink-0 text-white/30" />
 
           <div className="min-w-0">
-            <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">
-              Tags
-            </p>
+            <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">Tags</p>
 
             <div className="mt-2 flex flex-wrap gap-1.5">
               {event.tags.map((tag) => (
@@ -76,14 +62,9 @@ const QuickInfo = () => {
         </div>
       )}
 
-
       {/* Visibility */}
       <div className="flex items-start gap-3">
-        <Globe2
-          size={15}
-          strokeWidth={1.7}
-          className="mt-0.5 shrink-0 text-white/30"
-        />
+        <Globe2 size={15} strokeWidth={1.7} className="mt-0.5 shrink-0 text-white/30" />
 
         <div>
           <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">
@@ -100,14 +81,9 @@ const QuickInfo = () => {
         </div>
       </div>
 
-
       {/* Location */}
       <div className="flex items-start gap-3">
-        <MapPin
-          size={15}
-          strokeWidth={1.7}
-          className="mt-0.5 shrink-0 text-white/30"
-        />
+        <MapPin size={15} strokeWidth={1.7} className="mt-0.5 shrink-0 text-white/30" />
 
         <div className="min-w-0">
           <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">
@@ -132,14 +108,9 @@ const QuickInfo = () => {
         </div>
       </div>
 
-
       {/* Slug */}
       <div className="flex items-start gap-3">
-        <Link2
-          size={15}
-          strokeWidth={1.7}
-          className="mt-0.5 shrink-0 text-white/20"
-        />
+        <Link2 size={15} strokeWidth={1.7} className="mt-0.5 shrink-0 text-white/20" />
 
         <div className="min-w-0">
           <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/20">
@@ -151,7 +122,6 @@ const QuickInfo = () => {
           </p>
         </div>
       </div>
-
     </div>
   );
 };

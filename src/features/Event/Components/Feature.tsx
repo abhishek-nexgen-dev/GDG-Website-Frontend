@@ -8,5 +8,4 @@ const Feature = ({ icon, title }: { icon: React.ReactNode; title: string }) => {
   );
 };
 
-
-export default Feature
+export default Feature;

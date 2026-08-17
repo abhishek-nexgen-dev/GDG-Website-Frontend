@@ -1,7 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { singleEventData } from "../data/singleEventData";
 
-
 const Partners = () => {
   const partners = singleEventData.partners ?? [];
 
@@ -41,4 +40,4 @@ const Partners = () => {
   );
 };
 
-export default Partners
+export default Partners;

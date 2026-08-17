@@ -18,8 +18,6 @@ const HomePage = () => {
       <UpcomingEvent />
 
       <PastEvents />
-
-      
     </div>
   );
 };

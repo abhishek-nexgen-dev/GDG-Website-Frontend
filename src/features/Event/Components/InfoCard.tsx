@@ -1,4 +1,3 @@
-
 type InfoCardProps = {
   title: string;
   eyebrow?: string;
@@ -6,11 +5,10 @@ type InfoCardProps = {
   className?: string;
 };
 
-
 const InfoCard = ({ title, eyebrow, children, className = "" }: InfoCardProps) => {
   return (
     <section
-      className={`rounded-2xl h-fit p-5  sm:p-6 ${className}`}
+      className={`rounded-2xl h-fit p-5 bg-[#0b0d0e] border border-white/[0.08] sm:p-6 ${className}`}
     >
       {eyebrow && (
         <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.25em] text-[#8B5CF6]">
@@ -25,4 +23,4 @@ const InfoCard = ({ title, eyebrow, children, className = "" }: InfoCardProps) =
   );
 };
 
-export default InfoCard
+export default InfoCard;

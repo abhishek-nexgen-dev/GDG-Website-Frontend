@@ -6,5 +6,4 @@ const EmptyState = ({ text }: { text: string }) => {
   );
 };
 
-
-export default EmptyState
+export default EmptyState;

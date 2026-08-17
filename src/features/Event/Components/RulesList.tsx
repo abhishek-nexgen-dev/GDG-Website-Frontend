@@ -16,4 +16,4 @@ const RulesList = ({ items }: { items: string[] }) => {
   );
 };
 
-export default RulesList
+export default RulesList;

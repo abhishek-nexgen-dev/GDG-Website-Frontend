@@ -7,17 +7,14 @@ const AboutEvent = () => {
   const { shortDescription, descriptionMarkdown } = singleEventData;
 
   return (
-    <section className="w-[70%] py-2 sm:py-8 px-8 rounded-2xl border border-white/[0.08] bg-white/[0.025]">
-
+    <section
+      className="w-[70%] py-2 sm:py-8 px-8 rounded-2xl border border-white/[0.08]
+bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
+    >
       {/* Header */}
       <div className="max-w-3xl">
-
         <div className="mb-3 flex items-center gap-2">
-          <Sparkles
-            size={13}
-            strokeWidth={1.8}
-            className="text-[#34A853]"
-          />
+          <Sparkles size={13} strokeWidth={1.8} className="text-[#34A853]" />
 
           <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[#34A853]">
             Discover the event
@@ -31,13 +28,10 @@ const AboutEvent = () => {
         <p className="mt-4 max-w-2xl text-sm leading-7 text-white/45 sm:text-[15px]">
           {shortDescription}
         </p>
-
       </div>
-
 
       {/* Subtle divider */}
       <div className="my-8 h-px w-full bg-white/[0.07]" />
-
 
       {/* Markdown */}
       <article
@@ -87,39 +81,22 @@ const AboutEvent = () => {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
+            h1: ({ children }) => <h1>{children}</h1>,
 
-            h1: ({ children }) => (
-              <h1>{children}</h1>
-            ),
+            h2: ({ children }) => <h2>{children}</h2>,
 
-            h2: ({ children }) => (
-              <h2>{children}</h2>
-            ),
+            h3: ({ children }) => <h3>{children}</h3>,
 
-            h3: ({ children }) => (
-              <h3>{children}</h3>
-            ),
+            p: ({ children }) => <p>{children}</p>,
 
-            p: ({ children }) => (
-              <p>{children}</p>
-            ),
+            ul: ({ children }) => <ul>{children}</ul>,
 
-            ul: ({ children }) => (
-              <ul>{children}</ul>
-            ),
-
-            ol: ({ children }) => (
-              <ol>{children}</ol>
-            ),
+            ol: ({ children }) => <ol>{children}</ol>,
 
             li: ({ children }) => (
               <li className="flex items-start gap-3 text-sm leading-6 text-white/45">
                 <span className="mt-[7px] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#34A853]/10">
-                  <Check
-                    size={9}
-                    strokeWidth={2.5}
-                    className="text-[#34A853]"
-                  />
+                  <Check size={9} strokeWidth={2.5} className="text-[#34A853]" />
                 </span>
 
                 <span>{children}</span>
@@ -127,20 +104,12 @@ const AboutEvent = () => {
             ),
 
             strong: ({ children }) => (
-              <strong className="font-semibold text-white/75">
-                {children}
-              </strong>
+              <strong className="font-semibold text-white/75">{children}</strong>
             ),
 
-            em: ({ children }) => (
-              <em className="text-white/60">
-                {children}
-              </em>
-            ),
+            em: ({ children }) => <em className="text-white/60">{children}</em>,
 
-            blockquote: ({ children }) => (
-              <blockquote>{children}</blockquote>
-            ),
+            blockquote: ({ children }) => <blockquote>{children}</blockquote>,
 
             a: ({ href, children }) => (
               <a
@@ -151,16 +120,11 @@ const AboutEvent = () => {
               >
                 {children}
 
-                <ArrowUpRight
-                  size={12}
-                  strokeWidth={1.8}
-                />
+                <ArrowUpRight size={12} strokeWidth={1.8} />
               </a>
             ),
 
-            hr: () => (
-              <hr />
-            ),
+            hr: () => <hr />,
 
             code: ({ children }) => (
               <code className="rounded bg-white/[0.06] px-1.5 py-0.5 text-xs text-[#34A853]">
@@ -176,9 +140,7 @@ const AboutEvent = () => {
 
             table: ({ children }) => (
               <div className="my-6 overflow-x-auto">
-                <table className="w-full min-w-[500px] text-left text-sm">
-                  {children}
-                </table>
+                <table className="w-full min-w-[500px] text-left text-sm">{children}</table>
               </div>
             ),
 
@@ -189,16 +151,13 @@ const AboutEvent = () => {
             ),
 
             td: ({ children }) => (
-              <td className="border-b border-white/[0.05] px-4 py-3 text-white/40">
-                {children}
-              </td>
+              <td className="border-b border-white/[0.05] px-4 py-3 text-white/40">{children}</td>
             ),
           }}
         >
           {descriptionMarkdown}
         </ReactMarkdown>
       </article>
-
     </section>
   );
 };

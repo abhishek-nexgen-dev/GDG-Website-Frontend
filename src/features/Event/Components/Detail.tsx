@@ -23,5 +23,4 @@ const Detail = ({ icon, label, value, active }: DetailProps) => {
   );
 };
 
-
-export default Detail
+export default Detail;

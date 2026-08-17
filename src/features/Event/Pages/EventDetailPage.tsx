@@ -1,8 +1,6 @@
-
 import {
   ArrowRight,
   CalendarDays,
-
   Clock3,
   ExternalLink,
   Globe,
@@ -13,7 +11,13 @@ import {
 } from "lucide-react";
 
 import { singleEventData } from "../data/singleEventData";
-import { formatDate, formatDateRange, formatStatus, getEventEndDate, getEventStartDate } from "../utils/Event.utils";
+import {
+  formatDate,
+  formatDateRange,
+  formatStatus,
+  getEventEndDate,
+  getEventStartDate,
+} from "../utils/Event.utils";
 import Highlight from "../Components/Highlight";
 import InfoCard from "../Components/InfoCard";
 import Feature from "../Components/Feature";
@@ -28,19 +32,6 @@ import Sponsors from "../Components/Sponsors";
 import FAQ from "../Components/FAQ";
 import AboutEvent from "../Components/AboutEvent";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 const ViewSingleEventPage = () => {
   const event = singleEventData;
 
@@ -50,11 +41,21 @@ const ViewSingleEventPage = () => {
   const eventDate = formatDateRange(eventStart, eventEnd);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
- 
+    <main className="relative min-h-screen overflow-hidden bg-[#050505] text-white">
+      <div className="absolute inset-0 opacity-[0.05]">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, white 1px, transparent 1px),
+              linear-gradient(to bottom, white 1px, transparent 1px)
+            `,
+            backgroundSize: "80px 80px",
+          }}
+        />
+      </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1400px] px-4 pb-20 pt-6 sm:px-6 lg:px-8">
-   
         {/* =====================================================
             EVENT BANNER
         ===================================================== */}
@@ -187,62 +188,69 @@ const ViewSingleEventPage = () => {
         <section id="overview" className="flex gap-[1vw] justify-between mt-10">
           <AboutEvent />
 
+          <div className="flex flex-col w-[30%] gap-4">
+            <InfoCard eyebrow="Everything you need" title="Event Details">
+              <div className="space-y-5">
+                <Detail icon={<CalendarDays size={16} />} label="Event Date" value={eventDate} />
 
-           <div className="flex flex-col w-[30%] gap-4">
+                <Detail
+                  icon={<Clock3 size={16} />}
+                  label="Registration"
+                  value={`${formatDate(event.registrationStartAt)} – ${formatDate(
+                    event.registrationEndAt,
+                  )}`}
+                />
 
-              <InfoCard eyebrow="Everything you need" title="Event Details" className="border border-white/[0.08] bg-white/[0.025]">
-            <div className="space-y-5">
-              <Detail icon={<CalendarDays size={16} />} label="Event Date" value={eventDate} />
+                <Detail
+                  icon={<MapPin size={16} />}
+                  label="Venue"
+                  value={
+                    <>
+                      {event.venue.venueName}
+                      <br />
+                      {event.venue.city}, {event.venue.state}
+                    </>
+                  }
+                />
 
-              <Detail
-                icon={<Clock3 size={16} />}
-                label="Registration"
-                value={`${formatDate(event.registrationStartAt)} – ${formatDate(
-                  event.registrationEndAt,
-                )}`}
-              />
+                <Detail
+                  icon={<Globe size={16} />}
+                  label="Mode"
+                  value={formatStatus(event.venue.mode)}
+                />
 
-              <Detail
-                icon={<MapPin size={16} />}
-                label="Venue"
-                value={
-                  <>
-                    {event.venue.venueName}
-                    <br />
-                    {event.venue.city}, {event.venue.state}
-                  </>
-                }
-              />
+                <Detail icon={<Users size={16} />} label="Team Size" value="2 – 4 Members" />
 
-              <Detail
-                icon={<Globe size={16} />}
-                label="Mode"
-                value={formatStatus(event.venue.mode)}
-              />
+                <Detail
+                  icon={<ShieldCheck size={16} />}
+                  label="Status"
+                  value={
+                    <span className="inline-flex rounded-full bg-emerald-500/10 px-2 py-1 text-[9px] text-emerald-400">
+                      {formatStatus(event.status)}
+                    </span>
+                  }
+                  active
+                />
+              </div>
+            </InfoCard>
 
-              <Detail icon={<Users size={16} />} label="Team Size" value="2 – 4 Members" />
+            <InfoCard eyebrow="At a glance" title="Quick Info">
+              <QuickInfo />
+            </InfoCard>
+          </div>
+        </section>
 
-              <Detail
-                icon={<ShieldCheck size={16} />}
-                label="Status"
-                value={
-                  <span className="inline-flex rounded-full bg-emerald-500/10 px-2 py-1 text-[9px] text-emerald-400">
-                    {formatStatus(event.status)}
-                  </span>
-                }
-                active
-              />
-            </div>
-              </InfoCard>
 
-               <InfoCard eyebrow="At a glance" title="Quick Info" className="border border-white/[0.08] bg-white/[0.025]">
-            <QuickInfo />
-          </InfoCard>
+        <div className="w-full h-[10vh] bg-black mt-[10vh] text-white">Partner</div>
 
-  
-           </div>
+         <div className="w-full h-[10vh] bg-black mt-[2vh]">Sponsor</div>
 
-        
+        {/* =====================================================
+            TIMELINE + QUICK INFO
+        ===================================================== */}
+
+        <section id="timeline" className="w-full mt-[5vh] rounded-2xl  ">
+          <Timeline />
         </section>
 
         {/* =====================================================
@@ -308,27 +316,13 @@ const ViewSingleEventPage = () => {
 
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {event.judges.length ? (
-              event.judges.map((judge) => (
-              <div className=""></div>
-              ))
+              event.judges.map((judge) => <div className=""></div>)
             ) : (
               <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
                 <EmptyState text="Judges will be announced soon." />
               </div>
             )}
           </div>
-        </section>
-
-        {/* =====================================================
-            TIMELINE + QUICK INFO
-        ===================================================== */}
-
-        <section id="timeline" className="mt-4 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-          <InfoCard eyebrow="Event flow" title="Agenda & Timeline">
-            <Timeline />
-          </InfoCard>
-
-         
         </section>
 
         {/* =====================================================
@@ -377,7 +371,7 @@ const ViewSingleEventPage = () => {
             SPONSORS
         ===================================================== */}
 
-        <div id="sponsors">
+        <div id="sponsors" className="">
           <Sponsors />
         </div>
 
