@@ -1,17 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import sideBarConstant from "../constant/sideBarConstant";
-import { NavLink } from "react-router";
-import { LogOut, Settings } from "lucide-react";
+import { NavLink, useLocation } from "react-router";
+import { LogOut, Settings, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import useNavStore from "../store/nav.store";
 
-
-
 const InternalSideBar = () => {
   let isOpen = useNavStore((state) => state.isSideBarOpen);
+  const location = useLocation();
 
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLElement>(null);
   const menuItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  // Expanded submenus state
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
+    Events: true,
+  });
+
+  const toggleSubMenu = (label: string) => {
+    setExpandedMenus((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
 
   useEffect(() => {
     const sidebar = sidebarRef.current;
@@ -65,20 +73,21 @@ const InternalSideBar = () => {
   return (
     <aside
       ref={sidebarRef}
+      data-lenis-prevent
       className="
         fixed
         left-0
-        top-0
+        top-[64px]
         z-50
 
         flex
-        h-screen
+        h-[calc(100vh-64px)]
         w-[82vw]
-        max-w-[340px]
+        max-w-[300px]
         flex-col
 
         border-r
-        border-white/[0.06]
+        border-white/[0.08]
         bg-[#111315]
 
         px-3
@@ -88,99 +97,116 @@ const InternalSideBar = () => {
 
         -translate-x-[105%]
 
-        sm:w-[320px]
+        sm:w-[300px]
         sm:px-4
 
-        lg:relative
-        lg:left-auto
-        lg:top-auto
-        lg:h-[calc(100vh-80px)]
-        lg:w-[20vw]
-        lg:min-w-[230px]
+        lg:fixed
+        lg:top-[80px]
+        lg:left-[16px]
+        lg:h-[calc(100vh-96px)]
+        lg:w-[250px]
+        lg:min-w-0
         lg:max-w-none
         lg:translate-x-0
         lg:rounded-2xl
-        lg:ml-[1vw]
-        lg:mt-[3vh]
+        lg:border
+        lg:border-white/[0.08]
+        lg:m-0
         lg:shadow-none
+        overflow-y-auto
+        overscroll-contain
       "
     >
-      <div className="flex min-h-0 flex-1 flex-col">
-        {/* Profile Card */}
-        <div className="mb-7 px-1">
-          <div className="flex items-center gap-3">
-            <div className="relative shrink-0">
-              <img
-                src="https://imgs.search.brave.com/no76xWdefnmcUXaHMUQlfShcooGDzJkYqZhSZGLlQkg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMS53/cC5jb20vd3d3LnNo/dXR0ZXJzdG9jay5j/b20vYmxvZy93cC1j/b250ZW50L3VwbG9h/ZHMvc2l0ZXMvNS8y/MDI0LzA2L3Byb2Zp/bGVfcGhvdG9fc2Ft/cGxlXzEyLmpwZz9z/c2w9MQ"
-                alt="Abhishek Gupta"
-                className="h-11 w-11 rounded-full object-cover"
-              />
+      {/* Profile Card */}
+      <div className="mb-5 shrink-0 px-1">
+        <div className="flex items-center gap-3">
+          <div className="relative shrink-0">
+            <img
+              src="https://imgs.search.brave.com/no76xWdefnmcUXaHMUQlfShcooGDzJkYqZhSZGLlQkg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMS53/cC5jb20vd3d3LnNo/dXR0ZXJzdG9jay5j/b20vYmxvZy93cC1j/b250ZW50L3VwbG9h/ZHMvc2l0ZXMvNS8y/MDI0LzA2L3Byb2Zp/bGVfcGhvdG9fc2Ft/cGxlXzEyLmpwZz9z/c2w9MQ"
+              alt="Abhishek Gupta"
+              className="h-10 w-10 rounded-full object-cover"
+            />
 
-              <span
-                className="
-                absolute
-                bottom-0
-                right-0
-                h-3
-                w-3
-                rounded-full
-                border-2
-                border-[#111315]
-                bg-[#34A853]
-              "
-              />
-            </div>
+            <span
+              className="
+              absolute
+              bottom-0
+              right-0
+              h-2.5
+              w-2.5
+              rounded-full
+              border-2
+              border-[#111315]
+              bg-[#34A853]
+            "
+            />
+          </div>
 
-            <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-white">Abhishek Gupta</h2>
-
-              <p className="mt-0.5 truncate text-[10px] text-white/40">Full Stack Developer</p>
-
-              <span
-                className="
-                mt-1
-                inline-flex
-                rounded-md
-                bg-[#34A853]/10
-                px-2
-                py-0.5
-                text-[9px]
-                font-medium
-                text-[#34A853]
-              "
-              >
-                Admin
-              </span>
-            </div>
+          <div className="min-w-0">
+            <h2 className="truncate text-sm font-semibold text-white">Abhishek Gupta</h2>
+            <p className="truncate text-[10px] text-white/40">Full Stack Developer</p>
+            <span
+              className="
+              mt-0.5
+              inline-flex
+              rounded-md
+              bg-[#34A853]/10
+              px-2
+              py-0.5
+              text-[9px]
+              font-medium
+              text-[#34A853]
+            "
+            >
+              Admin
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* SideBar Menu */}
-        <div className="flex-1 overflow-y-auto scrollbar-none">
-          <p
-            className="
-            mb-3
-            px-1
-            text-[9px]
-            font-medium
-            uppercase
-            tracking-[0.15em]
-            text-white/30
-          "
-          >
-            Main Menu
-          </p>
+      {/* SideBar Menu */}
+      <div className="flex flex-col">
+        <p
+          className="
+          mb-2.5
+          px-1
+          text-[9px]
+          font-medium
+          uppercase
+          tracking-[0.15em]
+          text-white/30
+        "
+        >
+          Main Menu
+        </p>
 
-          <nav className="flex flex-col gap-1">
-            {sideBarConstant.map((item, index) => {
-              const Icon = item.icon;
+        <nav className="flex flex-col gap-1">
+          {sideBarConstant.map((item, index) => {
+            const Icon = item.icon;
+            const hasSub = Boolean(item.subItems && item.subItems.length > 0);
+            const isParentActive =
+              item.label === "Events"
+                ? location.pathname.startsWith("/member/event")
+                : item.label === "Albums"
+                  ? location.pathname.startsWith("/member/album")
+                  : item.label === "Images"
+                    ? location.pathname.startsWith("/member/image")
+                    : item.label === "Emails"
+                      ? location.pathname.startsWith("/member/email")
+                      : false;
+            const isExpanded = expandedMenus[item.label] ?? isParentActive;
 
-              return (
+            return (
+              <div key={item.label} className="flex flex-col gap-1">
                 <NavLink
-                  key={item.label}
                   to={item.link}
                   ref={(el) => {
                     menuItemsRef.current[index] = el;
+                  }}
+                  onClick={() => {
+                    if (hasSub) {
+                      toggleSubMenu(item.label);
+                    }
                   }}
                   className={({ isActive }) =>
                     `
@@ -188,119 +214,167 @@ const InternalSideBar = () => {
                     relative
                     flex
                     items-center
-                    gap-3
+                    justify-between
                     rounded-lg
                     px-3
-                    py-2.5
+                    py-2
                     text-xs
                     font-medium
                     transition-all
                     duration-200
 
                     ${
-                      isActive
+                      isActive || isParentActive
                         ? "bg-[#34A853]/15 text-white"
                         : "text-white/55 hover:bg-white/[0.04] hover:text-white"
                     }
                     `
                   }
                 >
-                  {({ isActive }) => (
-                    <>
-                      <Icon
-                        size={16}
-                        strokeWidth={isActive ? 2 : 1.7}
-                        className={
-                          isActive ? "text-[#34A853]" : "text-white/45 group-hover:text-white/70"
-                        }
-                      />
+                  {({ isActive }) => {
+                    const active = isActive || isParentActive;
+                    return (
+                      <>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Icon
+                            size={16}
+                            strokeWidth={active ? 2 : 1.7}
+                            className={
+                              active ? "text-[#34A853]" : "text-white/45 group-hover:text-white/70"
+                            }
+                          />
 
-                      <span className="truncate">{item.label}</span>
+                          <span className="truncate">{item.label}</span>
+                        </div>
 
-                      {isActive && (
-                        <span
-                          className="
-                          absolute
-                          right-0
-                          top-1/2
-                          h-6
-                          w-0.5
-                          -translate-y-1/2
-                          rounded-full
-                          bg-[#34A853]
-                          shadow-[0_0_8px_#34A853]
-                        "
-                        />
-                      )}
-                    </>
-                  )}
+                        {hasSub ? (
+                          <ChevronDown
+                            size={14}
+                            className={`text-white/40 transition-transform duration-200 ${
+                              isExpanded ? "rotate-180 text-white" : ""
+                            }`}
+                          />
+                        ) : (
+                          active && (
+                            <span
+                              className="
+                              absolute
+                              right-0
+                              top-1/2
+                              h-6
+                              w-0.5
+                              -translate-y-1/2
+                              rounded-full
+                              bg-[#34A853]
+                              shadow-[0_0_8px_#34A853]
+                            "
+                            />
+                          )
+                        )}
+                      </>
+                    );
+                  }}
                 </NavLink>
-              );
-            })}
-          </nav>
-        </div>
 
-        {/* OTHER */}
-        <div className="mt-6 border-t border-white/[0.06] pt-5">
-          <p
+                {/* Submenu items */}
+                {hasSub && isExpanded && (
+                  <div className="ml-4 flex flex-col gap-1 border-l border-white/[0.08] pl-3 py-1">
+                    {item.subItems?.map((sub) => {
+                      const isSubActive =
+                        location.pathname === sub.link ||
+                        (sub.link === "/member/events" &&
+                          location.pathname === "/member/events/manage") ||
+                        (sub.link === "/member/albums" &&
+                          location.pathname === "/member/albums/manage") ||
+                        (sub.link === "/member/images" &&
+                          location.pathname === "/member/images/manage");
+                      return (
+                        <NavLink
+                          key={sub.label}
+                          to={sub.link}
+                          className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors ${
+                            isSubActive
+                              ? "font-semibold text-white bg-white/[0.06]"
+                              : "text-white/50 hover:text-white hover:bg-white/[0.02]"
+                          }`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              isSubActive ? "bg-[#22c55e]" : "bg-white/30"
+                            }`}
+                          />
+                          <span>{sub.label}</span>
+                        </NavLink>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* OTHER */}
+      <div className="mt-4 shrink-0 border-t border-white/[0.06] pt-3 pb-2">
+        <p
+          className="
+          mb-2
+          px-1
+          text-[9px]
+          font-medium
+          uppercase
+          tracking-[0.15em]
+          text-white/30
+        "
+        >
+          Other
+        </p>
+
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
             className="
-            mb-3
-            px-1
-            text-[9px]
-            font-medium
-            uppercase
-            tracking-[0.15em]
-            text-white/30
-          "
+              flex
+              w-full
+              items-center
+              gap-3
+              rounded-lg
+              px-3
+              py-2
+              text-xs
+              font-medium
+              text-white/50
+              transition
+              hover:bg-white/[0.04]
+              hover:text-white
+            "
           >
-            Other
-          </p>
+            <Settings size={16} strokeWidth={1.7} />
+            <span>Settings</span>
+          </button>
 
-          <div className="flex flex-col gap-1">
-            <button
-              type="button"
-              className="
-                flex
-                w-full
-                items-center
-                gap-3
-                rounded-lg
-                px-3
-                py-2.5
-                text-xs
-                font-medium
-                text-white/50
-                transition
-                hover:bg-white/[0.04]
-                hover:text-white
-              "
-            >
-              <Settings size={16} strokeWidth={1.7} />
-              <span>Settings</span>
-            </button>
-
-            <button
-              type="button"
-              className="
-                flex
-                w-full
-                items-center
-                gap-3
-                rounded-lg
-                px-3
-                py-2.5
-                text-xs
-                font-medium
-                text-red-400/70
-                transition
-                hover:bg-red-500/[0.06]
-                hover:text-red-400
-              "
-            >
-              <LogOut size={16} strokeWidth={1.7} />
-              <span>Logout</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            className="
+              flex
+              w-full
+              items-center
+              gap-3
+              rounded-lg
+              px-3
+              py-2
+              text-xs
+              font-medium
+              text-red-400/70
+              transition
+              hover:bg-red-500/[0.06]
+              hover:text-red-400
+            "
+          >
+            <LogOut size={16} strokeWidth={1.7} />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </aside>

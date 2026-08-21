@@ -1,29 +1,53 @@
-import { LayoutDashboard, Images, Image, Users, Mail } from "lucide-react";
+import { LayoutDashboard, Calendar, Images, Image, Users, Mail } from "lucide-react";
 
-const sideBarConstant = [
+export interface SideBarItem {
+  label: string;
+  link: string;
+  icon: typeof LayoutDashboard;
+  subItems?: { label: string; link: string }[];
+}
+
+const sideBarConstant: SideBarItem[] = [
   {
     label: "Dashboard",
-    link: "/dashboard",
+    link: "/member/dashboard",
     icon: LayoutDashboard,
   },
   {
+    label: "Events",
+    link: "/member/events",
+    icon: Calendar,
+    subItems: [
+      { label: "Manage Events", link: "/member/events" },
+      { label: "Create Event", link: "/member/events/create" },
+    ],
+  },
+  {
     label: "Albums",
-    link: "/albums",
+    link: "/member/albums",
     icon: Images,
+    subItems: [
+      { label: "Manage Albums", link: "/member/albums" },
+      { label: "Create Album", link: "/member/albums/create" },
+    ],
   },
   {
     label: "Images",
-    link: "/images",
+    link: "/member/images",
     icon: Image,
+    subItems: [
+      { label: "Manage Images", link: "/member/images" },
+      { label: "Upload Images", link: "/member/images/upload" },
+    ],
   },
   {
     label: "Members",
-    link: "/members",
+    link: "/member/members",
     icon: Users,
   },
   {
     label: "Emails",
-    link: "/emails",
+    link: "/member/emails/send",
     icon: Mail,
   },
 ];

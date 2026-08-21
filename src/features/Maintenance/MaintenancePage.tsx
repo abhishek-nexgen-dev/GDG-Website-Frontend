@@ -38,8 +38,8 @@ const MaintenancePage = () => {
             duration: 0.8,
           },
           "-=0.2",
-        )
-      
+        );
+
       gsap.to(faceRef.current, {
         y: -6,
         duration: 2.5,
@@ -140,11 +140,7 @@ const MaintenancePage = () => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,168,83,0.045),transparent_60%)]" />
 
       <div className="relative z-10 flex w-full max-w-2xl flex-col items-center text-center">
-
-        <div
-          ref={logoRef}
-          className="mb-12 flex items-center gap-2.5 sm:mb-14"
-        >
+        <div ref={logoRef} className="mb-12 flex items-center gap-2.5 sm:mb-14">
           <img
             src="/GDG_Logo.svg"
             alt="GDG Ranchi"
@@ -157,7 +153,6 @@ const MaintenancePage = () => {
         </div>
 
         <div className="relative mb-9 flex h-32 w-44 items-center justify-center sm:h-36 sm:w-48">
-
           <div
             ref={ringRef}
             className="absolute h-32 w-32 rounded-[45%] border border-[#34A853]/20 sm:h-36 sm:w-36"
@@ -172,10 +167,7 @@ const MaintenancePage = () => {
                 ref={leftEyeRef}
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white sm:h-9 sm:w-9"
               >
-                <span
-                  ref={leftPupilRef}
-                  className="h-3 w-3 rounded-full bg-[#080808]"
-                />
+                <span ref={leftPupilRef} className="h-3 w-3 rounded-full bg-[#080808]" />
               </div>
             </div>
 
@@ -184,10 +176,7 @@ const MaintenancePage = () => {
                 ref={rightEyeRef}
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white sm:h-9 sm:w-9"
               >
-                <span
-                  ref={rightPupilRef}
-                  className="h-3 w-3 rounded-full bg-[#080808]"
-                />
+                <span ref={rightPupilRef} className="h-3 w-3 rounded-full bg-[#080808]" />
               </div>
             </div>
 
@@ -203,51 +192,37 @@ const MaintenancePage = () => {
           </div>
         </div>
 
-        <div
-          ref={contentRef}
-          className="flex flex-col items-center"
-        >
+        <div ref={contentRef} className="flex flex-col items-center">
           <div className="mb-4 flex items-center gap-2">
-
-            <span
-              ref={dotRef}
-              className="h-1.5 w-1.5 rounded-full bg-[#34A853]"
-            />
+            <span ref={dotRef} className="h-1.5 w-1.5 rounded-full bg-[#34A853]" />
 
             <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#34A853] sm:text-xs">
               We'll be back soon
             </span>
-
           </div>
 
           <h1 className="max-w-xl text-[2.7rem] font-bold leading-[0.95] tracking-[-0.05em] sm:text-5xl md:text-6xl">
             Website under
             <br />
-
             <span className="bg-gradient-to-r from-[#4285F4] via-[#34A853] to-[#FBBC04] bg-clip-text text-transparent">
               maintenance.
             </span>
           </h1>
 
           <p className="mt-6 max-w-lg text-sm leading-7 text-white/45 sm:text-base">
-            We’re making a few improvements behind the scenes to create a
-            better experience for everyone in the GDG Ranchi community —
-            members, participants, speakers, mentors, and judges.
+            We’re making a few improvements behind the scenes to create a better experience for
+            everyone in the GDG Ranchi community — members, participants, speakers, mentors, and
+            judges.
           </p>
 
           <div className="mt-7">
-            <p className="text-sm font-medium text-white/60">
-              Keep your eyes open.
-            </p>
+            <p className="text-sm font-medium text-white/60">Keep your eyes open.</p>
 
-            <p className="mt-1 text-xs text-white/25">
-              Something better is on the way.
-            </p>
+            <p className="mt-1 text-xs text-white/25">Something better is on the way.</p>
           </div>
         </div>
 
         <div className="mt-12 flex items-center gap-3 sm:mt-14">
-
           <span className="h-px w-8 bg-white/10 sm:w-12" />
 
           <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 sm:text-[10px]">
@@ -255,9 +230,7 @@ const MaintenancePage = () => {
           </span>
 
           <span className="h-px w-8 bg-white/10 sm:w-12" />
-
         </div>
-
       </div>
     </main>
   );

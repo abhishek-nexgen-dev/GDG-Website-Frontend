@@ -1,4 +1,3 @@
-
 import {
   Images,
   Image,
@@ -81,7 +80,7 @@ const activities = [
 
 const DashboardPage = () => {
   return (
-    <div className="min-h-full w-full mx-[2vw] my-[4vh] text-white">
+    <div className="min-h-full w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8 text-white">
       <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
         <div>
           <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-[#34A853]">
