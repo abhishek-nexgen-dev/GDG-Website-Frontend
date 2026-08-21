@@ -12,7 +12,7 @@ export const singleEventData: EventData = {
   title: "Jharkhand Tech Summit 2026",
 
   shortDescription:
-    "A 24-hour live hackathon happening now in Ranchi focusing on AgriTech and FinTech solutions.",
+    "A 24-hour innovation sprint bringing together developers, designers, entrepreneurs, and technology enthusiasts in Ranchi to solve real-world challenges across AgriTech and FinTech. Build, collaborate, experiment, and turn bold ideas into working solutions while learning from industry experts and connecting with a vibrant community of innovators",
 
   descriptionMarkdown: `# 🚀 Jharkhand Tech Summit 2026
 
@@ -82,56 +82,9 @@ It is a place where participants can:
 - Present their work to experienced judges.
 - Build connections that continue beyond the event.
 
-## 🧠 Learn. Build. Collaborate.
 
-You do not need to know everything before joining.
 
-Hackathons are about learning while building. You may start the event with an idea and discover something completely different by the end.
-
-Ask questions. Experiment with new technologies. Help your teammates. Talk to mentors. Learn from other teams.
-
-Most importantly, **build something you are proud to show.**
-
-## 🔥 The 24-Hour Challenge
-
-The hackathon begins with team formation and an opening session before teams start working on their ideas.
-
-During the 24-hour development period, teams will move through different stages:
-
-1. **Understand the problem**
-2. **Define the solution**
-3. **Design the product**
-4. **Build the prototype**
-5. **Test and improve**
-6. **Deploy the solution**
-7. **Prepare the final presentation**
-8. **Demo the product to the judges**
-
-The clock is limited, but the possibilities are not.
-
-## 🌟 Our Community
-
-Jharkhand Tech Summit 2026 is powered by the spirit of the developer community.
-
-GDG Ranchi brings together people who are curious about technology and passionate about learning, creating, and sharing knowledge.
-
-Events like this are an opportunity for students, developers, founders, mentors, and technology enthusiasts to meet in one place and build something together.
-
-## 📍 Event Status
-
-The event is currently **LIVE**.
-
-Teams are actively working on their projects, mentors are supporting participants, and the community is coming together for an intense 24-hour building experience.
-
-> 🚀 The challenge is live. The ideas are flowing. Now it's time to build.
-
-## 💡 Come With an Idea. Leave With an Experience.
-
-You might arrive with an idea, a laptop, and a team.
-
-You could leave with a working prototype, new technical skills, meaningful connections, and memories that stay with you long after the event.
-
-**Build boldly. Learn continuously. Collaborate openly.**
+**
 
 See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
   redirectUrl: "https://jharkhandtechsummit.dev/live",

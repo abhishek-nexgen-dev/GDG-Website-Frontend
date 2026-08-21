@@ -1,11 +1,6 @@
 import { useState, useMemo } from "react";
 import { Plus, Download } from "lucide-react";
-import {
-  initialAlbumsList,
-  type AlbumItem,
-  type AlbumVisibility,
-  type AlbumStatus,
-} from "../data/albums.data";
+import { initialAlbumsList, type AlbumItem } from "../data/albums.data";
 import AlbumStatsCards from "../Components/AlbumStatsCards";
 import AlbumFilterBar from "../Components/AlbumFilterBar";
 import AlbumTable from "../Components/AlbumTable";

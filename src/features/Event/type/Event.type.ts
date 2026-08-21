@@ -70,3 +70,51 @@ export interface EventData {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface TimelineItem {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  color: string;
+}
+
+export interface EventRule {
+  id: string;
+  text: string;
+}
+
+export interface EventRequirement {
+  id: string;
+  text: string;
+}
+
+export interface EventFormData {
+  title: string;
+  shortDescription: string;
+  category: string;
+  visibility: string;
+  status: string;
+
+  description: string;
+
+  coverImageUrl: string;
+  introVideoUrl: string;
+  redirectUrl: string;
+
+  registrationStart: string;
+  registrationEnd: string;
+
+  venueMode: "Offline" | "Online";
+  venueName: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  latitude: string;
+  longitude: string;
+
+  timeline: TimelineItem[];
+  rules: EventRule[];
+  requirements: EventRequirement[];
+}

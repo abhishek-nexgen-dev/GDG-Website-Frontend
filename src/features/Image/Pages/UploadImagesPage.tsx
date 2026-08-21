@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, UploadCloud, Image, Sparkles } from "lucide-react";
+import { ArrowLeft, Image, Sparkles } from "lucide-react";
 
 const UploadImagesPage = () => {
   const navigate = useNavigate();

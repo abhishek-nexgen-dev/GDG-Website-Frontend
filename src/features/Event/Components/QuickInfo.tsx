@@ -5,15 +5,7 @@ import { formatStatus } from "../utils/Event.utils";
 const QuickInfo = () => {
   const event = singleEventData;
 
-  const location = [
-    event.venue.venueName,
-    event.venue.address,
-    event.venue.city,
-    event.venue.state,
-    event.venue.country,
-  ]
-    .filter(Boolean)
-    .join(", ");
+
 
   return (
     <div className="space-y-6">

@@ -9,8 +9,7 @@ import ManageAlbumsPage from "../features/Album/Pages/ManageAlbumsPage";
 import CreateAlbumPage from "../features/Album/Pages/CreateAlbumPage";
 import ManageImagesPage from "../features/Image/Pages/ManageImagesPage";
 import UploadImagesPage from "../features/Image/Pages/UploadImagesPage";
-import ManageEmailsPage from "../features/Email/Pages/ManageEmailsPage";
-import SendBulkEmailPage from "../features/Email/Pages/SendBulkEmailPage";
+import SendBulkEmailPage from "../features/Email/Pages/SendEmailPage";
 
 const InternalRoutes = () => {
   return (
@@ -33,10 +32,7 @@ const InternalRoutes = () => {
         <Route path="images/manage" element={<ManageImagesPage />} />
         <Route path="images/upload" element={<UploadImagesPage />} />
         <Route path="image" element={<ManageImagesPage />} />
-        <Route path="emails" element={<ManageEmailsPage />} />
-        <Route path="emails/manage" element={<ManageEmailsPage />} />
         <Route path="emails/send" element={<SendBulkEmailPage />} />
-        <Route path="email" element={<ManageEmailsPage />} />
       </Route>
     </Routes>
   );

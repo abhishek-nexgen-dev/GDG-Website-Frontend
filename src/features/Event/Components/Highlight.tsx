@@ -8,15 +8,17 @@ const Highlight = ({
   label: string;
 }) => {
   return (
-    <div className="flex items-center gap-3 border-white/[0.07] p-4 sm:border-r">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/[0.08] text-purple-400">
+    <div className="group flex min-w-0 items-center gap-3 py-2.5 pr-6 sm:border-r sm:border-white/[0.08] ml-2.5">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-blue-400 transition-colors duration-300 group-hover:bg-blue-500/10">
         {icon}
       </div>
 
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-white">{value}</p>
+        <p className="truncate text-md font-semibold tracking-tight text-white">{value}</p>
 
-        <p className="mt-0.5 text-[9px] uppercase tracking-[0.15em] text-white/30">{label}</p>
+        <p className="mt-1 text-[12px] font-medium uppercase tracking-[0.18em] text-white/30">
+          {label}
+        </p>
       </div>
     </div>
   );

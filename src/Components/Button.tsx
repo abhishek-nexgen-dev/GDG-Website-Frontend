@@ -1,7 +1,8 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
-import React from "react";
+
 import clsx from "clsx";
 
 type ButtonVariant = "primary" | "outline" | "ghost";

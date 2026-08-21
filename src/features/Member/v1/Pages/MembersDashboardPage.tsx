@@ -108,8 +108,7 @@ const MembersDashboardPage = () => {
   const hasActiveFilters =
     searchQuery.trim() !== "" || selectedRole !== ALL_FILTER || selectedStatus !== ALL_FILTER;
 
-  const isCurrentPageFullySelected =
-    visibleMemberIds.length > 0 && visibleMemberIds.every((id) => selectedIds.includes(id));
+
 
   /* -------------------------------------------------------------------------- */
   /* Statistics                                                                 */

@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router";
 import PublicLayout from "../layout/PublicLayout";
 import HomePage from "../features/Home/v1/HomePage";
-import ViewSingleEventPage from "../features/Event/Pages/EventDetailPage";
 import GalleryPage from "../features/Image/Pages/GalleryPage";
 import ImagePage from "../features/Image/Pages/ImagePage";
 import ViewAllTeamPage from "../features/Member/v1/Pages/ViewAllTeamPage";

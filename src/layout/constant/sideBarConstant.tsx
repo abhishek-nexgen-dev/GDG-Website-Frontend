@@ -47,12 +47,8 @@ const sideBarConstant: SideBarItem[] = [
   },
   {
     label: "Emails",
-    link: "/member/emails",
+    link: "/member/emails/send",
     icon: Mail,
-    subItems: [
-      { label: "Campaigns", link: "/member/emails" },
-      { label: "Send Bulk Email", link: "/member/emails/send" },
-    ],
   },
 ];
 

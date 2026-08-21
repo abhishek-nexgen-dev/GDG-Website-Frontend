@@ -203,7 +203,7 @@ const InternalSideBar = () => {
                   ref={(el) => {
                     menuItemsRef.current[index] = el;
                   }}
-                  onClick={(e) => {
+                  onClick={() => {
                     if (hasSub) {
                       toggleSubMenu(item.label);
                     }
