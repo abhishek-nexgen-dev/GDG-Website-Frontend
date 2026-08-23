@@ -10,6 +10,8 @@ import CreateAlbumPage from "../features/Album/Pages/CreateAlbumPage";
 import ManageImagesPage from "../features/Image/Pages/ManageImagesPage";
 import UploadImagesPage from "../features/Image/Pages/UploadImagesPage";
 import SendBulkEmailPage from "../features/Email/Pages/SendEmailPage";
+import MemberDetails from "../features/Member/v1/Pages/MemberDetails";
+import Settings from "../features/Settings/Settings";
 
 const InternalRoutes = () => {
   return (
@@ -18,8 +20,8 @@ const InternalRoutes = () => {
         <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="members" element={<MembersDashboardPage />} />
-        <Route path="member" element={<MembersDashboardPage />} />
-        <Route path="create/new/Member" element={<CreateNewMember />} />
+        <Route path="create" element={<CreateNewMember />} />
+        <Route path="profile/:id" element={<MemberDetails />} />
         <Route path="events" element={<ManageEvent />} />
         <Route path="events/manage" element={<ManageEvent />} />
         <Route path="events/create" element={<CreateEvent />} />
@@ -33,6 +35,7 @@ const InternalRoutes = () => {
         <Route path="images/upload" element={<UploadImagesPage />} />
         <Route path="image" element={<ManageImagesPage />} />
         <Route path="emails/send" element={<SendBulkEmailPage />} />
+        <Route path="Settings" element={<Settings />} />
       </Route>
     </Routes>
   );

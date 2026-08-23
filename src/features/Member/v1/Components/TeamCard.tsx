@@ -1,5 +1,3 @@
-
-
 type SocialLink = {
   name: string;
   icon: React.ReactNode;

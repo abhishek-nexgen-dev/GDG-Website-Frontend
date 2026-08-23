@@ -25,7 +25,7 @@ const CreateEventModal = ({ isOpen, onClose, onCreateEvent }: CreateEventModalPr
   const [mode, setMode] = useState<EventMode>("Offline");
   const [status, setStatus] = useState<EventStatus>("UPCOMING");
   const [visibility, setVisibility] = useState<EventVisibility>("Public");
-  console.log(setVisibility)
+  console.log(setVisibility);
   const [maxRegistrations, setMaxRegistrations] = useState(100);
   const [description, setDescription] = useState("");
   const [speakersInput, setSpeakersInput] = useState("");

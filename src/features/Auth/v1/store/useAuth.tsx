@@ -1,17 +1,22 @@
 import { create } from "zustand";
-import type { MemberType } from "../types/Auth.type";
+import type { LoginData, Permission, User } from "../types/Auth.type";
 
-interface useAuthType {
-  email: string;
-  password: string;
-  setAuthUser: (user: MemberType) => void;
+interface UseAuthType {
+  user: User | null;
+  perms: Permission[];
+  setUser: (user: User) => void;
+  setPerms: (perms: Permission[]) => void;
+  setAuthUser: (data: LoginData) => void;
 }
 
-const useAuth = create<useAuthType>()((set) => ({
-  email: "",
-  password: "",
+const useAuth = create<UseAuthType>((set) => ({
+  user: null,
+  perms: [],
 
-  setAuthUser: (user) => set(user),
+  setUser: (user) => set({ user }),
+  setPerms: (perms) => set({ perms }),
+
+  setAuthUser: (data) => set({ user: data.FindUser, perms: data.perms }),
 }));
 
 export default useAuth;

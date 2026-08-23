@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import sideBarConstant from "../constant/sideBarConstant";
-import { NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import { LogOut, Settings, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import useNavStore from "../store/nav.store";
@@ -332,8 +332,8 @@ const InternalSideBar = () => {
         </p>
 
         <div className="flex flex-col gap-1">
-          <button
-            type="button"
+          <Link
+            to="/member/Settings"
             className="
               flex
               w-full
@@ -352,7 +352,7 @@ const InternalSideBar = () => {
           >
             <Settings size={16} strokeWidth={1.7} />
             <span>Settings</span>
-          </button>
+          </Link>
 
           <button
             type="button"
