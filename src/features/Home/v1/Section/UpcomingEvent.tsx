@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import SingleEventCard from "../Components/SingleEventCard";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const UpcomingEvents_Constant = [
   {
@@ -42,8 +47,45 @@ const UpcomingEvents_Constant = [
 ];
 
 const UpcomingEvent = () => {
+  const containerRef = useRef(null);
+
+  useGSAP(
+    () => {
+      gsap.fromTo(
+        ".ue-header",
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 75%",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ".ue-cards",
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".ue-cards",
+            start: "top 80%",
+          },
+        }
+      );
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <section className="relative px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
+    <section ref={containerRef} className="relative px-5 py-12 sm:px-8 sm:py-16 md:px-12 lg:px-[8%] lg:py-20 xl:px-[10%]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute left-[-100px] top-[-10px] h-80 w-80 rounded-full bg-amber-700/30 blur-[80px]" />
         <div className="absolute right-[-100px] bottom-0 h-80 w-80 rounded-full bg-emerald-600/30 blur-[80px]" />
@@ -51,7 +93,7 @@ const UpcomingEvent = () => {
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* Section Header */}
-        <div className="mb-[3vh] flex flex-col justify-between gap-5 sm:mb-12 md:flex-row md:items-end">
+        <div className="ue-header mb-10 flex flex-col justify-between gap-5 sm:mb-12 md:flex-row md:items-end">
           <div>
             <div className="mb-3 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[#34A853] shadow-[0_0_10px_#34A853]" />
@@ -74,7 +116,7 @@ const UpcomingEvent = () => {
           </p>
         </div>
 
-        <div className="relative flex flex-col gap-[7vh] pb-[10vh] lg:gap-14 max-w-5xl mx-auto">
+        <div className="ue-cards relative flex flex-col gap-[7vh] pb-[10vh] lg:gap-14 max-w-5xl mx-auto">
           {UpcomingEvents_Constant.map((event, index) => (
             <motion.div
               key={event.id}
