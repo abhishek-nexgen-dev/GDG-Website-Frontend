@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Eye, MoreVertical, Check, Trash2, Mail, Edit3, ShieldAlert } from "lucide-react";
-import type { MemberItem, MemberRole, MemberStatus } from "../data/members.data";
+import type { fetchMembersType, memberStatusType } from "../type/MemberDetails.type";
+import { Link } from "react-router";
 
 interface MemberTableProps {
-  members: MemberItem[];
+  members: fetchMembersType[];
   selectedIds: string[];
   onSelectAll: (checked: boolean) => void;
   onSelectRow: (id: string, checked: boolean) => void;
-  onViewMember: (member: MemberItem) => void;
+  onViewMember: (member: fetchMembersType) => void;
   onDeleteMember?: (id: string) => void;
-  onChangeRole?: (id: string, newRole: MemberRole) => void;
-  onChangeStatus?: (id: string, newStatus: MemberStatus) => void;
+  onChangeRole?: (id: string, newRole: string) => void;
+  onChangeStatus?: (id: string, newStatus: memberStatusType) => void;
 }
 
 const MemberTable = ({
@@ -25,10 +26,10 @@ const MemberTable = ({
 }: MemberTableProps) => {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  const allSelected = members.length > 0 && members.every((m) => selectedIds.includes(m.id));
-  const someSelected = members.some((m) => selectedIds.includes(m.id)) && !allSelected;
+  const allSelected = members.length > 0 && members.every((m) => selectedIds.includes(m._id));
+  const someSelected = members.some((m) => selectedIds.includes(m._id)) && !allSelected;
 
-  const getRoleBadge = (role: MemberRole) => {
+  const getRoleBadge = (role: string) => {
     switch (role) {
       case "Admin":
         return (
@@ -46,13 +47,13 @@ const MemberTable = ({
       default:
         return (
           <span className="inline-flex items-center rounded-lg border border-[#1d3d66] bg-[#152c4a] px-2.5 py-1 text-xs font-medium text-[#60a5fa]">
-            Member
+            {role}
           </span>
         );
     }
   };
 
-  const getStatusBadge = (status: MemberStatus) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case "Active":
         return (
@@ -114,7 +115,7 @@ const MemberTable = ({
               <th className="py-4 px-3 font-medium text-white/60">Role</th>
               <th className="py-4 px-3 font-medium text-white/60">Status</th>
               <th className="py-4 px-3 font-medium text-white/60">Joined On</th>
-              <th className="py-4 px-3 font-medium text-white/60">Events</th>
+
               <th className="py-4 px-4 text-right font-medium text-white/60">Actions</th>
             </tr>
           </thead>
@@ -128,11 +129,11 @@ const MemberTable = ({
               </tr>
             ) : (
               members.map((member) => {
-                const isSelected = selectedIds.includes(member.id);
+                const isSelected = selectedIds.includes(member._id);
 
                 return (
                   <tr
-                    key={member.id}
+                    key={member._id}
                     className={`group transition-colors ${
                       isSelected ? "bg-[#182a20] hover:bg-[#1c3326]" : "hover:bg-[#1b2027]"
                     }`}
@@ -143,7 +144,7 @@ const MemberTable = ({
                         <input
                           type="checkbox"
                           checked={isSelected}
-                          onChange={(e) => onSelectRow(member.id, e.target.checked)}
+                          onChange={(e) => onSelectRow(member._id, e.target.checked)}
                           className="sr-only"
                         />
                         <div
@@ -162,13 +163,13 @@ const MemberTable = ({
                     <td className="py-3.5 px-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={member.avatar}
-                          alt={member.name}
+                          src={member.imageUrl || "https://via.placeholder.com/40"}
+                          alt={`${member.firstName} ${member.lastName}`}
                           className="h-9 w-9 rounded-full object-cover border border-[#2b323d]"
                         />
                         <div className="min-w-0">
                           <p className="truncate text-xs font-semibold text-white group-hover:text-white sm:text-sm">
-                            {member.name}
+                            {member.firstName} {member.lastName}
                           </p>
                           <p className="truncate text-[11px] text-white/40">{member.email}</p>
                         </div>
@@ -176,36 +177,32 @@ const MemberTable = ({
                     </td>
 
                     {/* Role */}
-                    <td className="py-3.5 px-3">{getRoleBadge(member.role)}</td>
+                    <td className="py-3.5 px-3">{getRoleBadge(member.primaryRole)}</td>
 
                     {/* Status */}
-                    <td className="py-3.5 px-3">{getStatusBadge(member.status)}</td>
+                    <td className="py-3.5 px-3">{getStatusBadge(member.membershipStatus)}</td>
 
                     {/* Joined On */}
-                    <td className="py-3.5 px-3 text-xs text-white/70">{member.joinedOn}</td>
-
-                    {/* Events */}
-                    <td className="py-3.5 px-3 text-xs font-medium text-white/80">
-                      {member.events}
+                    <td className="py-3.5 px-3 text-xs text-white/70">
+                      {member.createdAt ? new Date(member.createdAt).toLocaleDateString() : "N/A"}
                     </td>
 
                     {/* Actions */}
                     <td className="relative py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => onViewMember(member)}
+                        <Link
+                          to={`/member/profile/${member.Slug}`}
                           title="View member details"
                           className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
                         >
                           <Eye size={15} />
-                        </button>
+                        </Link>
 
                         <div className="relative">
                           <button
                             type="button"
                             onClick={() =>
-                              setActiveMenuId(activeMenuId === member.id ? null : member.id)
+                              setActiveMenuId(activeMenuId === member._id ? null : member._id)
                             }
                             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
                           >
@@ -213,7 +210,7 @@ const MemberTable = ({
                           </button>
 
                           {/* Context Action Menu */}
-                          {activeMenuId === member.id && (
+                          {activeMenuId === member._id && (
                             <>
                               <div
                                 className="fixed inset-0 z-20"
@@ -248,13 +245,13 @@ const MemberTable = ({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const nextRole: MemberRole =
-                                        member.role === "Admin"
+                                      const nextRole: string =
+                                        member.primaryRole === "Admin"
                                           ? "Organizer"
-                                          : member.role === "Organizer"
+                                          : member.primaryRole === "Organizer"
                                             ? "Member"
                                             : "Admin";
-                                      onChangeRole(member.id, nextRole);
+                                      onChangeRole(member._id, nextRole);
                                       setActiveMenuId(null);
                                     }}
                                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
@@ -267,16 +264,7 @@ const MemberTable = ({
                                 {onChangeStatus && (
                                   <button
                                     type="button"
-                                    onClick={() => {
-                                      const nextStatus: MemberStatus =
-                                        member.status === "Active"
-                                          ? "Inactive"
-                                          : member.status === "Inactive"
-                                            ? "Offline"
-                                            : "Active";
-                                      onChangeStatus(member.id, nextStatus);
-                                      setActiveMenuId(null);
-                                    }}
+
                                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
                                   >
                                     <ShieldAlert size={14} />
@@ -288,7 +276,7 @@ const MemberTable = ({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      onDeleteMember(member.id);
+                                      onDeleteMember(member._id);
                                       setActiveMenuId(null);
                                     }}
                                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-[#f87171] transition hover:bg-[#38181a] hover:text-rose-300"

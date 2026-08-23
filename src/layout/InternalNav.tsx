@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { MenuIcon, MoreVertical, X } from "lucide-react";
 import { FaArrowLeft } from "react-icons/fa";
 import useNavStore from "./store/nav.store";
+import useAuth from "../features/Auth/v1/store/useAuth";
 
 const InternalNav = () => {
+  const user = useAuth((state) => state.user);
   let sideBarController = useNavStore((state) => state.handleSideBar);
   let isSideBarOpen = useNavStore((state) => state.isSideBarOpen);
 
@@ -51,7 +53,7 @@ const InternalNav = () => {
           </p>
 
           <p className="mt-0.5 truncate text-[9px] leading-3 text-white/35 md:text-[10px]">
-            Full Stack Developer
+            {user?.role}
           </p>
         </div>
 

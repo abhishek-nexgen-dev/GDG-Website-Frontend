@@ -36,3 +36,38 @@ export type MemberType = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export interface Permission {
+  _id?: string;
+  name: string;
+  action: "create" | "read" | "update" | "delete";
+  resource: string;
+  description: string;
+  createdAt?: string; // ISO date string
+  updatedAt?: string; // ISO date string
+}
+
+export interface User {
+  _id: string;
+  email: string;
+  role: string;
+  passwordHash: string;
+  emailVerified: boolean;
+  failedLoginAttempts: number;
+  isBanned: boolean;
+  refreshTokens: string[]; // Assuming array of strings (tokens)
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  __v: number;
+}
+
+export interface LoginData {
+  FindUser: User;
+  perms: Permission[];
+}
+
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  data: LoginData;
+}

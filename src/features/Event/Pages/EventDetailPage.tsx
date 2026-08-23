@@ -1,11 +1,4 @@
-import {
-  CalendarDays,
-  Clock3,
-  Globe,
-  MapPin,
-  ShieldCheck,
-  Users
-} from "lucide-react";
+import { CalendarDays, Clock3, Globe, MapPin, ShieldCheck, Users } from "lucide-react";
 
 import { singleEventData } from "../data/singleEventData";
 import {
@@ -20,13 +13,11 @@ import InfoCard from "../Components/InfoCard";
 
 import Detail from "../Components/Detail";
 
-
 import QuickInfo from "../Components/QuickInfo";
 
 import AboutEvent from "../Components/AboutEvent";
 import EVENT_BANNER from "../Components/EVENT_BANNER";
 import HIGHLIGHTS_Sec from "../Section/HIGHLIGHTS_Sec";
-
 
 const ViewSingleEventPage = () => {
   const event = singleEventData;
