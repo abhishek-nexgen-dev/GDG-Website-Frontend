@@ -1,30 +1,33 @@
-import { useEffect, useMemo, useState } from "react";
-import { Download, Plus } from "lucide-react";
+"use client";
 
-import { initialEventsList, type EventItem } from "../data/events.data";
+import { useEffect, useMemo, useState } from "react";
+import { Download, Plus, Loader2 } from "lucide-react";
+
+import { type EventItem } from "../type/Event.type";
 
 import EventStatsCards from "../Components/EventStatsCards";
 import EventFilterBar from "../Components/EventFilterBar";
 import EventTable from "../Components/EventTable";
 import EventPagination from "../Components/EventPagination";
-import CreateEventModal from "../Components/CreateEventModal";
-import EventDetailsModal from "../Components/EventDetailsModal";
 
-const ALL = "All";
-const DEFAULT_PAGE_SIZE = 10;
-
-const escapeCsvValue = (value: unknown) => {
-  const stringValue = String(value ?? "");
-
-  return /[",\n\r]/.test(stringValue) ? `"${stringValue.replace(/"/g, '""')}"` : stringValue;
-};
+import {
+  ALL,
+  DEFAULT_PAGE_SIZE,
+  exportEventsToCSV,
+  normalizeSearch,
+  hasActiveFilters,
+  computeTotalPages,
+  computeSafeCurrentPage,
+  computePaginationRange,
+  computeStats,
+  fetchAllEvents,
+} from "../utils/manage-event.utils";
+import { Link } from "react-router";
 
 const ManageEvent = () => {
-  /* -------------------------------------------------------------------------- */
-  /* State                                                                      */
-  /* -------------------------------------------------------------------------- */
-
-  const [events, setEvents] = useState<EventItem[]>(initialEventsList);
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(ALL);
@@ -34,14 +37,27 @@ const ManageEvent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-  /* -------------------------------------------------------------------------- */
-  /* Derived State                                                              */
-  /* -------------------------------------------------------------------------- */
+        const apiData = await fetchAllEvents(DEFAULT_PAGE_SIZE, 1);
 
-  const normalizedSearch = searchQuery.trim().toLowerCase();
+        setEvents(apiData);
+      } catch (err) {
+        console.error("Failed to fetch events:", err);
+        setError("Failed to load events. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const normalizedSearch = useMemo(() => normalizeSearch(searchQuery), [searchQuery]);
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
@@ -49,14 +65,12 @@ const ManageEvent = () => {
         !normalizedSearch ||
         event.title.toLowerCase().includes(normalizedSearch) ||
         event.category.toLowerCase().includes(normalizedSearch) ||
-        event.location.toLowerCase().includes(normalizedSearch) ||
-        event.venue.toLowerCase().includes(normalizedSearch) ||
-        event.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch));
+        event.venue.address.toLowerCase().includes(normalizedSearch) ||
+        event.venue.venueName.toLowerCase().includes(normalizedSearch) ||
+        (event.tags && event.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch)));
 
       const matchesCategory = selectedCategory === ALL || event.category === selectedCategory;
-
       const matchesStatus = selectedStatus === ALL || event.status === selectedStatus;
-
       const matchesVisibility =
         selectedVisibility === ALL || event.visibility === selectedVisibility;
 
@@ -64,73 +78,42 @@ const ManageEvent = () => {
     });
   }, [events, normalizedSearch, selectedCategory, selectedStatus, selectedVisibility]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / pageSize));
-
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-
-  const paginatedEvents = useMemo(() => {
-    const startIndex = (safeCurrentPage - 1) * pageSize;
-
-    return filteredEvents.slice(startIndex, startIndex + pageSize);
-  }, [filteredEvents, safeCurrentPage, pageSize]);
-
-  const selectedEvent = useMemo(
-    () => (selectedEventId ? (events.find((event) => event.id === selectedEventId) ?? null) : null),
-    [events, selectedEventId],
+  const totalPages = useMemo(
+    () => computeTotalPages(filteredEvents.length, pageSize),
+    [filteredEvents.length, pageSize],
   );
 
-  const hasActiveFilters =
-    Boolean(searchQuery.trim()) ||
-    selectedCategory !== ALL ||
-    selectedStatus !== ALL ||
-    selectedVisibility !== ALL;
+  const safeCurrentPage = useMemo(
+    () => computeSafeCurrentPage(currentPage, totalPages),
+    [currentPage, totalPages],
+  );
 
-  /* -------------------------------------------------------------------------- */
-  /* Statistics                                                                 */
-  /* -------------------------------------------------------------------------- */
+  const paginatedEvents = useMemo(() => {
+    const { startIndex, endIndex } = computePaginationRange(safeCurrentPage, pageSize);
+    return filteredEvents.slice(startIndex, endIndex);
+  }, [filteredEvents, safeCurrentPage, pageSize]);
 
-  const computedStats = useMemo(() => {
-    return {
-      totalEvents: {
-        value: events.length,
-        trend: "Total events",
-      },
+  const hasActiveFiltersFlag = useMemo(
+    () =>
+      hasActiveFilters(
+        searchQuery,
+        selectedCategory,
+        selectedStatus,
+        selectedVisibility,
+        true,
+        true,
+        true,
+      ),
+    [searchQuery, selectedCategory, selectedStatus, selectedVisibility],
+  );
 
-      upcomingEvents: {
-        value: events.filter((event) => event.status === "UPCOMING").length,
-        label: "Starting soon",
-      },
-
-      ongoingEvents: {
-        value: events.filter((event) => event.status === "ONGOING").length,
-        label: "Live now",
-      },
-
-      completedEvents: {
-        value: events.filter((event) => event.status === "COMPLETED").length,
-        label: "Completed",
-      },
-
-      cancelledEvents: {
-        value: events.filter((event) => event.status === "CANCELLED").length,
-        label: "Cancelled",
-      },
-    };
-  }, [events]);
-
-  /* -------------------------------------------------------------------------- */
-  /* Pagination Safety                                                          */
-  /* -------------------------------------------------------------------------- */
+  const computedStats = useMemo(() => computeStats(events), [events]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
+      setCurrentPage(Math.max(1, totalPages));
     }
   }, [currentPage, totalPages]);
-
-  /* -------------------------------------------------------------------------- */
-  /* Filters                                                                    */
-  /* -------------------------------------------------------------------------- */
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -160,116 +143,43 @@ const ManageEvent = () => {
     setCurrentPage(1);
   };
 
-  /* -------------------------------------------------------------------------- */
-  /* Event Actions                                                              */
-  /* -------------------------------------------------------------------------- */
-
-  const handleCreateEvent = (eventData: Omit<EventItem, "id" | "percentage">) => {
-    const percentage =
-      eventData.maxRegistrations > 0
-        ? Math.round((eventData.registrations / eventData.maxRegistrations) * 100)
-        : 0;
-
-    const newEvent: EventItem = {
-      ...eventData,
-      id: crypto.randomUUID(),
-      percentage,
-    };
-
-    setEvents((previous) => [newEvent, ...previous]);
-    setCurrentPage(1);
-    setIsCreateModalOpen(false);
-  };
-
-  const handleCancelEvent = (id: string) => {
-    setEvents((previous) =>
-      previous.map((event) =>
-        event.id === id
-          ? {
-              ...event,
-              status: "CANCELLED",
-            }
-          : event,
-      ),
-    );
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /* CSV Export                                                                 */
-  /* -------------------------------------------------------------------------- */
-
   const handleExportCSV = () => {
-    if (!filteredEvents.length) return;
-
-    const headers = [
-      "Title",
-      "Category",
-      "Status",
-      "Mode",
-      "Date",
-      "Time",
-      "Venue",
-      "Location",
-      "Registrations",
-      "Max Registrations",
-    ];
-
-    const rows = filteredEvents.map((event) => [
-      event.title,
-      event.category,
-      event.status,
-      event.mode,
-      event.date,
-      event.time,
-      event.venue,
-      event.location,
-      event.registrations,
-      event.maxRegistrations,
-    ]);
-
-    const csv = [headers, ...rows].map((row) => row.map(escapeCsvValue).join(",")).join("\r\n");
-
-    const blob = new Blob([`\uFEFF${csv}`], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = `gdg-ranchi-events-${new Date().toISOString().slice(0, 10)}.csv`;
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    URL.revokeObjectURL(url);
+    exportEventsToCSV(filteredEvents);
   };
 
-  /* -------------------------------------------------------------------------- */
-  /* Event Details                                                              */
-  /* -------------------------------------------------------------------------- */
+  if (isLoading) {
+    return (
+      <main className="w-full min-w-0 px-4 py-5 flex items-center justify-center min-h-[50vh] text-white">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-emerald-500" size={32} />
+          <p className="text-white/70">Loading events...</p>
+        </div>
+      </main>
+    );
+  }
 
-  const handleViewEvent = (event: EventItem) => {
-    setSelectedEventId(event.id);
-  };
-
-  const handleCloseDetails = () => {
-    setSelectedEventId(null);
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /* Render                                                                     */
-  /* -------------------------------------------------------------------------- */
+  if (error && events.length === 0) {
+    return (
+      <main className="w-full min-w-0 px-4 py-5 text-white">
+        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+          <p className="text-red-400 text-lg">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-emerald-500 text-black rounded-xl font-semibold hover:bg-emerald-400 transition"
+          >
+            Reload Page
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="w-full min-w-0 px-4 py-5 text-white sm:px-6 lg:px-8">
-      {/* Header */}
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Manage Events</h1>
-
-          <p className="mt-1 text-sm text-white/50">
+          <p className="mt-1 text-md text-white/50">
             View, manage and organize all community events.
           </p>
         </div>
@@ -282,7 +192,7 @@ const ManageEvent = () => {
             className="
               inline-flex items-center gap-2 rounded-xl
               border border-white/10 bg-white/[0.03]
-              px-4 py-2.5 text-sm font-medium text-white/80
+              px-4 py-2.5 text-md font-medium text-white/80
               transition
               hover:border-white/15 hover:bg-white/[0.06]
               hover:text-white
@@ -295,13 +205,13 @@ const ManageEvent = () => {
             <span>Export</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setIsCreateModalOpen(true)}
+          <Link
+            to="/member/events/create"
+
             className="
               inline-flex items-center gap-2 rounded-xl
               bg-emerald-500 px-4 py-2.5
-              text-sm font-semibold text-black
+              text-md font-semibold text-black
               transition
               hover:bg-emerald-400
               active:scale-[0.98]
@@ -311,16 +221,14 @@ const ManageEvent = () => {
           >
             <Plus size={17} strokeWidth={2.5} />
             <span>Create Event</span>
-          </button>
+          </Link>
         </div>
       </header>
 
-      {/* Stats */}
       <section className="mb-6">
         <EventStatsCards stats={computedStats} />
       </section>
 
-      {/* Filters */}
       <section className="mb-4">
         <EventFilterBar
           searchQuery={searchQuery}
@@ -332,21 +240,14 @@ const ManageEvent = () => {
           selectedVisibility={selectedVisibility}
           onVisibilityChange={handleVisibilityChange}
           onResetFilters={handleResetFilters}
-          hasActiveFilters={hasActiveFilters}
+          hasActiveFilters={hasActiveFiltersFlag}
         />
       </section>
 
-      {/* Table */}
       <section className="mb-4 min-w-0">
-        <EventTable
-          events={paginatedEvents}
-          onViewEvent={handleViewEvent}
-          onEditEvent={handleViewEvent}
-          onDeleteEvent={handleCancelEvent}
-        />
+        <EventTable events={paginatedEvents} />
       </section>
 
-      {/* Pagination */}
       <EventPagination
         currentPage={safeCurrentPage}
         totalPages={totalPages}
@@ -357,20 +258,6 @@ const ManageEvent = () => {
           setPageSize(size);
           setCurrentPage(1);
         }}
-      />
-
-      {/* Create Event */}
-      <CreateEventModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateEvent={handleCreateEvent}
-      />
-
-      {/* Event Details */}
-      <EventDetailsModal
-        isOpen={Boolean(selectedEventId)}
-        event={selectedEvent}
-        onClose={handleCloseDetails}
       />
     </main>
   );

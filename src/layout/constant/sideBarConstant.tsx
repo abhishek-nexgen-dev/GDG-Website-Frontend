@@ -1,4 +1,5 @@
-import { LayoutDashboard, Calendar, Images, Image, Users, Mail } from "lucide-react";
+import { LayoutDashboard, Calendar, Images, Image } from "lucide-react";
+// import { Users, Mail } from "lucide-react";
 
 export interface SideBarItem {
   label: string;
@@ -40,16 +41,16 @@ const sideBarConstant: SideBarItem[] = [
       { label: "Upload Images", link: "/member/images/upload" },
     ],
   },
-  {
-    label: "Members",
-    link: "/member/members",
-    icon: Users,
-  },
-  {
-    label: "Emails",
-    link: "/member/emails/send",
-    icon: Mail,
-  },
+  // {
+  //   label: "Members",
+  //   link: "/member/members",
+  //   icon: Users,
+  // },
+  // {
+  //   label: "Emails",
+  //   link: "/member/emails/send",
+  //   icon: Mail,
+  // },
 ];
 
 export default sideBarConstant;

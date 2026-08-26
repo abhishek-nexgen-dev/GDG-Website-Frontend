@@ -1,12 +1,10 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
-
   Copy,
   Download,
   Globe2,
   Pencil,
- 
   Save,
   Send,
   ShieldCheck,
@@ -103,8 +101,6 @@ const MemberDetails = () => {
     anchor.remove();
     URL.revokeObjectURL(url);
   };
-
- 
 
   const openPortfolio = () => {
     if (!singleMember) return;

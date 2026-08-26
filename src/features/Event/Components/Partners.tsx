@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+
 import { singleEventData } from "../data/singleEventData";
 
 const Partners = () => {
@@ -21,20 +21,7 @@ const Partners = () => {
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {partners.map((partner) => (
-          <div
-            key={partner._id}
-            className="flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-4"
-          >
-            <div>
-              <p className="text-xs font-semibold text-white/70">{partner.name}</p>
-
-              <p className="mt-1 text-[9px] text-white/30">{partner.role}</p>
-            </div>
-
-            <ArrowUpRight size={14} className="text-white/20" />
-          </div>
-        ))}
+     
       </div>
     </section>
   );

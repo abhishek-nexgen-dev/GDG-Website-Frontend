@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
+import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 
 const MemberHeader = () => {
   return (
@@ -11,11 +12,12 @@ const MemberHeader = () => {
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <Link
-          to="/member/create"
+        <PermissionChecker permissionName="member:create" permissionAction="create">
+          <Link
+            to="/member/create"
 
-          aria-label="Add a new member"
-          className="
+            aria-label="Add a new member"
+            className="
               inline-flex items-center justify-center gap-2
               rounded-xl bg-emerald-500 px-4 py-2.5
               text-sm font-semibold text-black
@@ -25,10 +27,11 @@ const MemberHeader = () => {
               focus:outline-none focus-visible:ring-2
               focus-visible:ring-emerald-500/50
             "
-        >
-          <Plus size={17} strokeWidth={2.5} />
-          <span>Add Member</span>
-        </Link>
+          >
+            <Plus size={17} strokeWidth={2.5} />
+            <span>Add Member</span>
+          </Link>
+        </PermissionChecker>
       </div>
     </section>
   );

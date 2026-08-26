@@ -2,14 +2,16 @@ import { Outlet } from "react-router";
 import InternalNav from "./InternalNav";
 import InternalSideBar from "./Components/InternalSideBar";
 
-// for Authenticated User
+
 const AuthLayout = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[#0b0c0e]">
+    <div className="min-h-screen w-full bg-[#0b0c0e]">
       <InternalNav />
-      <div className="flex flex-1 w-full relative">
+
+      <div className="relative flex min-h-[calc(100vh-56px)] w-full">
         <InternalSideBar />
-        <main className="flex-1 min-w-0 w-full lg:ml-[274px]">
+
+        <main className="min-w-0 flex-1 lg:ml-[274px]">
           <Outlet />
         </main>
       </div>

@@ -12,7 +12,7 @@ function Section({
   action?: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#191a1f]">
+    <section className=" rounded-xl border border-white/[0.06] bg-[#191a1f]">
       <div className="flex items-center justify-between border-b border-white/[0.05] px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="text-lime-400">{icon}</div>

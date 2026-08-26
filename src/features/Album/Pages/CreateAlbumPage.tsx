@@ -13,13 +13,14 @@ import {
   Upload,
   X,
 } from "lucide-react";
-
 import { useRef, useState } from "react";
 
 import type { AlbumFormData } from "../types/Album.type";
 import Label from "../../../Components/Label";
 import Input from "../../../Components/Input";
 import Select from "../../../Components/Select";
+import uploadImage from "../../../utils/uploadImage";
+
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
@@ -111,7 +112,7 @@ function Section({
 
 /* =========================================================
    RADIO
-========================================================= */
+   ========================================================= */
 
 /* =========================================================
    PAGE
@@ -137,22 +138,30 @@ export default function CreateAlbumPage() {
      COVER IMAGE
   ======================================================= */
 
-  const handleCoverChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleCoverChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = event.target.files?.[0];
 
-    if (!file) return;
+      if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      return;
+      if (!file.type.startsWith("image/")) {
+        return;
+      }
+
+      let a = await uploadImage(file);
+
+      console.log("pinki ponky ----->", a);
+
+      const preview = URL.createObjectURL(file);
+
+      setForm((prev) => ({
+        ...prev,
+        coverImage: file,
+        coverPreview: preview,
+      }));
+    } catch (error) {
+      console.log("Error--->", error);
     }
-
-    const preview = URL.createObjectURL(file);
-
-    setForm((prev) => ({
-      ...prev,
-      coverImage: file,
-      coverPreview: preview,
-    }));
   };
 
   const removeCover = () => {

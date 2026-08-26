@@ -168,7 +168,6 @@ const AVAILABLE_PERMISSIONS_CONSTANT: Permission[] = [
     resource: "Permission",
     description: "Delete permissions",
   },
- 
 ];
 
-export default AVAILABLE_PERMISSIONS_CONSTANT
+export default AVAILABLE_PERMISSIONS_CONSTANT;

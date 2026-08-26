@@ -1,120 +1,261 @@
-export interface EventPerson {
-  _id: string;
-  name: string;
-  role: string;
-  image?: string;
+// Event.type.ts
+
+import type { EventCategory } from "../data/events.data";
+
+// ============================================================
+// ENUM / BASIC TYPES
+// ============================================================
+
+export type EventMode = "ONLINE" | "OFFLINE" | "HYBRID";
+
+export type EventVisibility = "public" | "private" | "unlisted";
+
+export type EventStatus =
+  "REGISTRATION_OPEN" | "REGISTRATION_CLOSED" | "LIVE" | "COMPLETED" | "CANCELLED";
+
+// ============================================================
+// VENUE
+// ============================================================
+
+export interface EventVenue {
+  mode: EventMode;
+
+  venueName: string;
+
+  address: string;
+
+  city: string;
+
+  state: string;
+
+  country: string;
+
+  latitude?: number;
+
+  longitude?: number;
 }
 
-export interface EventOrganization {
-  _id: string;
+// ============================================================
+// TICKET
+// ============================================================
+
+export interface EventTicket {
   name: string;
-  role: string;
-  logo?: string;
+
+  price: number;
+
+  quantity: number;
 }
 
-export interface EventTimeline {
-  _id: string;
+// ============================================================
+// TIMELINE
+// ============================================================
+
+export interface EventTimelineItem {
   title: string;
-  description: string;
+
   startAt: string;
+
   endAt: string;
 }
 
-export interface EventVenue {
-  mode: "OFFLINE" | "ONLINE" | "HYBRID";
-  venueName: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-}
-
-export interface EventData {
-  _id: string;
-  Slug: string;
-  communityId: string;
-  createdBy: string;
+export interface EventFormData {
+  communityId?: string;
 
   title: string;
+
   shortDescription: string;
+
   descriptionMarkdown: string;
 
-  redirectUrl?: string;
-  introVideoUrl?: string;
-
-  tags: string[];
   category: string;
-  visibility: string;
-  status: string;
+
+  visibility: EventVisibility | "";
+
+  status: EventStatus;
 
   coverImageUrl: string;
 
+  introVideoUrl: string;
+
+  redirectUrl: string;
+
   registrationStartAt: string;
+
   registrationEndAt: string;
 
   venue: EventVenue;
 
-  mentors: EventPerson[];
-  judges: EventPerson[];
+  mentors?: string[];
 
-  partners: EventOrganization[];
-  sponsors: EventOrganization[];
+  judges?: string[];
 
-  timeline: EventTimeline[];
+  partners?: string[];
+
+  sponsors?: string[];
+
+  tickets?: EventTicket[];
+
+  timeline: EventTimelineItem[];
 
   rules: string[];
+
   requirements: string[];
-
-  tickets: unknown[];
-
-  createdAt: string;
-  updatedAt: string;
 }
 
-export interface TimelineItem {
-  id: string;
+export type CreateEventData = EventFormData;
+
+export interface UpdateEventData {
+  communityId?: string;
+
+  title?: string;
+
+  shortDescription?: string;
+
+  descriptionMarkdown?: string;
+
+  redirectUrl?: string;
+
+  tags?: string[];
+
+  category?: string;
+
+  visibility?: EventVisibility;
+
+  status?: EventStatus;
+
+  coverImageUrl?: string;
+
+  introVideoUrl?: string;
+
+  registrationStartAt?: string;
+
+  registrationEndAt?: string;
+
+  venue?: Partial<EventVenue>;
+
+  mentors?: string[];
+
+  judges?: string[];
+
+  partners?: string[];
+
+  sponsors?: string[];
+
+  tickets?: EventTicket[];
+
+  timeline?: EventTimelineItem[];
+
+  rules?: string[];
+
+  requirements?: string[];
+}
+
+export interface EventResponse {
+  _id?: string;
+  Slug?: string,
+
+  communityId?: string;
+
   title: string;
-  start: string;
-  end: string;
-  color: string;
-}
 
-export interface EventRule {
-  id: string;
-  text: string;
-}
-
-export interface EventRequirement {
-  id: string;
-  text: string;
-}
-
-export interface EventFormData {
-  title: string;
   shortDescription: string;
-  category: string;
-  visibility: string;
-  status: string;
 
-  description: string;
+  descriptionMarkdown: string;
+
+  redirectUrl?: string;
+
+
+  tags: string[];
+
+  category: string;
+
+  visibility: EventVisibility;
+
+  status: EventStatus;
 
   coverImageUrl: string;
-  introVideoUrl: string;
-  redirectUrl: string;
 
-  registrationStart: string;
-  registrationEnd: string;
+  introVideoUrl?: string;
 
-  venueMode: "Offline" | "Online";
+  registrationStartAt: string;
+
+  registrationEndAt: string;
+
+  venue: EventVenue;
+
+  mentors?: string[];
+
+  judges?: string[];
+
+  partners?: string[];
+
+  sponsors?: string[];
+
+  tickets?: EventTicket[];
+
+  timeline: EventTimelineItem[];
+
+  rules: string[];
+
+  requirements: string[];
+
+  createdAt?: string;
+
+  updatedAt?: string;
+}
+
+export interface ApiVenue {
   venueName: string;
   address: string;
-  city: string;
-  state: string;
-  country: string;
-  latitude: string;
-  longitude: string;
+}
 
-  timeline: TimelineItem[];
-  rules: EventRule[];
-  requirements: EventRequirement[];
+export interface findAllEventResponse {
+  Slug: string;
+  title: string;
+  isLive?: boolean;
+  category: EventCategory;
+  tags?: string[];
+  registrationStartAt: string;
+
+  venue: {
+    venueName: string;
+    address: string;
+  };
+  coverImageUrl: string;
+
+  status: EventStatus;
+  visibility: EventVisibility;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: findAllEventResponse[];
+}
+
+export interface EventItem {
+  Slug: string;
+  title: string;
+  isLive?: boolean;
+  category: EventCategory;
+  tags?: string[];
+  registrationStartAt: string;
+
+  venue: {
+    venueName: string;
+    address: string;
+  };
+  coverImageUrl: string;
+
+  status: EventStatus;
+  visibility: EventVisibility;
+}
+
+export interface EventStats {
+  totalEvents: { value: number; trend: string };
+  upcomingEvents: { value: number; label: string };
+  ongoingEvents: { value: number; label: string };
+  completedEvents: { value: number; label: string };
+  cancelledEvents: { value: number; label: string };
 }

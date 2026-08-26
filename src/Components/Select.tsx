@@ -6,7 +6,7 @@ function Select({
   children,
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (T: string) => void;
   children: React.ReactNode;
 }) {
   return (

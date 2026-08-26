@@ -14,10 +14,7 @@ interface MemberProfileFormProviderProps {
   initialData?: MemberType;
 }
 
-export function MemberProfileFormProvider({
-  children,
-}: MemberProfileFormProviderProps) {
- 
+export function MemberProfileFormProvider({ children }: MemberProfileFormProviderProps) {
   const form = useMemberProfileForm();
 
   return (
@@ -31,9 +28,7 @@ export function useMemberProfileFormContext() {
   const context = useContext(MemberProfileFormContext);
 
   if (context === undefined) {
-    throw new Error(
-      "useMemberProfileFormContext must be used within a MemberProfileFormProvider"
-    );
+    throw new Error("useMemberProfileFormContext must be used within a MemberProfileFormProvider");
   }
 
   return context;
