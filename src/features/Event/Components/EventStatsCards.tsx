@@ -1,5 +1,5 @@
 import { Users, CalendarDays, Shield, Award, XCircle } from "lucide-react";
-import type { EventStats } from "../data/events.data";
+import type { EventStats } from "../type/Event.type";
 
 interface EventStatsCardsProps {
   stats: EventStats;
@@ -61,14 +61,14 @@ const EventStatsCards = ({ stats }: EventStatsCardsProps) => {
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${card.badgeStyle}`}
             >
-              <Icon size={22} strokeWidth={1.9} />
+              <Icon size={25} strokeWidth={1.9} />
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-medium text-white/50">{card.title}</p>
+              <p className="truncate text-md font-medium text-white/50">{card.title}</p>
               <h3 className="mt-0.5 text-2xl font-bold tracking-tight text-white">{card.value}</h3>
               <p
-                className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${card.subtitleColor}`}
+                className={`mt-1 flex items-center gap-1 text-sm font-medium ${card.subtitleColor}`}
               >
                 <span>{card.subtitle}</span>
               </p>

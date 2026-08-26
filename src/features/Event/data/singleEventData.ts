@@ -1,13 +1,16 @@
-import type { EventData } from "../type/Event.type";
 
-export const singleEventData: EventData = {
+import type { EventResponse } from "../type/Event.type";
+
+
+export const singleEventData: EventResponse = {
   _id: "6a571ef98f5b2a1a45710876",
+  Slug: '',
 
-  Slug: "jharkhand-tech-summit-2026-51a2eca4",
+
 
   communityId: "9f8e2d3c4b5a678901234567",
 
-  createdBy: "6a54a4d9f9ac87469c5786fd",
+
 
   title: "Jharkhand Tech Summit 2026",
 
@@ -93,7 +96,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
 
   category: "Hackathon",
 
-  visibility: "PUBLIC",
+  visibility: "public",
 
   status: "REGISTRATION_OPEN",
 
@@ -120,74 +123,17 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     country: "India",
   },
 
-  mentors: [
-    {
-      _id: "mentor-1",
-      name: "Rahul Kumar",
-      role: "AI & Machine Learning Mentor",
-      image: "https://i.pravatar.cc/150?img=12",
-    },
-    {
-      _id: "mentor-2",
-      name: "Priya Sharma",
-      role: "Cloud & Backend Mentor",
-      image: "https://i.pravatar.cc/150?img=47",
-    },
-  ],
+  
 
-  judges: [
-    {
-      _id: "judge-1",
-      name: "Amit Verma",
-      role: "Technology Judge",
-      image: "https://i.pravatar.cc/150?img=11",
-    },
-    {
-      _id: "judge-2",
-      name: "Sneha Singh",
-      role: "Startup & Product Judge",
-      image: "https://i.pravatar.cc/150?img=32",
-    },
-  ],
 
-  partners: [
-    {
-      _id: "partner-1",
-      name: "Google Developer Groups",
-      role: "Community Partner",
-    },
-    {
-      _id: "partner-2",
-      name: "BIT Mesra",
-      role: "Venue Partner",
-    },
-    {
-      _id: "partner-3",
-      name: "AWS",
-      role: "Technology Partner",
-    },
-  ],
-
-  sponsors: [
-    {
-      _id: "sponsor-1",
-      name: "Google",
-      role: "Gold Sponsor",
-    },
-    {
-      _id: "sponsor-2",
-      name: "MongoDB",
-      role: "Technology Sponsor",
-    },
-  ],
 
   timeline: [
     {
-      _id: "6a571ef98f5b2a1a45710877",
+    
 
       title: "Registration Closed",
 
-      description: "Participant registration and applications have been closed.",
+
 
       startAt: "2026-07-14T23:59:59.000Z",
 
@@ -195,11 +141,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a45710878",
+
 
       title: "Team Formation",
 
-      description: "Participants form teams and finalize their project ideas.",
+    
 
       startAt: "2026-07-15T08:00:00.000Z",
 
@@ -207,11 +153,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a45710879",
+    
 
       title: "Opening Ceremony",
 
-      description: "Official opening of the Jharkhand Tech Summit 2026.",
+
 
       startAt: "2026-07-15T09:30:00.000Z",
 
@@ -219,11 +165,10 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a4571087a",
 
       title: "Hackathon Starts",
 
-      description: "The 24-hour coding marathon begins. Teams start building their solutions.",
+ 
 
       startAt: "2026-07-15T11:00:00.000Z",
 
@@ -231,11 +176,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a4571087b",
+
 
       title: "Mentoring Session 1",
 
-      description: "Teams receive technical and product guidance from experienced mentors.",
+
 
       startAt: "2026-07-15T14:00:00.000Z",
 
@@ -243,11 +188,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a4571087c",
+
 
       title: "Project Submission Deadline",
 
-      description: "Final deadline for submitting the completed project.",
+
 
       startAt: "2026-07-16T11:00:00.000Z",
 
@@ -255,11 +200,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a4571087d",
+
 
       title: "Final Demo & Judging",
 
-      description: "Teams present their projects to the judging panel.",
+
 
       startAt: "2026-07-16T12:00:00.000Z",
 
@@ -267,11 +212,11 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-      _id: "6a571ef98f5b2a1a4571087e",
+
 
       title: "Closing Ceremony",
 
-      description: "Winners are announced and the event officially comes to an end.",
+
 
       startAt: "2026-07-16T17:00:00.000Z",
 

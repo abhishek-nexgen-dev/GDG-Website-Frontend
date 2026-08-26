@@ -1,11 +1,9 @@
-
 import { MapPin } from "lucide-react";
 
 import Section from "../../../../Components/Section";
 import Input from "../../../../Components/Input";
 import useMembers from "../store/useMembers";
 import useUpdateMember from "../utils/useDraftMember";
-
 
 interface MemberLocationProps {
   isEdit: boolean;

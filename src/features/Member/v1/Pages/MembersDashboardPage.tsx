@@ -8,6 +8,8 @@ import MemberTable from "../Components/MemberTable";
 import MemberPagination from "../Components/MemberPagination";
 
 import MemberHeader from "../Components/MemberHeader";
+import PermissionChecker from "../../../Permission/Components/PermissionChecker";
+import PermissionDenied from "../../../Permission/Components/PermissionDenied";
 
 const ALL_FILTER = "All";
 const DEFAULT_PAGE_SIZE = 10;
@@ -18,8 +20,6 @@ const isJoinedThisMonth = (joinedOn: string) => {
   const now = new Date();
   return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
 };
-
-
 
 const MembersDashboardPage = () => {
   const members = useMembers((state) => state.members);
@@ -177,77 +177,83 @@ const MembersDashboardPage = () => {
     <main className="w-full min-w-0 px-4 py-5 text-white sm:px-6 lg:px-8">
       <MemberHeader />
 
-      <section className="mb-6">
-        <MemberStatsCards stats={computedStats} />
-      </section>
-
-      <section className="mb-4">
-        <MemberFilterBar
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-          selectedRole={selectedRole}
-          onRoleChange={handleRoleChange}
-          selectedStatus={selectedStatus}
-          onStatusChange={handleStatusChange}
-          onResetFilters={handleResetFilters}
-          hasActiveFilters={hasActiveFilters}
-        />
-      </section>
-
-      {selectedIds.length > 0 && (
-        <section className="mb-4 flex flex-col gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="font-semibold text-emerald-400">{selectedIds.length}</span>
-            <span className="text-white/60">
-              member{selectedIds.length === 1 ? "" : "s"} selected
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={handleDeleteSelected}
-              className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition-colors hover:bg-red-500/15 hover:text-red-200"
-            >
-              Delete selected
-            </button>
-            <button
-              type="button"
-              onClick={handleClearSelection}
-              className="rounded-lg px-2 py-1.5 text-xs font-medium text-white/50 transition-colors hover:text-white"
-            >
-              Clear selection
-            </button>
-          </div>
+      <PermissionChecker
+        permissionAction="read"
+        permissionName="member:view"
+        fallback={<PermissionDenied />}
+      >
+        <section className="mb-6">
+          <MemberStatsCards stats={computedStats} />
         </section>
-      )}
 
-      <section className="mb-4 min-w-0">
-        <MemberTable
-          members={paginatedMembers}
-          selectedIds={selectedIds}
-          onSelectAll={handleSelectAll}
-          onSelectRow={handleSelectRow}
-          onViewMember={handleViewMember}
-          onDeleteMember={handleDeleteMember}
-          onChangeRole={(id, role) => updateMember(id, { primaryRole: role })}
-          onChangeStatus={(id, status) => updateMember(id, { membershipStatus: status })}
-        />
-      </section>
+        <section className="mb-4">
+          <MemberFilterBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            selectedRole={selectedRole}
+            onRoleChange={handleRoleChange}
+            selectedStatus={selectedStatus}
+            onStatusChange={handleStatusChange}
+            onResetFilters={handleResetFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </section>
 
-      <section>
-        <MemberPagination
-          currentPage={safeCurrentPage}
-          totalPages={totalPages}
-          totalMembers={filteredMembers.length}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setCurrentPage(1);
-            setSelectedIds([]);
-          }}
-        />
-      </section>
+        {selectedIds.length > 0 && (
+          <section className="mb-4 flex flex-col gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-sm">
+              <span className="font-semibold text-emerald-400">{selectedIds.length}</span>
+              <span className="text-white/60">
+                member{selectedIds.length === 1 ? "" : "s"} selected
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleDeleteSelected}
+                className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition-colors hover:bg-red-500/15 hover:text-red-200"
+              >
+                Delete selected
+              </button>
+              <button
+                type="button"
+                onClick={handleClearSelection}
+                className="rounded-lg px-2 py-1.5 text-xs font-medium text-white/50 transition-colors hover:text-white"
+              >
+                Clear selection
+              </button>
+            </div>
+          </section>
+        )}
+
+        <section className="mb-4 min-w-0">
+          <MemberTable
+            members={paginatedMembers}
+            selectedIds={selectedIds}
+            onSelectAll={handleSelectAll}
+            onSelectRow={handleSelectRow}
+            onViewMember={handleViewMember}
+            onDeleteMember={handleDeleteMember}
+            onChangeRole={(id, role) => updateMember(id, { primaryRole: role })}
+            onChangeStatus={(id, status) => updateMember(id, { membershipStatus: status })}
+          />
+        </section>
+
+        <section>
+          <MemberPagination
+            currentPage={safeCurrentPage}
+            totalPages={totalPages}
+            totalMembers={filteredMembers.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setCurrentPage(1);
+              setSelectedIds([]);
+            }}
+          />
+        </section>
+      </PermissionChecker>
     </main>
   );
 };

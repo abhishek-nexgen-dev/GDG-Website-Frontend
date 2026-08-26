@@ -49,7 +49,6 @@ const SocialLink = ({
 const MemberProfile = () => {
   const singleMember = useMembers((state) => state.singleMember);
 
-
   const [copySuccess, setCopySuccess] = useState(false);
 
   const copyEmail = async () => {

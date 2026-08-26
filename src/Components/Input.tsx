@@ -73,13 +73,13 @@ function Input({
         placeholder={placeholder}
         className={`
           ${className}
-          h-9
+          h-10
           w-full
           rounded-md
           border border-white/[0.07]
           bg-[#202126]
           px-3
-          text-xs
+          text-md
           text-zinc-200
           outline-none
           transition
@@ -93,7 +93,7 @@ function Input({
           disabled:cursor-not-allowed
           disabled:opacity-50
 
-          sm:text-sm
+          lg:text-[1rem]
         `}
       />
     </div>

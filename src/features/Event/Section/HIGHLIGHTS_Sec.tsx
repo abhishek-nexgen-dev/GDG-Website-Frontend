@@ -18,7 +18,7 @@ const HIGHLIGHTS_Sec = () => {
         {/* Mentors */}
         <Highlight
           icon={<Users size={18} />}
-          value={`${event.mentors.length}+`}
+          value={`5+`}
           label="Expert Mentors"
         />
 
