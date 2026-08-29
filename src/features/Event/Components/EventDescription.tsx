@@ -1,10 +1,9 @@
 import MonacoEditor from "@monaco-editor/react";
-import { FileText, } from "lucide-react";
+import { FileText } from "lucide-react";
 import type { EventFormData } from "../type/Event.type";
 import Section from "../../../Components/Section";
 import MarkdownPreview from "../../../Components/MarkdownPreview";
 import { useState } from "react";
-
 
 interface Props {
   form: EventFormData;

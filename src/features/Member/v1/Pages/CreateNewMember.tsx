@@ -24,7 +24,6 @@ import { BsGithub, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-i
 import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 import PermissionDenied from "../../../Permission/Components/PermissionDenied";
 
-
 // ============================================================
 // TYPES
 // ============================================================

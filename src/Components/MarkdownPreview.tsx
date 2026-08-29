@@ -32,10 +32,9 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
   emColor = "text-gray-600",
   blockquoteBgColor = "bg-green-50",
   blockquoteBorderColor = "border-green-500",
- 
+
   tableBorderColor = "border-gray-200",
   tableHeaderBgColor = "bg-gray-50",
-
 }) => {
   return (
     <article

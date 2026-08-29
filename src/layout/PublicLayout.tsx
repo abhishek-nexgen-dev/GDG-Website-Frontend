@@ -6,10 +6,10 @@ import { BackgroundWatermark } from "../Components/BackgroundWatermark";
 import { useState } from "react";
 
 const PublicLayout = () => {
-  const [isUnderMaintenance] = useState(false);
+  const [isUnderMaintenance] = useState(true);
 
   if (isUnderMaintenance) {
-    return <Navigate to="/maintenance" replace />;
+    return <Navigate to="/launching-soon" replace />;
   }
 
   return (

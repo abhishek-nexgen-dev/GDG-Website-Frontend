@@ -6,8 +6,6 @@ import uploadVideo from "../../../utils/uploadVideo";
 import api from "../../../utils/axios.utils";
 import { EventValidate } from "../Validation/event.validation";
 
-
-
 interface UploadImageParams {
   event: React.ChangeEvent<HTMLInputElement>;
   update: <K extends keyof EventFormData>(key: K, value: EventFormData[K]) => void;

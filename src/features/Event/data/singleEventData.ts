@@ -1,16 +1,10 @@
-
 import type { EventResponse } from "../type/Event.type";
-
 
 export const singleEventData: EventResponse = {
   _id: "6a571ef98f5b2a1a45710876",
-  Slug: '',
-
-
+  Slug: "",
 
   communityId: "9f8e2d3c4b5a678901234567",
-
-
 
   title: "Jharkhand Tech Summit 2026",
 
@@ -123,17 +117,9 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     country: "India",
   },
 
-  
-
-
-
   timeline: [
     {
-    
-
       title: "Registration Closed",
-
-
 
       startAt: "2026-07-14T23:59:59.000Z",
 
@@ -141,11 +127,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
-
       title: "Team Formation",
-
-    
 
       startAt: "2026-07-15T08:00:00.000Z",
 
@@ -153,11 +135,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-    
-
       title: "Opening Ceremony",
-
-
 
       startAt: "2026-07-15T09:30:00.000Z",
 
@@ -165,10 +143,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
       title: "Hackathon Starts",
-
- 
 
       startAt: "2026-07-15T11:00:00.000Z",
 
@@ -176,11 +151,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
-
       title: "Mentoring Session 1",
-
-
 
       startAt: "2026-07-15T14:00:00.000Z",
 
@@ -188,11 +159,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
-
       title: "Project Submission Deadline",
-
-
 
       startAt: "2026-07-16T11:00:00.000Z",
 
@@ -200,11 +167,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
-
       title: "Final Demo & Judging",
-
-
 
       startAt: "2026-07-16T12:00:00.000Z",
 
@@ -212,11 +175,7 @@ See you at **Jharkhand Tech Summit 2026 — Ranchi.**`,
     },
 
     {
-
-
       title: "Closing Ceremony",
-
-
 
       startAt: "2026-07-16T17:00:00.000Z",
 

@@ -5,7 +5,6 @@ import { formatStatus } from "../utils/Event.utils";
 const QuickInfo = () => {
   const event = singleEventData;
 
- 
   return (
     <div className="space-y-6">
       {/* Category */}

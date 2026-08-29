@@ -16,11 +16,7 @@ const HIGHLIGHTS_Sec = () => {
         <Highlight icon={<Clock3 size={18} />} value="24 Hours" label="Event Duration" />
 
         {/* Mentors */}
-        <Highlight
-          icon={<Users size={18} />}
-          value={`5+`}
-          label="Expert Mentors"
-        />
+        <Highlight icon={<Users size={18} />} value={`5+`} label="Expert Mentors" />
 
         {/* Mode */}
         <Highlight

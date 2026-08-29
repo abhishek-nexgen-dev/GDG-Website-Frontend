@@ -131,9 +131,7 @@ const BasicInformation = ({ form, update }: Props) => {
 
         <div className="rounded-md border border-white/[0.05] bg-white/[0.015] px-3 py-2.5">
           <div className="flex items-start gap-2">
-            <div
-              className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full`}
-            />
+            <div className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full`} />
 
             <div>
               <p className="text-[10px] font-medium text-zinc-400">
