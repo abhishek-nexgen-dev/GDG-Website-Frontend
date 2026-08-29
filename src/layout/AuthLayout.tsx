@@ -2,7 +2,6 @@ import { Outlet } from "react-router";
 import InternalNav from "./InternalNav";
 import InternalSideBar from "./Components/InternalSideBar";
 
-
 const AuthLayout = () => {
   return (
     <div className="min-h-screen w-full bg-[#0b0c0e]">

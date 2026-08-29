@@ -1,193 +1,212 @@
-import { useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Save, Upload } from "lucide-react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Image, Sparkles } from "lucide-react";
+
+import ImageUploadZone from "../Components/ImageUploadZone";
+import ImageDetails from "../Components/ImageDetails";
+import ImagePreview from "../Components/ImagePreview";
+import ImageSettings from "../Components/ImageSettings";
+
+import { initialImageFormData } from "../data/images.data";
+
+import type { ImageFormData, SelectedImageFile } from "../types/image.type";
 
 const UploadImagesPage = () => {
   const navigate = useNavigate();
-  const [selectedAlbum, setSelectedAlbum] = useState("Jharkhand Tech Summit 2026");
-  const [selectedEvent, setSelectedEvent] = useState("JTS 2026");
-  const [tagsInput, setTagsInput] = useState("Keynote, Summit, 2026");
-  const [fileName, setFileName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [fileSize, setFileSize] = useState("3.5 MB");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [form, setForm] = useState<ImageFormData>(initialImageFormData);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      setFileSize(`${(file.size / (1024 * 1024)).toFixed(1)} MB`);
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        setPreviewUrl(result);
-        setImageUrl(result);
+  const [selectedFile, setSelectedFile] = useState<SelectedImageFile | null>(null);
+
+  const [saving, setSaving] = useState(false);
+
+  const update = <K extends keyof ImageFormData>(key: K, value: ImageFormData[K]) => {
+    setForm((previous) => ({
+      ...previous,
+      [key]: value,
+    }));
+  };
+
+  const getImageDimensions = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      const url = URL.createObjectURL(file);
+
+      image.onload = () => {
+        resolve(`${image.naturalWidth} × ${image.naturalHeight}`);
+
+        URL.revokeObjectURL(url);
       };
-      reader.readAsDataURL(file);
+
+      image.src = url;
+    });
+  };
+
+  const handleFileSelect = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    const dimensions = await getImageDimensions(file);
+
+    const format = file.type.replace("image/", "").toUpperCase();
+
+    setSelectedFile({
+      file,
+      previewUrl,
+      name: file.name,
+      size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+      dimensions,
+      format,
+    });
+
+    update("title", file.name.replace(/\.[^/.]+$/, ""));
+  };
+
+  const handleRemoveFile = () => {
+    if (selectedFile) {
+      URL.revokeObjectURL(selectedFile.previewUrl);
+    }
+
+    setSelectedFile(null);
+  };
+
+  const handleSaveDraft = async () => {
+    setSaving(true);
+
+    try {
+      console.log("Draft:", form);
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate("/member/images");
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      console.log("Form:", form);
+      console.log("File:", selectedFile.file);
+
+      navigate("/member/images");
+    } finally {
+      setSaving(false);
+    }
   };
 
+  useEffect(() => {
+    return () => {
+      if (selectedFile) {
+        URL.revokeObjectURL(selectedFile.previewUrl);
+      }
+    };
+  }, [selectedFile]);
+
   return (
-    <div className="min-h-full w-full py-5 px-4 sm:px-6 lg:px-8 text-white max-w-4xl">
-      <div className="mb-6 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => navigate("/member/images")}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#232830] bg-[#161a1f] text-white/60 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
-        >
-          <ArrowLeft size={16} />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Upload Images</h1>
-          <p className="text-xs text-white/40">Add new high-resolution event photographs</p>
-        </div>
-      </div>
+    <div className="min-h-screen  text-white">
+      <div className="mx-auto max-w-[1500px] px-5 py-6 lg:px-7">
+        <header className="mb-6">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-[11px]">
+                <span className="text-zinc-600">Images</span>
 
-      <div className="rounded-2xl border border-[#232830] bg-[#161a1f] p-6 shadow-xl">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Dropzone */}
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#2b323d] bg-[#121519] p-8 text-center cursor-pointer transition-colors hover:border-[#22c55e]"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileSelect}
-            />
+                <span className="text-zinc-700">›</span>
 
-            {previewUrl ? (
-              <div className="relative h-40 w-full overflow-hidden rounded-xl">
-                <img src={previewUrl} alt="Upload preview" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-xs font-semibold text-white">Click to replace photo</span>
-                </div>
+                <span className="text-emerald-400">Create New Image</span>
               </div>
-            ) : (
-              <>
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#161a1f] text-white/40 border border-[#232830] group-hover:text-[#22c55e]">
-                  <Image size={24} />
-                </div>
-                <p className="mt-3 text-sm font-semibold text-white">
-                  Click or drag images to upload
-                </p>
-                <p className="mt-0.5 text-xs text-white/40">PNG, JPG or WEBP up to 20MB</p>
-              </>
-            )}
-          </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">File Name</label>
-              <input
-                type="text"
-                value={fileName}
-                onChange={(e) => setFileName(e.target.value)}
-                placeholder="e.g. jts2026_keynote.jpg"
-                className="w-full rounded-xl border border-[#232830] bg-[#121519] px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
-              />
+              <h1 className="text-2xl font-semibold tracking-tight text-zinc-100">
+                Create New Image
+              </h1>
+
+              <p className="mt-1 text-sm text-zinc-500">
+                Upload and organize images to showcase event moments.
+              </p>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">File Size</label>
-              <input
-                type="text"
-                value={fileSize}
-                onChange={(e) => setFileSize(e.target.value)}
-                placeholder="4.2 MB"
-                className="w-full rounded-xl border border-[#232830] bg-[#121519] px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Target Album</label>
-              <select
-                value={selectedAlbum}
-                onChange={(e) => setSelectedAlbum(e.target.value)}
-                className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3.5 py-2.5 text-xs text-white focus:border-[#22c55e] focus:outline-none"
-              >
-                <option value="Jharkhand Tech Summit 2026" className="bg-[#161a1f] text-white">
-                  Jharkhand Tech Summit 2026
-                </option>
-                <option value="MERN Stack Workshop" className="bg-[#161a1f] text-white">
-                  MERN Stack Workshop
-                </option>
-                <option value="Dev Connect Meetup" className="bg-[#161a1f] text-white">
-                  Dev Connect Meetup
-                </option>
-                <option value="AI in Action - Tech Talk" className="bg-[#161a1f] text-white">
-                  AI in Action - Tech Talk
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Event Tag</label>
-              <input
-                type="text"
-                value={selectedEvent}
-                onChange={(e) => setSelectedEvent(e.target.value)}
-                placeholder="e.g. JTS 2026"
-                className="w-full rounded-xl border border-[#232830] bg-[#121519] px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">Or Image URL</label>
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => {
-                setImageUrl(e.target.value);
-                setPreviewUrl(e.target.value);
-              }}
-              placeholder="https://images.unsplash.com/..."
-              className="w-full rounded-xl border border-[#232830] bg-[#121519] px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">
-              Tags (comma separated)
-            </label>
-            <input
-              type="text"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="Keynote, Summit, Auditorium"
-              className="w-full rounded-xl border border-[#232830] bg-[#121519] px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 border-t border-[#232830] pt-5">
             <button
               type="button"
               onClick={() => navigate("/member/images")}
-              className="rounded-xl border border-[#232830] bg-[#121519] px-5 py-2.5 text-xs font-medium text-white/70 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
+              className="flex w-fit items-center gap-2 rounded-lg border border-white/[0.08] bg-[#14191f] px-4 py-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.04] hover:text-white"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-2 rounded-xl bg-[#22c55e] px-5 py-2.5 text-xs font-semibold text-black transition-colors hover:bg-[#16a34a]"
-            >
-              <Sparkles size={15} />
-              <span>Upload Photo</span>
+              <ArrowLeft size={15} />
+              Back to Images
             </button>
           </div>
-        </form>
+        </header>
+
+        <main className="grid grid-cols-1 gap-4 xl:grid-cols-[1.65fr_1fr]">
+          <div className="space-y-4">
+            <section className="rounded-xl border border-white/[0.07] bg-[#151a20]">
+              <div className="border-b border-white/[0.06] px-5 py-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                    <Upload size={18} />
+                  </div>
+
+                  <div>
+                    <h2 className="text-sm font-semibold text-zinc-200">1. Upload Image</h2>
+
+                    <p className="mt-1 text-xs text-zinc-500">Choose an image file to upload</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <ImageUploadZone
+                  selectedFile={selectedFile}
+                  onFileSelect={handleFileSelect}
+                  onRemove={handleRemoveFile}
+                />
+              </div>
+            </section>
+
+            <ImageDetails form={form} update={update} />
+          </div>
+
+          <div className="sticky top-5 h-fit space-y-4 self-start">
+            <ImagePreview selectedFile={selectedFile} />
+
+            <ImageSettings form={form} update={update} />
+          </div>
+        </main>
+
+        <footer className="sticky bottom-0 mt-4 flex flex-col justify-between gap-4 rounded-xl border border-white/[0.07] bg-[#14191f]/95 px-5 py-3 backdrop-blur sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2 text-xs text-zinc-500">
+            <div className="h-2 w-2 rounded-full bg-emerald-400" />
+            All changes are saved locally
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              disabled={saving}
+              onClick={handleSaveDraft}
+              className="flex items-center gap-2 rounded-lg border border-white/[0.08] px-4 py-2.5 text-xs font-medium text-zinc-400 transition hover:bg-white/[0.04] disabled:opacity-50"
+            >
+              <Save size={14} />
+              Save Draft
+            </button>
+
+            <button
+              type="button"
+              disabled={saving || !selectedFile}
+              onClick={handleUpload}
+              className="flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-xs font-semibold text-black transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Upload size={14} />
+
+              {saving ? "Uploading..." : "Upload Image"}
+            </button>
+          </div>
+        </footer>
       </div>
     </div>
   );

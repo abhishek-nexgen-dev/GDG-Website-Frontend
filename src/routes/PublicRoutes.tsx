@@ -8,6 +8,7 @@ import LoginPage from "../features/Auth/v1/Page/LoginPage";
 import ForgotPasswordOtp from "../features/Auth/v1/Page/ForgotPasswordOtp";
 import MaintenancePage from "../features/Maintenance/MaintenancePage";
 import EventDetailPage from "../features/Event/Pages/EventDetailPage";
+import LaunchingSoon from "../features/Pages/LaunchingSoon";
 
 const PublicRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const PublicRoutes = () => {
         <Route path="/forgot" element={<ForgotPasswordOtp />} />
       </Route>
       <Route path="/maintenance" element={<MaintenancePage />} />
+      <Route path="/launching-soon" element={<LaunchingSoon />} />
     </Routes>
   );
 };

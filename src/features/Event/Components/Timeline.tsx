@@ -371,10 +371,8 @@ const Timeline = () => {
                         <div className="overflow-hidden">
                           <div className="border-t border-white/[0.08] pt-3">
                             <p className="text-xs leading-relaxed text-white/50 sm:text-sm">
-                            "No additional information is available for this schedule item."
-
+                              "No additional information is available for this schedule item."
                             </p>
-                            
                           </div>
                         </div>
                       </div>

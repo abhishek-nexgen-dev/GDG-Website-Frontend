@@ -1,4 +1,3 @@
-
 import {
   MapPin,
   Calendar,
@@ -8,11 +7,9 @@ import {
   BarChart2,
   MoreVertical,
   ArrowUpDown,
-
 } from "lucide-react";
 import type { EventItem, EventStatus } from "../type/Event.type";
 import type { EventCategory } from "../data/events.data";
-
 
 interface EventTableProps {
   events: EventItem[];
@@ -20,9 +17,7 @@ interface EventTableProps {
   onDeleteEvent?: (id: string) => void;
 }
 
-const EventTable = ({ events}: EventTableProps) => {
-
-
+const EventTable = ({ events }: EventTableProps) => {
   const getCategoryBadge = (category: EventCategory) => {
     switch (category) {
       case "Hackathon":

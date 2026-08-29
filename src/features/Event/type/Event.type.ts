@@ -153,7 +153,7 @@ export interface UpdateEventData {
 
 export interface EventResponse {
   _id?: string;
-  Slug?: string,
+  Slug?: string;
 
   communityId?: string;
 
@@ -164,7 +164,6 @@ export interface EventResponse {
   descriptionMarkdown: string;
 
   redirectUrl?: string;
-
 
   tags: string[];
 

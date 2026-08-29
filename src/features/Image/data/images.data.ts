@@ -1,3 +1,4 @@
+import type { ImageFormData } from "../types/image.type";
 export type ImageFormat = "JPG" | "PNG" | "WEBP";
 
 export interface ImageItem {
@@ -202,3 +203,25 @@ export const initialImagesList: ImageItem[] = [
     tags: ["Organizers", "Team", "Volunteers"],
   },
 ];
+
+export const initialImageFormData: ImageFormData = {
+  title: "",
+  caption: "",
+  event: "",
+  album: "",
+  tags: [],
+  visibility: "PUBLIC",
+  altText: "",
+  displayOrder: 1,
+  allowDownload: true,
+  imageUrl: "",
+};
+
+export const eventOptions = [
+  "Jharkhand Tech Summit 2026",
+  "MERN Stack Workshop",
+  "Dev Connect Meetup",
+  "AI in Action - Tech Talk",
+];
+
+export const albumOptions = ["Keynote Sessions", "Workshops", "Networking", "Event Highlights"];

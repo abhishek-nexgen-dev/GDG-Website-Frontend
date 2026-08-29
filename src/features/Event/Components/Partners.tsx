@@ -1,4 +1,3 @@
-
 import { singleEventData } from "../data/singleEventData";
 
 const Partners = () => {
@@ -20,9 +19,7 @@ const Partners = () => {
         <span className="text-[10px] text-white/25">{partners.length} partners</span>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-     
-      </div>
+      <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"></div>
     </section>
   );
 };
