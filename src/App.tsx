@@ -30,9 +30,12 @@ function App() {
     <>
       <ReactLenis
         ref={lenisRef}
-        root // Makes Lenis globally accessible and uses the <html> scroll container
+        root
         options={{
-          autoRaf: false, // CRITICAL: Disable Lenis's internal loop to use GSAP instead
+          autoRaf: false,
+          lerp: 0.05,
+          duration: 1.5,
+          smoothWheel: true,
         }}
       />
 
