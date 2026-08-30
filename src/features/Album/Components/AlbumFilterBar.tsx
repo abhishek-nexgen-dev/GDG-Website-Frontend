@@ -90,16 +90,17 @@ const AlbumFilterBar = ({
         <div className="relative min-w-[130px]">
           <select
             value={selectedVisibility}
+            // FIX: Changed e.target.name to e.target.value
             onChange={(e) => onVisibilityChange(e.target.value)}
             className="w-full appearance-none rounded-xl border border-[#232830] bg-[#161a1f] px-3.5 py-2.5 pr-8 text-xs font-medium text-white/80 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] focus:border-[#22c55e] focus:outline-none sm:text-sm"
           >
             <option value="All" className="bg-[#161a1f] text-white">
               All Visibility
             </option>
-            <option value="Public" className="bg-[#161a1f] text-white">
+            <option value="public" className="bg-[#161a1f] text-white">
               Public
             </option>
-            <option value="Private" className="bg-[#161a1f] text-white">
+            <option value="private" className="bg-[#161a1f] text-white">
               Private
             </option>
           </select>
@@ -136,6 +137,8 @@ const AlbumFilterBar = ({
         </div>
 
         {/* Filter Toggle Button */}
+        {/* Note: If this button is meant to apply filters, it usually calls a separate handler. 
+            If it resets, the current logic is fine. Assuming it toggles visibility or resets based on context. */}
         <button
           type="button"
           onClick={onResetFilters}

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 
 import Nav from "../Components/Nav";
 import { Footer } from "../Components/Footer";
@@ -6,7 +6,7 @@ import { BackgroundWatermark } from "../Components/BackgroundWatermark";
 import { useState } from "react";
 
 const PublicLayout = () => {
-  const [isUnderMaintenance] = useState(true);
+  const [isUnderMaintenance] = useState(false);
 
   if (isUnderMaintenance) {
     return <Navigate to="/launching-soon" replace />;

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Eye, MoreVertical, Check, Trash2, Mail, Edit3, ShieldAlert } from "lucide-react";
 import type { fetchMembersType, memberStatusType } from "../type/MemberDetails.type";
-import { Link } from "react-router";
-
+import { Link } from "react-router-dom";
 interface MemberTableProps {
   members: fetchMembersType[];
   selectedIds: string[];

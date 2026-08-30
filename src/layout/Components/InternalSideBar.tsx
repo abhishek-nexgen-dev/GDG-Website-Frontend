@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import sideBarConstant from "../constant/sideBarConstant";
-import { Link, NavLink, useLocation } from "react-router";
-import { LogOut, Settings, ChevronDown } from "lucide-react";
+import { Link, NavLink, useLocation } from "react-router-dom";import { LogOut, Settings, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import useNavStore from "../store/nav.store";
 

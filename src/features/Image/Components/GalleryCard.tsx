@@ -1,49 +1,56 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+import type { GalleryCardType } from "../types/Gallery.type";
 
-type GalleryCardProps = {
-  title?: string;
-  date?: string;
-  image?: string;
-  imagesCount?: number;
-};
+const GalleryCard: React.FC<GalleryCardType> = ({
+  title,
+  slug,
+  albumImageUrl,
+  imageCount,
+  createdAt,
+  description
+}) => {
+  const formattedDate = new Date(createdAt).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
-const GalleryCard = ({
-  title = "Ranchi Hacks",
-  date = "24 Aug 2025",
-  image = "https://res.cloudinary.com/startup-grind/image/upload/c_fill,w_500,h_500,g_center/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/ranchi%20hacks%20logo%20bevy_7lUCZUX.png",
-  imagesCount = 20,
-}: GalleryCardProps) => {
   return (
     <Link
-      to={`/events/Gallery/${title}`}
-      className="group relative aspect-auto w-[90%] overflow-hidden rounded-3xl"
+      to={`/Gallery/${encodeURIComponent(slug)}`}
+      className="group relative block w-full overflow-hidden rounded-3xl bg-gray-900 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-500/30"
+      aria-label={`View gallery for ${description || slug}`}
     >
-      {/* Image */}
-      <div className="h-full w-full overflow-hidden rounded-3xl">
+      <div className="relative h-[4/3] w-full overflow-hidden sm:h-[16/9] md:h-[50vh]">
         <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
+          src={albumImageUrl}
+          alt={description || "Gallery album cover"}
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+        <div className="flex items-end justify-between rounded-2xl border border-white/10 bg-black/60 px-4 py-3 backdrop-blur-md transition-all duration-300 group-hover:bg-black/80 sm:px-5 sm:py-4">
+          <div className="flex-1 pr-4">
+            <h3 className="line-clamp-1 text-base font-bold text-white sm:text-lg md:text-xl" title={description}>
+              {title}
+            </h3>
+            <p className="mt-1 text-xs font-medium text-gray-300 sm:text-sm">
+              {formattedDate}
+            </p>
+          </div>
 
-      {/* Bottom Card */}
-      <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-2xl border border-white/10 bg-[#111111]/90 px-5 py-4 backdrop-blur-xl">
-        {/* Left */}
-        <div>
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
-
-          <p className="mt-1 text-sm text-gray-400">{date}</p>
-        </div>
-
-        {/* Right */}
-        <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2">
-          <img src="/solar_gallery-bold.png" alt="Gallery" className="h-5 w-5" />
-
-          <span className="text-sm font-medium text-white">{imagesCount}</span>
+          <div className="flex flex-shrink-0 items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-white shadow-sm backdrop-blur-sm group-hover:bg-white/20 transition-colors">
+            <img
+              src="/solar_gallery-bold.png"
+              alt=""
+              className="h-4 w-4 sm:h-5 sm:w-5"
+              aria-hidden="true"
+            />
+            <span className="text-sm font-bold sm:text-base">{imageCount}</span>
+          </div>
         </div>
       </div>
     </Link>

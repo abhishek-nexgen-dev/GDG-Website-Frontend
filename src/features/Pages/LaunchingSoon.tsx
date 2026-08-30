@@ -1,8 +1,5 @@
 import {
-  ArrowRight,
-  Bell,
   CalendarDays,
-  Clock3,
   Mail,
   Sparkles,
 } from "lucide-react";

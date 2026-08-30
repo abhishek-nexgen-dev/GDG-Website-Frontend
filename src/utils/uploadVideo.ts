@@ -17,10 +17,10 @@ const uploadVideo = async (
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("upload_preset", process.env.CLOUDINARY_VIDEO_UPLOAD_PRESET);
+    formData.append("upload_preset", import.meta.env.CLOUDINARY_VIDEO_UPLOAD_PRESET);
 
     const { data } = await axios.post<CloudinaryVideoResponse>(
-      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload`,
+      `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/video/upload`,
       formData,
       {
         onUploadProgress: (event) => {
