@@ -75,17 +75,11 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.18)(react@19.2.8)
       react-router-dom:
-        specifier: ^7.18.3
-        version: 7.18.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      rehype-raw:
-        specifier: ^7.0.0
-        version: 7.0.0
-      remark-gfm:
-        specifier: ^4.0.1
-        version: 4.0.1
-      sweetalert2:
-        specifier: ^11.26.25
-        version: 11.26.25
+        specifier: ^7.18.2
+        version: 7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      swiper:
+        specifier: ^14.1.0
+        version: 14.1.0
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0

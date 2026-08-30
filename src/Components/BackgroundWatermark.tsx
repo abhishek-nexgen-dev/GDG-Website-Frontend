@@ -103,7 +103,7 @@ export function BackgroundWatermark() {
       font-black
       tracking-[-0.05em]
       leading-none
-      text-gray-900
+      text-transparent
     "
         >
           GDG RANCHI
@@ -124,26 +124,20 @@ export function BackgroundWatermark() {
     gap-5
     whitespace-nowrap
     pointer-events-none
+    bg-transparent
   "
       >
         <span
           className="
       gdg-ranchi-txt
       text-[72px]
-      border-white
       sm:text-[120px]
       lg:text-[180px]
       xl:text-[220px]
       font-black
       tracking-[-0.05em]
       leading-none
-      bg-gradient-to-r
-      from-google-blue
-      via-google-red
-      via-50%
-      to-google-green
-      bg-clip-text
-      text-transparent
+      text-[#4285F4]
       drop-shadow-[0_0_25px_rgba(66,133,244,.3)]
     "
         >

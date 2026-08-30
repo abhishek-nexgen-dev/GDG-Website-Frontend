@@ -13,7 +13,7 @@ const PublicLayout = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[#010101]">
+    <div className="flex min-h-screen flex-col overflow-x-clip bg-[#010101]">
       <Nav />
 
       <main className="flex-1">
