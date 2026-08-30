@@ -105,7 +105,7 @@ const UpcomingEvent = () => {
 
             <h2 className="text-4xl font-black leading-none tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Upcoming{" "}
-              <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#4285F4] bg-clip-text text-transparent">
+              <span className="text-[#1a73e8]">
                 Events
               </span>
             </h2>

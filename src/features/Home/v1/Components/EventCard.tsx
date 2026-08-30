@@ -20,7 +20,7 @@ const EventCard = () => {
     <div className="group relative w-[90%]">
       <BorderGlow />
 
-      <article className="relative overflow-hidden rounded-[24px] border border-white/[0.09] bg-white/[0.025] backdrop-blur-xl transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.16] group-hover:bg-white/[0.035]">
+      <article className="relative overflow-hidden rounded-[24px] border border-white/[0.09] bg-[#0c0c0e] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.16] group-hover:bg-[#121215]">
         {/* Image */}
         <div className="relative h-[250px] w-full overflow-hidden sm:h-[270px]">
           <img
@@ -113,7 +113,7 @@ const EventCard = () => {
 
             <button
               type="button"
-              className="flex items-center gap-2 text-xs font-semibold text-white/70 transition-colors hover:text-white"
+              className="group flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_10px_30px_rgba(26,115,232,0.3)]"
             >
               View event
               <ArrowUpRight

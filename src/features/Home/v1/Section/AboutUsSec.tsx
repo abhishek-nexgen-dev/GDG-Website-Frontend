@@ -224,7 +224,7 @@ const AboutUsSec = () => {
 
             <h2 className="about-fade-in mb-8 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
               Building the next <br />
-              <span className="bg-gradient-to-r from-[#4285F4] via-[#EA4335] via-[#FBBC04] to-[#34A853] bg-clip-text text-transparent">
+              <span className="text-primary">
                 generation of <br className="hidden sm:block" />
                 <span ref={typedRef}></span>
               </span>
@@ -256,7 +256,7 @@ const AboutUsSec = () => {
             {/* Main Image */}
             <div className="about-image-1 relative z-10 w-4/5 overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl lg:absolute lg:right-10 lg:top-10">
               <img
-                src={myCardImg}
+                src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format"
                 alt="Audience at a tech event"
                 className="w-full object-cover grayscale opacity-80 transition-all duration-700 hover:grayscale-0 hover:scale-105"
               />
@@ -266,7 +266,7 @@ const AboutUsSec = () => {
             {/* Overlapping Image */}
             <div className="about-image-2 absolute -bottom-10 -left-4 z-20 w-3/5 overflow-hidden rounded-[2rem] border-[6px] border-[#050505] shadow-2xl lg:-bottom-10 lg:-left-10">
               <img
-                src={myCardImg}
+                src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format"
                 alt="Developers collaborating"
                 className="w-full object-cover grayscale opacity-90 transition-all duration-700 hover:grayscale-0 hover:scale-105"
               />

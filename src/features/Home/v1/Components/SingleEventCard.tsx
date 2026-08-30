@@ -10,13 +10,13 @@ type SingleEventProps = {
   time: string;
   location: string;
   registrationStatus: string;
-  
+
 };
 
 const SingleEventCard = (event: SingleEventProps) => {
   return (
-    <div className="group relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.025] backdrop-blur-xl">
-      <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-[#34A853]/[0.07] blur-[100px]" />
+    <div className="group relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#0c0c0e]">
+      <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-primary/10 blur-[100px]" />
 
       <div className="relative grid lg:grid-cols-[4fr_6fr] xl:grid-cols-[4.5fr_5.5fr]">
         <div className="relative min-h-[240px] overflow-hidden sm:min-h-[280px] lg:min-h-[350px]">
@@ -26,7 +26,7 @@ const SingleEventCard = (event: SingleEventProps) => {
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-black/10 lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[#080808]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-black/10 lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[#0c0c0e]" />
 
           <div className="absolute left-5 top-5 sm:left-7 sm:top-7">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 py-2 text-[10px] font-medium uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">
@@ -104,7 +104,7 @@ const SingleEventCard = (event: SingleEventProps) => {
 
             <button
               type="button"
-              className="group/button flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_10px_30px_rgba(255,255,255,0.08)]"
+              className="group/button flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_10px_30px_rgba(26,115,232,0.3)]"
             >
               {"View event"}
               <ArrowUpRight

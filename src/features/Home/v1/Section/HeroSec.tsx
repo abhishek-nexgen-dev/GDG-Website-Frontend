@@ -5,7 +5,6 @@ import React from "react";
 const images = [
   "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format",
   "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800&auto=format",
-  "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format",
 ];
 
 const HeroSec = () => {
@@ -48,7 +47,7 @@ const HeroSec = () => {
 
           <h1 className="mt-8 text-5xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Build. Learn. Connect.<br />
-            <span className="bg-gradient-to-r from-[#4285F4] to-[#FBBC04] bg-clip-text text-transparent">
+            <span className="text-primary">
               Grow Together.
             </span>
           </h1>
@@ -59,7 +58,7 @@ const HeroSec = () => {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <button className="rounded-xl bg-[#D6FF38] px-8 py-3.5 font-bold text-black transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(214,255,56,0.3)]">
+            <button className="rounded-xl bg-primary px-8 py-3.5 font-bold text-white transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(26,115,232,0.3)]">
               Join Community
             </button>
             <button className="rounded-xl border border-white/15 bg-transparent px-8 py-3.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5">
@@ -107,20 +106,11 @@ const HeroSec = () => {
             <img src={images[1]} alt="Event 2" className="h-full w-full object-cover grayscale opacity-90 transition-all duration-500 hover:grayscale-0 hover:opacity-100" />
           </motion.div>
 
-          {/* Image 3 (Bottom Right) */}
-          <motion.div
-            style={{ x: shiftX3, y: shiftY3 }}
-            className="absolute bottom-10 right-4 z-10 h-[260px] w-[220px] -rotate-3 overflow-hidden rounded-3xl border-[4px] border-[#0A0A0C] shadow-2xl transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-50"
-          >
-            <img src={images[2]} alt="Event 3" className="h-full w-full object-cover grayscale transition-all duration-500 hover:grayscale-0" />
-            <div className="absolute inset-0 bg-black/30" />
-          </motion.div>
-
           {/* Floating Action Button */}
           <motion.button
             animate={{ y: [0, -10, 0] }}
             transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="absolute bottom-20 right-0 z-30 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#D6FF38] text-black shadow-[0_0_30px_rgba(214,255,56,0.3)] transition-transform hover:scale-110"
+            className="absolute bottom-20 right-0 z-30 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-[0_0_30px_rgba(26,115,232,0.3)] transition-transform hover:scale-110"
           >
             <Users size={24} strokeWidth={2.5} />
           </motion.button>

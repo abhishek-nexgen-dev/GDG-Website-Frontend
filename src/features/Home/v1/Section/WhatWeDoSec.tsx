@@ -21,7 +21,7 @@ const WhatWeDoSec = () => {
           ease: "power3.out",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 75%",
+            start: "top 85%",
           },
         }
       );
@@ -29,16 +29,16 @@ const WhatWeDoSec = () => {
       // Cards stagger animation
       gsap.fromTo(
         ".wwd-card",
-        { y: 80, opacity: 0 },
+        { y: 50, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
+          duration: 1,
+          stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".wwd-grid",
-            start: "top 80%",
+            start: "top 85%",
           },
         }
       );
@@ -66,7 +66,7 @@ const WhatWeDoSec = () => {
         {/* Heading */}
         <h2 className="mt-8 text-center text-5xl font-black leading-none text-white sm:text-6xl lg:text-7xl">
           What{" "}
-          <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] via-[#34A853] to-[#4285F4] bg-clip-text text-transparent">
+          <span className="text-[#1a73e8]">
             We Do
           </span>
         </h2>
@@ -84,7 +84,7 @@ const WhatWeDoSec = () => {
 
       <div className="wwd-grid mx-auto mt-20 grid max-w-7xl grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Learn Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-all duration-500 hover:bg-white/[0.04]">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04]">
           {/* Texture Overlay */}
           <div className="absolute inset-0 z-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E\")" }} />
           <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)", backgroundSize: "20px 20px", WebkitMaskImage: "radial-gradient(circle at 100% 0%, black 10%, transparent 70%)" }} />
@@ -102,7 +102,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Connect Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-all duration-500 hover:bg-white/[0.04] lg:col-span-2 lg:flex-row lg:items-center lg:gap-12">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2 lg:flex-row lg:items-center lg:gap-12">
           {/* Texture Overlay */}
           <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)", backgroundSize: "40px 40px", WebkitMaskImage: "radial-gradient(circle at 100% 100%, black 30%, transparent 80%)" }} />
           
@@ -131,7 +131,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Build Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-all duration-500 hover:bg-white/[0.04] lg:col-span-2">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2">
           {/* Texture Overlay */}
           <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, #ffffff 1.5px, transparent 1.5px)", backgroundSize: "24px 24px", WebkitMaskImage: "linear-gradient(to right, black, transparent 60%)" }} />
           
@@ -158,7 +158,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Grow Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-all duration-500 hover:bg-white/[0.04]">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04]">
           {/* Texture Overlay */}
           <div className="absolute inset-0 z-0 opacity-[0.04]" style={{ backgroundImage: "repeating-linear-gradient(45deg, #ffffff 0, #ffffff 1px, transparent 1px, transparent 16px)", WebkitMaskImage: "radial-gradient(circle at 0% 100%, black 20%, transparent 80%)" }} />
           

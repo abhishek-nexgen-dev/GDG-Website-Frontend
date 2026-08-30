@@ -85,7 +85,7 @@ const PartnersSec = () => {
         {/* Heading */}
         <h2 className="mt-8 text-center text-4xl font-black text-white sm:text-5xl lg:text-6xl">
           Backed by the <br className="md:hidden" />
-          <span className="bg-gradient-to-r from-[#4285F4] via-[#34A853] to-[#FBBC04] bg-clip-text text-transparent">
+          <span className="text-primary">
             Best in Tech
           </span>
         </h2>
