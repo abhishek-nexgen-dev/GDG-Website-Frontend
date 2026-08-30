@@ -1,26 +1,40 @@
-export type Visibility = "public" | "private" | "unlisted";
+export type Visibility = "public" | "private";
 
-export type ViewPermission = "anyone" | "members" | "organizers" | "custom";
 
-export type PhotoPermission = "anyone" | "members" | "organizers";
+
+
 
 export interface AlbumFormData {
   title: string;
-  eventId: string;
-  shortDescription: string;
-
-  coverImage: File | null;
-  coverPreview: string;
-
-  visibility: Visibility;
-  category: string;
-
+  EventName: string;
+  albumImageUrl: string;
+  description: string;
   tags: string[];
-  tagInput: string;
+  visibility: "public" | "private";
+  status: "draft" | "published";
+  isDeleted: boolean;
+}
 
-  location: string;
-  highlights: string;
 
-  viewPermission: ViewPermission;
-  photoPermission: PhotoPermission;
+
+export interface Manage_Albums_Card {
+  _id: string;
+  title: string;
+  albumImageUrl: string;
+  imageCount: number;
+  slug: string;
+  description: string;
+  event: {
+    _id: string;
+    title: string;
+    registrationStartAt: string;
+    registrationEndAt: string;
+  };
+  visibility: 'public' | 'private';
+  status: 'published' | 'draft' | 'archived';
+  uploadedBy: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }

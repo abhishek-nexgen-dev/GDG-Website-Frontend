@@ -66,7 +66,7 @@ const AlbumDetailsModal = ({ album, isOpen, onClose }: AlbumDetailsModalProps) =
 
           <div className="rounded-xl border border-[#232830] bg-[#121519] p-3">
             <div className="flex items-center gap-1.5 text-white/40 text-[11px]">
-              {album.visibility === "Public" ? <Globe size={13} /> : <Lock size={13} />}
+              {album.visibility === "public" ? <Globe size={13} /> : <Lock size={13} />}
               <span>Visibility</span>
             </div>
             <p className="mt-1 text-xs font-semibold text-white">{album.visibility}</p>

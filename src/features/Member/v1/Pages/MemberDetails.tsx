@@ -12,8 +12,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
-
+import { useNavigate, useParams } from "react-router-dom";
 import Section from "../../../../Components/Section";
 
 import { Button } from "../../../../Components/Button";

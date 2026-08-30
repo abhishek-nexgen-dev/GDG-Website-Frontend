@@ -14,7 +14,7 @@ const CreateAlbumModal = ({ isOpen, onClose, onCreateAlbum }: CreateAlbumModalPr
   const [eventName, setEventName] = useState("Jharkhand Tech Summit 2026");
   const [eventDate, setEventDate] = useState("15 - 16 Jul 2026");
   const [imagesCount] = useState(0);
-  const [visibility, setVisibility] = useState<AlbumVisibility>("Public");
+  const [visibility, setVisibility] = useState<AlbumVisibility>("public");
   const [status, setStatus] = useState<AlbumStatus>("Published");
   const [thumbnail, setThumbnail] = useState(
     "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&auto=format&fit=crop&q=80",

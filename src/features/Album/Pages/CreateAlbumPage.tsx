@@ -1,60 +1,33 @@
+
 import {
   ArrowLeft,
   Check,
-  CircleHelp,
+  CheckCircle2,
   Eye,
+  FileText,
   Image as ImageIcon,
   Link,
   Lock,
-  MapPin,
   Plus,
   ShieldCheck,
   Trash2,
   Upload,
   X,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { AlbumFormData } from "../types/Album.type";
-import Label from "../../../Components/Label";
 import Input from "../../../Components/Input";
-import Select from "../../../Components/Select";
+import Label from "../../../Components/Label";
 import uploadImage from "../../../utils/uploadImage";
+
+
+import useCreateAlbum from "../hooks/CreateAlbumForm.hook";
+import useCreateAlbumMutation from "../hooks/useCreateAlbumMutation";
+
+type CoverMode = "upload" | "url";
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
-
-const initialForm: AlbumFormData = {
-  title: "",
-  eventId: "",
-  shortDescription: "",
-  coverImage: null,
-  coverPreview: "",
-  visibility: "public",
-  category: "",
-  tags: [],
-  tagInput: "",
-  location: "",
-  highlights: "",
-  viewPermission: "anyone",
-  photoPermission: "members",
-};
-
-const events = [
-  { id: "jharkhand-tech-summit-2026", title: "Jharkhand Tech Summit 2026 - Day 1" },
-  { id: "devfest-ranchi-2026", title: "DevFest Ranchi 2026" },
-  { id: "calcutta-hacks-2026", title: "Calcutta Hacks 2026" },
-];
-
-const categories = [
-  "Hackathon",
-  "Conference",
-  "Workshop",
-  "Meetup",
-  "DevFest",
-  "Community",
-  "Competition",
-];
 
 function Section({
   number,
@@ -70,153 +43,315 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#191a1f]">
-      <div className="flex items-center gap-3 border-b border-white/[0.05] px-3 py-3 sm:px-4">
-        <div className="shrink-0 text-emerald-400">{icon}</div>
+    <section className="min-w-0 overflow-hidden rounded-xl border border-white/[0.06] bg-[#191a1f]">
+      <div className="flex items-start gap-3 border-b border-white/[0.05] px-4 py-3">
+        <div className="mt-0.5 shrink-0 text-emerald-400">{icon}</div>
+
         <div className="min-w-0">
-          <h2 className="text-xs font-semibold text-zinc-100 sm:text-sm">
+          <h2 className="text-sm font-semibold text-zinc-100">
             {number && `${number}. `}
             {title}
           </h2>
-          <p className="mt-0.5 text-[10px] text-zinc-500 sm:text-xs">{description}</p>
+
+          <p className="mt-0.5 text-xs text-zinc-500">{description}</p>
         </div>
       </div>
-      <div className="p-3 sm:p-4">{children}</div>
+
+      <div className="min-w-0 p-4">{children}</div>
     </section>
   );
 }
 
+function ErrorMessage({ message }: { message?: string }) {
+  if (!message) return null;
+
+  return <p className="mt-1.5 text-xs text-red-400">{message}</p>;
+}
+
 export default function CreateAlbumPage() {
-  const [form, setForm] = useState<AlbumFormData>(initialForm);
+
+  
+  const form = useCreateAlbum();
+
+  const {
+    mutate: createAlbum,
+    isPending,
+  } = useCreateAlbumMutation();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const update = <K extends keyof AlbumFormData>(key: K, value: AlbumFormData[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const [coverMode, setCoverMode] = useState<CoverMode>("upload");
+  const [tagInput, setTagInput] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const {
+    watch,
+    setValue,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = form;
+
+  const title = watch("title");
+  const eventName = watch("EventName");
+  const albumImageUrl = watch("albumImageUrl");
+  const description = watch("description");
+  const tags = watch("tags");
+  const visibility = watch("visibility");
+  const status = watch("status");
+
+  useEffect(() => {
+    if (coverMode === "url" && albumImageUrl) {
+      setImagePreview(albumImageUrl);
+    }
+  }, [albumImageUrl, coverMode]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  const handleCoverChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file || !file.type.startsWith("image/")) {
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+
+      const preview = URL.createObjectURL(file);
+
+      if (imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+
+      setImagePreview(preview);
+
+      const imageUrl = await uploadImage(file);
+
+      setValue("albumImageUrl", imageUrl.secure_url, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      setImagePreview("");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleCoverChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = event.target.files?.[0];
-      if (!file || !file.type.startsWith("image/")) return;
-      const a = await uploadImage(file);
-      const preview = URL.createObjectURL(file);
-      setForm((prev) => ({ ...prev, coverImage: file, coverPreview: preview }));
-    } catch (error) {
-      console.log("Error--->", error);
-    }
+  const handleImageUrlChange = (value: string) => {
+    setValue("albumImageUrl", value, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const removeCover = () => {
-    setForm((prev) => ({ ...prev, coverImage: null, coverPreview: "" }));
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setValue("albumImageUrl", "", {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setImagePreview("");
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const addTag = () => {
-    const tag = form.tagInput.trim();
-    if (!tag) return;
-    if (form.tags.includes(tag)) {
-      update("tagInput", "");
+    const tag = tagInput.trim().toLowerCase();
+
+    if (!tag || tags.includes(tag)) {
+      setTagInput("");
       return;
     }
-    update("tags", [...form.tags, tag]);
-    update("tagInput", "");
+
+    setValue("tags", [...tags, tag], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setTagInput("");
   };
 
   const removeTag = (tag: string) => {
-    update(
+    setValue(
       "tags",
-      form.tags.filter((item) => item !== tag),
+      tags.filter((item) => item !== tag),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
     );
   };
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
+  const handleTagKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "Enter" || event.key === ",") {
+      event.preventDefault();
       addTag();
     }
-    if (e.key === "Backspace" && !form.tagInput && form.tags.length) {
-      removeTag(form.tags[form.tags.length - 1]);
+
+    if (event.key === "Backspace" && !tagInput && tags.length > 0) {
+      removeTag(tags[tags.length - 1]);
     }
   };
 
-  const saveDraft = () => console.log("Album draft:", form);
-  const createAlbum = () => console.log("Create album:", form);
+  const handleCreate = (status: "draft" | "published") => {
+    setValue("status", status);
 
-  const eventName =
-    events.find((event) => event.id === form.eventId)?.title ?? "Album Title Will Appear Here";
+    handleSubmit((data) => {
+      createAlbum(
+        {
+          ...data,
+          status,
+        },
+        {
+          onSuccess: () => {
+            reset();
+            setTagInput("");
+            setImagePreview("");
+            setCoverMode("upload");
 
-  const previewImage = form.coverPreview || DEFAULT_COVER;
+            if (fileInputRef.current) {
+              fileInputRef.current.value = "";
+            }
+          },
+          onError: (error) => {
+            console.error("Failed to create album:", error);
+          },
+        },
+      );
+    })();
+  };
+
+  const previewImage = imagePreview || albumImageUrl || DEFAULT_COVER;
+
+  const isLoading = isPending || isUploading;
 
   return (
-    <div className="min-h-screen text-white">
-      <header className="">
-        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4 px-4 py-3 sm:px-5 lg:px-6">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#121316] text-white">
+      <header className="border-b border-white/[0.05]">
+        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="min-w-0">
-            <div className="mb-1.5 flex items-center gap-1.5 text-[10px]">
+            <div className="mb-2 flex items-center gap-2 text-xs">
               <span className="text-zinc-500">Albums</span>
-              <span className="text-zinc-700">›</span>
-              <span className="truncate text-emerald-400">Create New Album</span>
+              <span className="text-zinc-700">/</span>
+              <span className="truncate text-emerald-400">
+                Create New Album
+              </span>
             </div>
-            <h1 className="text-base font-semibold tracking-tight sm:text-lg">Create New Album</h1>
-            <p className="mt-0.5 text-[10px] text-zinc-500 sm:text-xs">
-              Create a new album to organize and showcase event memories.
+
+            <h1 className="text-lg font-semibold tracking-tight">
+              Create New Album
+            </h1>
+
+            <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
+              Organize and showcase your event memories in one place.
             </p>
           </div>
+
           <button
             type="button"
-            className="flex shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-2 text-[10px] text-zinc-400 transition hover:bg-white/[0.04] sm:px-4 sm:text-xs"
+            className="flex shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] px-3 py-2 text-xs text-zinc-400 transition hover:bg-white/[0.04]"
           >
-            <ArrowLeft size={13} />
+            <ArrowLeft size={14} />
+
             <span className="hidden sm:inline">Back to Albums</span>
-            <span className="sm:hidden">Back</span>
           </button>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1500px] px-3 py-3 sm:px-5 sm:py-4 lg:px-6">
-        <div className="grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.15fr)_minmax(350px,0.85fr)] 2xl:grid-cols-2">
-          <div className="space-y-3">
+      <main className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-6">
+        <div className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
+          <div className="min-w-0 space-y-5">
             <Section
               number="1"
               title="Basic Information"
-              description="Add essential details about your album"
-              icon={<ImageIcon size={15} />}
+              description="Enter the core details for this album"
+              icon={<ImageIcon size={16} />}
             >
-              <div className="space-y-3">
-                <div>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div className="md:col-span-2">
                   <Label required>Album Title</Label>
+
                   <Input
-                    value={form.title}
-                    onChange={(value) => update("title", value)}
-                    placeholder="e.g. Jharkhand Tech Summit 2026 - Day 1"
+                    value={title}
+                    onChange={(value) =>
+                      setValue("title", value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                    placeholder="e.g. RanchiHacks 2026"
                     maxLength={100}
                   />
-                  <div className="mt-1 text-right text-[10px] text-zinc-600">
-                    {form.title.length}/100
+
+                  <div className="mt-1 flex items-center justify-between gap-3">
+                    <ErrorMessage message={errors.title?.message} />
+
+                    <span className="shrink-0 text-xs text-zinc-600">
+                      {title.length}/100
+                    </span>
                   </div>
                 </div>
-                <div>
-                  <Label required>Event</Label>
-                  <Select value={form.eventId} onChange={(value) => update("eventId", value)}>
-                    <option value="">Select an event</option>
-                    {events.map((event) => (
-                      <option key={event.id} value={event.id}>
-                        {event.title}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div>
-                  <Label>Short Description</Label>
-                  <textarea
-                    value={form.shortDescription}
-                    onChange={(e) => update("shortDescription", e.target.value)}
-                    maxLength={200}
-                    placeholder="A brief description about this album..."
-                    className="h-20 w-full resize-none rounded-md border border-white/[0.07] bg-[#202126] p-3 text-xs text-zinc-200 outline-none placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/10 sm:text-sm"
+
+                <div className="md:col-span-2">
+                  <Label required>Event Name</Label>
+
+                  <Input
+                    value={eventName}
+                    onChange={(value) =>
+                      setValue("EventName", value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                    placeholder="e.g. RanchiHacks"
+                    maxLength={100}
                   />
-                  <div className="mt-1 text-right text-[10px] text-zinc-600">
-                    {form.shortDescription.length}/200
+
+                  <ErrorMessage message={errors.EventName?.message} />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label required>Description</Label>
+
+                  <textarea
+                    value={description}
+                    onChange={(event) =>
+                      setValue("description", event.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                    placeholder="Describe your album and event memories..."
+                    maxLength={500}
+                    className="h-32 w-full resize-none rounded-lg border border-white/[0.07] bg-[#202126] px-3 py-3 text-sm text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
+                  />
+
+                  <div className="mt-1 flex items-center justify-between gap-3">
+                    <ErrorMessage message={errors.description?.message} />
+
+                    <span className="shrink-0 text-xs text-zinc-600">
+                      {description.length}/500
+                    </span>
                   </div>
                 </div>
               </div>
@@ -225,268 +360,400 @@ export default function CreateAlbumPage() {
             <Section
               number="2"
               title="Album Cover"
-              description="Add a cover image for your album"
-              icon={<ImageIcon size={15} />}
+              description="Upload an image or use an external image URL"
+              icon={<ImageIcon size={16} />}
             >
+              <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg bg-[#202126] p-1">
+                <button
+                  type="button"
+                  onClick={() => setCoverMode("upload")}
+                  className={`flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-xs font-medium transition ${
+                    coverMode === "upload"
+                      ? "bg-emerald-500 text-black shadow"
+                      : "text-zinc-500 hover:text-zinc-300"
+                  }`}
+                >
+                  <Upload size={14} />
+                  Upload Image
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setCoverMode("url")}
+                  className={`flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-xs font-medium transition ${
+                    coverMode === "url"
+                      ? "bg-emerald-500 text-black shadow"
+                      : "text-zinc-500 hover:text-zinc-300"
+                  }`}
+                >
+                  <Link size={14} />
+                  Image URL
+                </button>
+              </div>
+
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/webp"
                 onChange={handleCoverChange}
                 className="hidden"
               />
-              {form.coverPreview ? (
-                <div className="relative overflow-hidden rounded-lg border border-emerald-500/30">
-                  <img
-                    src={form.coverPreview}
-                    alt="Album cover preview"
-                    className="aspect-video w-full object-cover"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap justify-between gap-2 bg-black/70 p-2.5">
+
+              {coverMode === "upload" ? (
+                <div>
+                  {imagePreview ? (
+                    <div className="relative overflow-hidden rounded-xl border border-emerald-500/30">
+                      <img
+                        src={imagePreview}
+                        alt="Album cover preview"
+                        className="aspect-video w-full object-cover"
+                      />
+
+                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-black/70 p-3 backdrop-blur-sm">
+                        <button
+                          type="button"
+                          disabled={isUploading}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-white transition hover:bg-white/20 disabled:opacity-50"
+                        >
+                          <Upload size={13} />
+                          Change
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={isUploading}
+                          onClick={removeCover}
+                          className="flex items-center gap-2 rounded-lg bg-red-500/20 px-3 py-2 text-xs text-red-300 transition hover:bg-red-500/30 disabled:opacity-50"
+                        >
+                          <Trash2 size={13} />
+                          Remove
+                        </button>
+                      </div>
+
+                      {isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                          <div className="rounded-lg bg-black/70 px-4 py-2 text-sm text-white">
+                            Uploading image...
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-2 text-[10px] text-white hover:bg-white/20"
+                      className="flex min-h-56 w-full flex-col items-center justify-center rounded-xl border border-dashed border-emerald-500/30 bg-[#151a18] px-5 text-center transition hover:border-emerald-400/60 hover:bg-[#17201c]"
                     >
-                      <Upload size={12} /> Change Cover
+                      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+                        <Upload size={20} />
+                      </div>
+
+                      <p className="text-sm font-medium text-zinc-300">
+                        Upload cover image
+                      </p>
+
+                      <p className="mt-1 text-xs text-zinc-600">
+                        Click to browse from your device
+                      </p>
+
+                      <p className="mt-2 text-[11px] text-zinc-700">
+                        JPG, PNG or WEBP recommended
+                      </p>
                     </button>
-                    <button
-                      type="button"
-                      onClick={removeCover}
-                      className="flex items-center gap-1.5 rounded-md bg-red-500/20 px-3 py-2 text-[10px] text-red-300"
-                    >
-                      <Trash2 size={12} /> Remove
-                    </button>
-                  </div>
+                  )}
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex min-h-44 w-full flex-col items-center justify-center rounded-lg border border-dashed border-emerald-500/30 bg-[#151a18] px-4 text-center transition hover:border-emerald-400/60 hover:bg-[#17201c] sm:min-h-48"
-                >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                    <Upload size={18} />
+                <div className="space-y-4">
+                  <div>
+                    <Label required>Image URL</Label>
+
+                    <Input
+                      value={albumImageUrl}
+                      onChange={handleImageUrlChange}
+                      placeholder="https://example.com/album-cover.jpg"
+                    />
+
+                    <p className="mt-2 text-xs text-zinc-600">
+                      Paste a direct link to your album cover image.
+                    </p>
                   </div>
-                  <p className="text-xs font-medium text-zinc-300 sm:text-sm">Upload cover image</p>
-                  <p className="mt-1 text-[10px] text-zinc-600 sm:text-xs">
-                    Drag and drop an image here, or click to browse
-                  </p>
-                  <p className="mt-1 text-[9px] text-zinc-700 sm:text-[10px]">
-                    Recommended: 16:9, JPG/PNG, max 5MB
-                  </p>
-                </button>
+
+                  {albumImageUrl && (
+                    <div className="overflow-hidden rounded-xl border border-white/[0.07]">
+                      <img
+                        src={albumImageUrl}
+                        alt="Album cover URL preview"
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                        className="aspect-video w-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
               )}
+
+              <ErrorMessage message={errors.albumImageUrl?.message} />
             </Section>
 
             <Section
               number="3"
               title="Album Settings"
-              description="Configure visibility and other settings"
-              icon={<ShieldCheck size={15} />}
+              description="Configure visibility and organize your album"
+              icon={<ShieldCheck size={16} />}
             >
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
                   <Label required>Visibility</Label>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button
                       type="button"
-                      onClick={() => update("visibility", "public")}
-                      className={`rounded-lg border p-3 text-left transition ${form.visibility === "public" ? "border-emerald-500/40 bg-emerald-500/10" : "border-white/[0.06] bg-[#202126] hover:bg-[#24252a]"}`}
+                      onClick={() =>
+                        setValue("visibility", "public", {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      className={`rounded-xl border p-4 text-left transition ${
+                        visibility === "public"
+                          ? "border-emerald-500/50 bg-emerald-500/10"
+                          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+                      }`}
                     >
                       <div className="flex items-center gap-2">
                         <Eye
-                          size={14}
+                          size={16}
                           className={
-                            form.visibility === "public" ? "text-emerald-400" : "text-zinc-500"
+                            visibility === "public"
+                              ? "text-emerald-400"
+                              : "text-zinc-500"
                           }
                         />
-                        <span className="text-xs text-zinc-300">Public</span>
+
+                        <span className="text-sm font-medium text-zinc-200">
+                          Public
+                        </span>
                       </div>
-                      <p className="mt-1 text-[10px] text-zinc-600">Anyone can view</p>
+
+                      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                        Anyone can discover and view this album.
+                      </p>
                     </button>
+
                     <button
                       type="button"
-                      onClick={() => update("visibility", "private")}
-                      className={`rounded-lg border p-3 text-left transition ${form.visibility === "private" ? "border-emerald-500/40 bg-emerald-500/10" : "border-white/[0.06] bg-[#202126] hover:bg-[#24252a]"}`}
+                      onClick={() =>
+                        setValue("visibility", "private", {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      className={`rounded-xl border p-4 text-left transition ${
+                        visibility === "private"
+                          ? "border-emerald-500/50 bg-emerald-500/10"
+                          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+                      }`}
                     >
                       <div className="flex items-center gap-2">
                         <Lock
-                          size={14}
+                          size={16}
                           className={
-                            form.visibility === "private" ? "text-emerald-400" : "text-zinc-500"
+                            visibility === "private"
+                              ? "text-emerald-400"
+                              : "text-zinc-500"
                           }
                         />
-                        <span className="text-xs text-zinc-300">Private</span>
+
+                        <span className="text-sm font-medium text-zinc-200">
+                          Private
+                        </span>
                       </div>
-                      <p className="mt-1 text-[10px] text-zinc-600">Only members</p>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => update("visibility", "unlisted")}
-                      className={`rounded-lg border p-3 text-left transition ${form.visibility === "unlisted" ? "border-emerald-500/40 bg-emerald-500/10" : "border-white/[0.06] bg-[#202126] hover:bg-[#24252a]"}`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Link
-                          size={14}
-                          className={
-                            form.visibility === "unlisted" ? "text-emerald-400" : "text-zinc-500"
-                          }
-                        />
-                        <span className="text-xs text-zinc-300">Unlisted</span>
-                      </div>
-                      <p className="mt-1 text-[10px] text-zinc-600">Only with link</p>
+
+                      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                        Only authorized members can access this album.
+                      </p>
                     </button>
                   </div>
                 </div>
-                <div>
-                  <Label>Album Category</Label>
-                  <Select value={form.category} onChange={(value) => update("category", value)}>
-                    <option value="">Select category</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
+
+
+                 
+<div>
+  <Label required>Status</Label>
+
+  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <button
+      type="button"
+      onClick={() =>
+        setValue("status", "draft", {
+          shouldValidate: true,
+          shouldDirty: true,
+        })
+      }
+      className={`rounded-xl border p-4 text-left transition ${
+        status === "draft"
+          ? "border-amber-500/50 bg-amber-500/10"
+          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <FileText
+          size={16}
+          className={
+            status === "draft"
+              ? "text-amber-400"
+              : "text-zinc-500"
+          }
+        />
+
+        <span className="text-sm font-medium text-zinc-200">
+          Draft
+        </span>
+      </div>
+
+      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+        Save the album as a draft and continue editing later.
+      </p>
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setValue("status", "published", {
+          shouldValidate: true,
+          shouldDirty: true,
+        })
+      }
+      className={`rounded-xl border p-4 text-left transition ${
+        status === "published"
+          ? "border-emerald-500/50 bg-emerald-500/10"
+          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <CheckCircle2
+          size={16}
+          className={
+            status === "published"
+              ? "text-emerald-400"
+              : "text-zinc-500"
+          }
+        />
+
+        <span className="text-sm font-medium text-zinc-200">
+          Published
+        </span>
+      </div>
+
+      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+        Make the album active and ready for users to view.
+      </p>
+    </button>
+  </div>
+
+  <ErrorMessage message={errors.status?.message} />
+</div>
+
+
                 <div>
                   <Label>Tags</Label>
-                  <div className="min-h-9 rounded-md border border-white/[0.07] bg-[#202126] px-2 py-1.5">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {form.tags.map((tag) => (
+
+                  <div className="min-h-11 rounded-lg border border-white/[0.07] bg-[#202126] p-2 transition focus-within:border-emerald-500/50">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {tags.map((tag) => (
                         <span
                           key={tag}
-                          className="flex items-center gap-1 rounded bg-emerald-500/10 px-2 py-1 text-[10px] text-emerald-400"
+                          className="flex max-w-full items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400"
                         >
-                          {tag}
+                          <span className="max-w-[180px] truncate">
+                            {tag}
+                          </span>
+
                           <button
                             type="button"
                             onClick={() => removeTag(tag)}
-                            className="hover:text-red-400"
+                            className="shrink-0 transition hover:text-red-400"
                           >
-                            <X size={10} />
+                            <X size={12} />
                           </button>
                         </span>
                       ))}
+
                       <input
-                        value={form.tagInput}
-                        onChange={(e) => update("tagInput", e.target.value)}
+                        value={tagInput}
+                        onChange={(event) => setTagInput(event.target.value)}
                         onKeyDown={handleTagKeyDown}
+                        onBlur={addTag}
                         placeholder={
-                          form.tags.length ? "Add another..." : "Add tags and press Enter"
+                          tags.length
+                            ? "Add another tag..."
+                            : "Type a tag and press Enter"
                         }
-                        className="min-w-[140px] flex-1 bg-transparent px-1 py-1 text-xs text-zinc-300 outline-none placeholder:text-zinc-600"
+                        className="min-w-[120px] flex-1 bg-transparent px-1 py-1 text-sm text-zinc-300 outline-none placeholder:text-zinc-600"
                       />
                     </div>
                   </div>
-                </div>
-                <div>
-                  <Label>Location (Optional)</Label>
-                  <div className="relative">
-                    <MapPin
-                      size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600"
-                    />
-                    <input
-                      value={form.location}
-                      onChange={(e) => update("location", e.target.value)}
-                      placeholder="e.g. BIT Mesra, Ranchi"
-                      className="h-9 w-full rounded-md border border-white/[0.07] bg-[#202126] pl-9 pr-3 text-xs text-zinc-200 outline-none placeholder:text-zinc-600 focus:border-emerald-500/50 sm:text-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-            </Section>
 
-            <Section
-              number="4"
-              title="Additional Information"
-              description="Add more details about this album"
-              icon={<CircleHelp size={15} />}
-            >
-              <div>
-                <Label>Highlights (Optional)</Label>
-                <textarea
-                  value={form.highlights}
-                  onChange={(e) => update("highlights", e.target.value)}
-                  maxLength={300}
-                  placeholder="Share key moments or highlights of this album..."
-                  className="h-24 w-full resize-none rounded-md border border-white/[0.07] bg-[#202126] p-3 text-xs text-zinc-200 outline-none placeholder:text-zinc-600 focus:border-emerald-500/50 sm:text-sm"
-                />
-                <div className="mt-1 text-right text-[10px] text-zinc-600">
-                  {form.highlights.length}/300
+                  <p className="mt-2 text-xs text-zinc-600">
+                    Press Enter or comma to add a tag.
+                  </p>
                 </div>
               </div>
             </Section>
           </div>
 
-          <div className="space-y-3 xl:sticky xl:top-3 xl:self-start">
+          <aside className="min-w-0 xl:sticky xl:top-5 xl:self-start">
             <Section
-              title="Album Preview"
-              description="This is how your album will appear"
-              icon={<Eye size={15} />}
+              title="Live Preview"
+              description="Preview how your album information will appear"
+              icon={<Eye size={16} />}
             >
-              <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#202126]">
+              <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#202126]">
                 <div className="relative">
                   <img
                     src={previewImage}
                     alt="Album preview"
                     className="aspect-video w-full object-cover"
                   />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute right-2 top-2 flex items-center gap-1.5 rounded-md bg-white px-2.5 py-1.5 text-[10px] font-medium text-zinc-800 shadow-lg"
-                  >
-                    <ImageIcon size={11} />
-                    <span className="hidden sm:inline">Change Cover</span>
-                  </button>
-                </div>
-                <div className="p-4">
-                  <div className="mb-2 flex flex-wrap items-center gap-1.5">
-                    <span className="rounded bg-emerald-500/10 px-2 py-1 text-[9px] font-semibold uppercase text-emerald-400">
-                      Event Name
+
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                    <span className="rounded-md bg-emerald-500 px-2 py-1 text-[10px] font-semibold uppercase text-black">
+                      {visibility}
                     </span>
-                    {form.visibility === "public" && (
-                      <span className="rounded bg-blue-500/10 px-2 py-1 text-[9px] text-blue-400">
-                        Public
-                      </span>
-                    )}
                   </div>
-                  <h3 className="text-base font-semibold text-white sm:text-lg">
-                    {form.title || "Album Title Will Appear Here"}
-                  </h3>
-                  <p className="mt-2 text-xs leading-5 text-zinc-500 sm:text-sm">
-                    {form.shortDescription ||
-                      "Short description of the album will appear here and give users an idea about the content."}
+                </div>
+
+                <div className="p-5">
+                  <p className="text-xs font-medium uppercase tracking-wider text-emerald-400">
+                    {eventName || "Event Name"}
                   </p>
-                  <div className="mt-4 border-t border-white/[0.06] pt-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-zinc-500">
-                      <span className="flex items-center gap-1.5">
-                        <ImageIcon size={11} /> 123 Photos
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Lock size={11} />
-                        {form.visibility === "public" ? "Public Album" : "Private Album"}
-                      </span>
-                    </div>
+
+                  <h3 className="mt-2 break-words text-xl font-semibold text-white">
+                    {title || "Album Title"}
+                  </h3>
+
+                  <p className="mt-3 break-words text-sm leading-6 text-zinc-500">
+                    {description ||
+                      "Your album description will appear here when you start adding details."}
+                  </p>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs text-zinc-500">
+                    <span className="flex items-center gap-2">
+                      <ImageIcon size={14} />
+                      0 Photos
+                    </span>
+
+                    <span className="capitalize">{visibility}</span>
                   </div>
-                  <div className="mt-4 rounded-lg bg-[#191a1e] p-3">
-                    <p className="text-[9px] uppercase tracking-wide text-zinc-600">Event</p>
-                    <p className="mt-1 text-xs text-zinc-300 sm:text-sm">{eventName}</p>
-                    {form.location && (
-                      <p className="mt-1.5 flex items-center gap-1.5 text-[10px] text-zinc-600 sm:text-xs">
-                        <MapPin size={11} /> {form.location}
-                      </p>
-                    )}
-                  </div>
-                  {form.tags.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {form.tags.map((tag: string) => (
+
+                  {tags.length > 0 && (
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded bg-white/[0.05] px-2 py-1 text-[9px] text-zinc-500"
+                          className="max-w-full truncate rounded-md bg-white/[0.05] px-2 py-1 text-xs text-zinc-400"
                         >
                           #{tag}
                         </span>
@@ -496,34 +763,45 @@ export default function CreateAlbumPage() {
                 </div>
               </div>
             </Section>
-          </div>
+          </aside>
         </div>
       </main>
 
-      <footer className="sticky bottom-0 z-20 border-t border-white/[0.06] bg-[#121316]/95 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-3 px-3 py-2.5 sm:px-5 lg:px-6">
+      <footer className="sticky bottom-0 z-30 border-t border-white/[0.07] bg-[#121316]/95 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-[1500px] flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="hidden items-center gap-2 sm:flex">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10">
-              <Check size={11} className="text-emerald-400" />
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
+              <Check size={13} className="text-emerald-400" />
             </span>
-            <span className="text-[10px] text-zinc-500 sm:text-xs">
-              All changes are saved as draft
+
+            <span className="text-xs text-zinc-500">
+              Fill in the album details and choose how to save it.
             </span>
           </div>
-          <div className="ml-auto flex w-full justify-end gap-2 sm:w-auto">
+
+          <div className="flex w-full gap-3 sm:ml-auto sm:w-auto">
             <button
               type="button"
-              onClick={saveDraft}
-              className="rounded-md border border-white/[0.07] px-3 py-2 text-[10px] text-zinc-400 transition hover:bg-white/[0.04] sm:px-4 sm:text-xs"
+              disabled={isLoading}
+              onClick={() => handleCreate("draft")}
+              className="flex-1 rounded-lg border border-white/[0.08] px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
             >
               Save Draft
             </button>
+
             <button
               type="button"
-              onClick={createAlbum}
-              className="flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-[10px] font-medium text-white transition hover:bg-emerald-500 sm:px-4 sm:text-xs"
+              disabled={isLoading}
+              onClick={() => handleCreate("published")}
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
             >
-              <Plus size={13} /> Create Album
+              <Plus size={16} />
+
+              {isUploading
+                ? "Uploading..."
+                : isPending
+                  ? "Creating..."
+                  : "Create Album"}
             </button>
           </div>
         </div>

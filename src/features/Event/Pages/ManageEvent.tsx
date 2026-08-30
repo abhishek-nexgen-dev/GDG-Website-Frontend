@@ -22,8 +22,7 @@ import {
   computeStats,
   fetchAllEvents,
 } from "../utils/manage-event.utils";
-import { Link } from "react-router";
-
+import { Link } from "react-router-dom";
 const ManageEvent = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);

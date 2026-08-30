@@ -1,76 +1,117 @@
 import { useState, useMemo } from "react";
 import { Plus, Download } from "lucide-react";
-import { initialAlbumsList, type AlbumItem } from "../data/albums.data";
+
 import AlbumStatsCards from "../Components/AlbumStatsCards";
 import AlbumFilterBar from "../Components/AlbumFilterBar";
 import AlbumTable from "../Components/AlbumTable";
 import AlbumPagination from "../Components/AlbumPagination";
-import CreateAlbumModal from "../Components/CreateAlbumModal";
-import AlbumDetailsModal from "../Components/AlbumDetailsModal";
+
+import useFetchAlbums from "../hooks/useFetchAlbumMutations";
+import type {
+  Manage_Albums_Card,
+  Visibility,
+} from "../types/Album.type";
 
 const ManageAlbumsPage = () => {
-  const [albums, setAlbums] = useState<AlbumItem[]>(initialAlbumsList);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEvent, setSelectedEvent] = useState("All");
-  const [selectedVisibility, setSelectedVisibility] = useState("All");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [selectedVisibility, setSelectedVisibility] =
+    useState<Visibility | "All">("All");
+  const [selectedStatus, setSelectedStatus] = useState<
+    Manage_Albums_Card["status"] | "All"
+  >("All");
 
-  // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedAlbum, setSelectedAlbum] = useState<AlbumItem | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  // Filtered Albums
+ 
+
+
+
+  const { data, isLoading } = useFetchAlbums(page, limit);
+
+  const albums: Manage_Albums_Card[] = data ?? [];
+
+  const pagination = data?.pagination;
+
   const filteredAlbums = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
     return albums.filter((album) => {
-      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        !q ||
-        album.title.toLowerCase().includes(q) ||
-        album.eventName.toLowerCase().includes(q) ||
-        album.description.toLowerCase().includes(q) ||
-        album.createdBy.toLowerCase().includes(q);
+        !query ||
+        album.title.toLowerCase().includes(query) ||
+        album.event?.title?.toLowerCase().includes(query) ||
+        album.description?.toLowerCase().includes(query);
 
-      const matchesEvent = selectedEvent === "All" || album.eventName === selectedEvent;
+      const matchesEvent =
+        selectedEvent === "All" ||
+        album.event?.title === selectedEvent;
+
       const matchesVisibility =
-        selectedVisibility === "All" || album.visibility === selectedVisibility;
-      const matchesStatus = selectedStatus === "All" || album.status === selectedStatus;
+        selectedVisibility === "All" ||
+        album.visibility === selectedVisibility;
 
-      return matchesSearch && matchesEvent && matchesVisibility && matchesStatus;
+      const matchesStatus =
+        selectedStatus === "All" ||
+        album.status === selectedStatus;
+
+      return (
+        matchesSearch &&
+        matchesEvent &&
+        matchesVisibility &&
+        matchesStatus
+      );
     });
-  }, [albums, searchQuery, selectedEvent, selectedVisibility, selectedStatus]);
+  }, [
+    albums,
+    searchQuery,
+    selectedEvent,
+    selectedVisibility,
+    selectedStatus,
+  ]);
 
-  // Paginated Albums
-  const totalPages = Math.ceil(filteredAlbums.length / pageSize) || 1;
-  const paginatedAlbums = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredAlbums.slice(start, start + pageSize);
-  }, [filteredAlbums, currentPage, pageSize]);
-
-  // Computed Stats
   const computedStats = useMemo(() => {
     const total = albums.length;
-    const totalImages = albums.reduce((acc, curr) => acc + curr.imagesCount, 0);
-    const publicCount = albums.filter((a) => a.visibility === "Public").length;
-    const privateCount = albums.filter((a) => a.visibility === "Private").length;
+
+    const totalImages = albums.reduce(
+      (acc, album) => acc + album.imageCount,
+      0
+    );
+
+    const publicCount = albums.filter(
+      (album) => album.visibility === "public"
+    ).length;
+
+    const privateCount = albums.filter(
+      (album) => album.visibility === "private"
+    ).length;
 
     return {
-      totalAlbums: { value: total, trend: "▲ 6 this month" },
+      totalAlbums: {
+        value: total,
+        trend: `${total} total albums`,
+      },
       totalImages: {
-        value: totalImages.toLocaleString("en-US"),
-        trend: "▲ 156 this month",
+        value: totalImages.toLocaleString(),
+        trend: `${totalImages} total images`,
       },
       publicAlbums: {
         value: publicCount,
-        percentage: `${Math.round((publicCount / (total || 1)) * 100)}% of total`,
+        percentage: `${Math.round(
+          (publicCount / (total || 1)) * 100
+        )}% of total`,
       },
       privateAlbums: {
         value: privateCount,
-        percentage: `${Math.round((privateCount / (total || 1)) * 100)}% of total`,
+        percentage: `${Math.round(
+          (privateCount / (total || 1)) * 100
+        )}% of total`,
       },
-      storageUsed: { value: "12.4 GB", trend: "▲ 1.3 GB this month" },
+      storageUsed: {
+        value: "—",
+        trend: "Storage unavailable",
+      },
     };
   }, [albums]);
 
@@ -79,7 +120,7 @@ const ManageAlbumsPage = () => {
     setSelectedEvent("All");
     setSelectedVisibility("All");
     setSelectedStatus("All");
-    setCurrentPage(1);
+    setPage(1);
   };
 
   const hasActiveFilters =
@@ -88,84 +129,74 @@ const ManageAlbumsPage = () => {
     selectedVisibility !== "All" ||
     selectedStatus !== "All";
 
-  // Create Album
-  const handleCreateAlbum = (newAlbumData: Omit<AlbumItem, "id">) => {
-    const newAlbum: AlbumItem = {
-      ...newAlbumData,
-      id: `alb-${Date.now()}`,
-    };
-    setAlbums((prev) => [newAlbum, ...prev]);
-  };
-
-  // Delete Album
-  const handleDeleteAlbum = (id: string) => {
-    setAlbums((prev) => prev.filter((a) => a.id !== id));
-  };
-
-  // Export CSV
   const handleExportCSV = () => {
     const headers = [
       "Title",
-      "Event Name",
-      "Event Date",
-      "Images Count",
+      "Event",
+      "Images",
       "Visibility",
-      "Created On",
-      "Created By",
       "Status",
+      "Created At",
     ];
 
-    const rows = filteredAlbums.map((a) => [
-      `"${a.title}"`,
-      `"${a.eventName}"`,
-      `"${a.eventDate}"`,
-      a.imagesCount,
-      `"${a.visibility}"`,
-      `"${a.createdOn}"`,
-      `"${a.createdBy}"`,
-      `"${a.status}"`,
+    const rows = filteredAlbums.map((album) => [
+      `"${album.title}"`,
+      `"${album.event.title}"`,
+      album.imageCount,
+      album.visibility,
+      album.status,
+      `"${new Date(album.createdAt).toLocaleDateString()}"`,
     ]);
 
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
 
-    const encodedUri = encodeURI(csvContent);
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `gdg_ranchi_albums_${new Date().toISOString().slice(0, 10)}.csv`);
+
+    link.href = url;
+    link.download = `gdg_ranchi_albums_${new Date()
+      .toISOString()
+      .slice(0, 10)}.csv`;
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="min-h-full w-full py-5 px-4 sm:px-6 lg:px-8 text-white max-w-full">
-      {/* Header Section */}
+    <div className="min-h-full w-full max-w-full px-4 py-5 text-white sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             Manage Albums
           </h1>
+
           <p className="mt-1 text-xs text-white/50 sm:text-sm">
             View, manage and organize all event albums
           </p>
         </div>
 
-        {/* Header Actions */}
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-2 rounded-xl border border-[#232830] bg-[#161a1f] px-4 py-2.5 text-xs font-semibold text-white/90 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
+            className="flex items-center gap-2 rounded-xl border border-[#232830] bg-[#161a1f] px-4 py-2.5 text-xs font-semibold text-white/90 transition-colors hover:bg-[#1a1f26]"
           >
-            <Download size={15} strokeWidth={2} />
+            <Download size={15} />
             <span>Export Albums</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center gap-2 rounded-xl bg-[#22c55e] px-4 py-2.5 text-xs font-semibold text-black transition-colors hover:bg-[#16a34a]"
           >
             <Plus size={16} strokeWidth={2.5} />
@@ -174,81 +205,67 @@ const ManageAlbumsPage = () => {
         </div>
       </div>
 
-      {/* 5 Stats Cards Grid */}
       <div className="mb-6">
         <AlbumStatsCards stats={computedStats} />
       </div>
 
-      {/* Search & Filter Bar */}
       <div className="mb-4">
         <AlbumFilterBar
           searchQuery={searchQuery}
-          onSearchChange={(val) => {
-            setSearchQuery(val);
-            setCurrentPage(1);
+          onSearchChange={(value) => {
+            setSearchQuery(value);
+            setPage(1);
           }}
           selectedEvent={selectedEvent}
           onEventChange={(event) => {
             setSelectedEvent(event);
-            setCurrentPage(1);
+            setPage(1);
           }}
           selectedVisibility={selectedVisibility}
-          onVisibilityChange={(vis) => {
-            setSelectedVisibility(vis);
-            setCurrentPage(1);
+          onVisibilityChange={(visibility) => {
+            setSelectedVisibility(visibility as Visibility | "All");
+            setPage(1);
           }}
           selectedStatus={selectedStatus}
           onStatusChange={(status) => {
-            setSelectedStatus(status);
-            setCurrentPage(1);
+            setSelectedStatus(
+              status as Manage_Albums_Card["status"] | "All"
+            );
+            setPage(1);
           }}
           onResetFilters={handleResetFilters}
           hasActiveFilters={hasActiveFilters}
         />
       </div>
 
-      {/* Albums Table */}
       <div className="mb-4">
-        <AlbumTable
-          albums={paginatedAlbums}
-          onViewAlbum={(album) => {
-            setSelectedAlbum(album);
-            setIsDetailsModalOpen(true);
-          }}
-          onEditAlbum={(album) => {
-            setSelectedAlbum(album);
-            setIsDetailsModalOpen(true);
-          }}
-          onDeleteAlbum={handleDeleteAlbum}
-        />
+        {isLoading ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#22c55e]" />
+          </div>
+        ) : (
+          <AlbumTable
+            albums={filteredAlbums}
+           
+          
+            onDeleteAlbum={(id) => console.log(id)}
+          />
+        )}
       </div>
 
-      {/* Pagination */}
-      <AlbumPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalAlbums={filteredAlbums.length}
-        pageSize={pageSize}
-        onPageChange={(page) => setCurrentPage(page)}
-        onPageSizeChange={(size) => setPageSize(size)}
-      />
-
-      {/* Create Album Modal */}
-      <CreateAlbumModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateAlbum={handleCreateAlbum}
-      />
-
-      {/* Album Details Modal */}
-      <AlbumDetailsModal
-        isOpen={isDetailsModalOpen}
-        album={selectedAlbum}
-        onClose={() => {
-          setIsDetailsModalOpen(false);
-          setSelectedAlbum(null);
-        }}
-      />
+      {!isLoading && (
+        <AlbumPagination
+          currentPage={page}
+          totalPages={pagination?.totalPages ?? 1}
+          totalAlbums={pagination?.total ?? albums.length}
+          pageSize={limit}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setLimit(size);
+            setPage(1);
+          }}
+        />
+      )}
     </div>
   );
 };

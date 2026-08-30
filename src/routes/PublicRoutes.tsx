@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import PublicLayout from "../layout/PublicLayout";
 import HomePage from "../features/Home/v1/HomePage";
 import GalleryPage from "../features/Image/Pages/GalleryPage";
@@ -16,7 +16,7 @@ const PublicRoutes = () => {
       <Route element={<PublicLayout />}>
         <Route index path="/" element={<HomePage />} />
         <Route path="/events/Gallery" element={<GalleryPage />} />
-        <Route path="/events/Gallery/:GalleryName" element={<ImagePage />} />
+        <Route path="/Gallery/:GalleryName" element={<ImagePage />} />
         <Route path="/event/:Slug" element={<EventDetailPage />} />
         <Route path="/teams" element={<ViewAllTeamPage />} />
         <Route path="/login" element={<LoginPage />} />

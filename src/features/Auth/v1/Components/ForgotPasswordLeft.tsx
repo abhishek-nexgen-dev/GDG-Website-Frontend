@@ -1,5 +1,4 @@
-import { Link } from "react-router";
-
+import { Link } from "react-router-dom";
 const ForgotPasswordLeft = () => {
   return (
     <div className="Left-Container flex w-full flex-col justify-center px-6 py-10 sm:px-10 lg:w-1/2 lg:px-14 xl:px-20">

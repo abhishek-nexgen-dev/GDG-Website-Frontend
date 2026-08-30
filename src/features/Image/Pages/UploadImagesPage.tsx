@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Save, Upload } from "lucide-react";
-import { useNavigate } from "react-router";
-
+import { useNavigate } from "react-router-dom";
 import ImageUploadZone from "../Components/ImageUploadZone";
 import ImageDetails from "../Components/ImageDetails";
 import ImagePreview from "../Components/ImagePreview";
