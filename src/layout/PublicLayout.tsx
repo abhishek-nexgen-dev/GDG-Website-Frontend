@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 
 import Nav from "../Components/Nav";
 import { Footer } from "../Components/Footer";
@@ -9,7 +9,7 @@ const PublicLayout = () => {
   const [isUnderMaintenance] = useState(false);
 
   if (isUnderMaintenance) {
-    return <Navigate to="/maintenance" replace />;
+    return <Navigate to="/launching-soon" replace />;
   }
 
   return (

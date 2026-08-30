@@ -1,4 +1,4 @@
-import { BrowserRouter } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 import PublicRoutes from "./routes/PublicRoutes";
 import InternalRoutes from "./routes/InternalRoutes";
 import gsap from "gsap";

@@ -1,26 +1,69 @@
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
-import { Link } from "react-router";
-import gsap from "gsap";
+import Swal from "sweetalert2";
+import { Link, useNavigate } from "react-router-dom";import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import useLogin from "../hook/useLogin";
+import useLoginForm from "../hook/useLoginForm";
+import Input from "../../../../Components/Input";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 const LoginPage = () => {
-  useGSAP(() => {
-    gsap.to(".Form_Container", {
-      opacity: 1,
-    });
-  }, []);
+  const navigate = useNavigate();
+  const { watch, setValue } = useLoginForm();
+  const { mutate } = useLogin();
+
+  const email = watch("email");
+  const password = watch("password");
 
   const [showPassword, setShowPassword] = useState(false);
 
+  useGSAP(() => {
+    gsap.to(".Form_Container", {
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+    });
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Assuming email and password are state variables or props available here
+    mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          console.log("Login success:", data);
+
+          Swal.fire({
+            title: "Login Successful",
+            text: "Login Successful!",
+            icon: "success",
+            confirmButtonText: "Okay",
+          }).then(() => {
+            navigate("/member/Dashboard", { replace: true });
+          });
+        },
+        onError: (error: any) => {
+          Swal.fire({
+            title: "Login Failed",
+            text: error.message || "An error occurred",
+            icon: "error",
+            confirmButtonText: "Cool",
+          });
+        },
+      },
+    );
+  };
+
   return (
     <div className="relative min-h-screen w-full bg-bg-primary text-white flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="opacity-0  absolute    -left-[9rem] -top-[12rem] h-[400px] w-[400px] rounded-full bg-orange-600 blur-[90px]  animate-pulse"></div>
+      <div className="opacity-0 absolute -left-[9rem] -top-[12rem] h-[400px] w-[400px] rounded-full bg-orange-600 blur-[90px] animate-pulse"></div>
 
-      <div className=" opacity-0 absolute   -right-[9rem] -bottom-[12rem]  h-[400px] w-[400px] rounded-full bg-green-700 blur-[90px]  animate-pulse"></div>
+      <div className="opacity-0 absolute -right-[9rem] -bottom-[12rem] h-[400px] w-[400px] rounded-full bg-green-700 blur-[90px] animate-pulse"></div>
 
       <div className="Form_Container opacity-0 relative w-full mt-[5vh] md:w-[90%] lg:w-[70%] min-h-[650px] lg:h-[82vh] overflow-hidden rounded-2xl border border-white/8 bg-[#080809] shadow-[0_25px_100px_rgba(0,0,0,0.6)]">
         <div className="flex h-full min-h-[650px] flex-col lg:flex-row">
@@ -54,7 +97,6 @@ const LoginPage = () => {
                 Connect, learn, build and grow with the developer community of Ranchi and Jharkhand.
               </p>
 
-              {/* Decorative line */}
               <div className="mt-8 flex items-center gap-3">
                 <div className="h-[2px] w-12 bg-[#34A853]" />
                 <div className="h-[1px] w-24 bg-white/20" />
@@ -63,7 +105,6 @@ const LoginPage = () => {
           </div>
 
           <div className="flex w-full flex-1 flex-col justify-center px-6 py-10 sm:px-10 lg:w-1/2 lg:px-14 xl:px-20">
-            {/* Mobile brand */}
             <div className="mb-10 flex items-center gap-3 lg:hidden">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 border border-white/10">
                 <span className="text-lg">✦</span>
@@ -77,7 +118,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Heading */}
             <div className="mb-9">
               <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-[#34A853]">
                 Welcome back
@@ -92,41 +132,41 @@ const LoginPage = () => {
               </p>
             </div>
 
-            {/* Form */}
-            <form className="space-y-5">
-              {/* Email */}
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium text-white/75">
-                  Email address
-                </label>
-
-                <input
-                  id="email"
-                  type="email"
+                <Input
+                  value={email}
+                  label="Email Address"
                   placeholder="you@example.com"
-                  className="
-                    h-12 w-full rounded-lg
-                    border border-white/10
-                    bg-white/[0.035]
-                    px-4 text-sm text-white
-                    outline-none
-                    placeholder:text-white/25
-                    transition-all
-                    focus:border-[#34A853]/60
-                    focus:bg-white/[0.05]
-                    focus:ring-2
-                    focus:ring-[#34A853]/10
-                  "
+                  onChange={(value) => setValue("email", value)}
+                  className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.035] px-4 text-sm text-white outline-none placeholder:text-white/25 transition-all focus:border-[#34A853]/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34A853]/10"
+                  labelClassName="font-medium text-white/75"
                 />
               </div>
 
-              {/* Password */}
               <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-medium text-white/75">
-                    Password
-                  </label>
+                <div className="relative">
+                  <Input
+                    value={password}
+                    label="Password"
+                    placeholder="password@123"
+                    onChange={(value) => setValue("password", value)}
+                    type={showPassword ? "text" : "password"}
+                    className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.035] px-4 text-sm text-white outline-none placeholder:text-white/25 transition-all focus:border-[#34A853]/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-[#34A853]/10"
+                    labelClassName="font-medium text-white/75"
+                  />
 
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-[70%] -translate-y-1/2 text-white/30 transition hover:text-white/70 "
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FaEyeSlash size={15} /> : <FaEye size={15} />}
+                  </button>
+                </div>
+
+                <div className="my-[1vh] flex items-center justify-between">
                   <Link
                     to="/forgot"
                     className="text-xs text-[#34A853] transition hover:text-[#5edb79]"
@@ -134,70 +174,20 @@ const LoginPage = () => {
                     Forgot password?
                   </Link>
                 </div>
-
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    className="
-                      h-12 w-full rounded-lg
-                      border border-white/10
-                      bg-white/[0.035]
-                      px-4 pr-12 text-sm text-white
-                      outline-none
-                      placeholder:text-white/25
-                      transition-all
-                      focus:border-[#34A853]/60
-                      focus:bg-white/[0.05]
-                      focus:ring-2
-                      focus:ring-[#34A853]/10
-                    "
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="
-                      absolute right-4 top-1/2
-                      -translate-y-1/2
-                      text-white/30
-                      transition
-                      hover:text-white/70
-                    "
-                  >
-                    {showPassword ? <FaEyeSlash size={15} /> : <FaEye size={15} />}
-                  </button>
-                </div>
               </div>
 
-              {/* Login Button */}
               <button
                 type="submit"
-                className="
-                  group relative mt-2 flex h-12 w-full
-                  items-center justify-center gap-3
-                  overflow-hidden rounded-lg
-                  bg-[#34A853]
-                  text-sm font-semibold text-black
-                  transition-all duration-300
-                  hover:bg-[#3fba60]
-                  hover:shadow-[0_8px_30px_rgba(52,168,83,0.22)]
-                  active:scale-[0.99]
-                "
+                className="group relative mt-2 flex h-12 w-full items-center justify-center gap-3 overflow-hidden rounded-lg bg-[#34A853] text-sm font-semibold text-black transition-all duration-300 hover:bg-[#3fba60] hover:shadow-[0_8px_30px_rgba(52,168,83,0.22)] active:scale-[0.99]"
               >
                 <span>Sign in</span>
 
                 <FaArrowRight
                   size={13}
-                  className="
-                    transition-transform duration-300
-                    group-hover:translate-x-1
-                  "
+                  className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </button>
 
-              {/* Divider */}
               <div className="flex items-center gap-4 py-2">
                 <div className="h-px flex-1 bg-white/10" />
 
@@ -206,28 +196,15 @@ const LoginPage = () => {
                 <div className="h-px flex-1 bg-white/10" />
               </div>
 
-              {/* Google */}
               <button
                 type="button"
-                className="
-                  flex h-12 w-full
-                  items-center justify-center gap-3
-                  rounded-lg
-                  border border-white/10
-                  bg-white/[0.025]
-                  text-sm font-medium
-                  text-white/80
-                  transition-all
-                  hover:border-white/20
-                  hover:bg-white/[0.06]
-                "
+                className="flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-white/10 bg-white/[0.025] text-sm font-medium text-white/80 transition-all hover:border-white/20 hover:bg-white/[0.06]"
               >
                 <FaGoogle size={15} className="text-[#4285F4]" />
                 Continue with Google
               </button>
             </form>
 
-            {/* Footer */}
             <div className="mt-10 text-center text-[11px] text-white/20">
               © {new Date().getFullYear()} GDG Ranchi • Google Developer Groups
             </div>

@@ -1,7 +1,45 @@
+import React from "react";
+import useGalleryFetch from "../hooks/useGalleryFetch";
 import GalleryCard from "../Components/GalleryCard";
 import GalleryHero from "../Components/GalleryHero";
 
-const GalleryPage = () => {
+const GalleryPage: React.FC = () => {
+  const { data, error, isLoading } = useGalleryFetch();
+
+  // 1. Loading State
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#010101] text-white">
+        <div className="text-xl font-medium animate-pulse">Loading galleries...</div>
+      </div>
+    );
+  }
+
+  // 2. Error State
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#010101] text-white">
+        <div className="text-center text-red-400">
+          <h2 className="text-2xl font-bold">Error loading galleries</h2>
+          <p className="mt-2">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. No Data State
+  if (!data?.data || data.data.length === 0) {
+    return (
+      <div className="relative min-h-screen bg-[#010101] text-white">
+        <GalleryHero />
+        <div className="relative z-10 flex min-h-[60vh] flex-col items-center justify-center px-6 text-center">
+          <h3 className="text-2xl font-semibold text-gray-400">No galleries found</h3>
+          <p className="mt-2 text-gray-500">Check back later for new events and photos.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative overflow-hidden bg-[#010101] text-white">
       {/* Background Blur Effects */}
@@ -27,15 +65,13 @@ const GalleryPage = () => {
       {/* Hero Section */}
       <GalleryHero />
 
-      {/* Gallery */}
-      <section className="relative z-10 grid grid-cols-1  gap-12 px-6 py-16 sm:grid-cols-3 sm:px-10 md:px-16 lg:px-[8%] lg:py-20 xl:px-[10%]">
-        <GalleryCard />
-
-        <GalleryCard image="https://res.cloudinary.com/startup-grind/image/upload/c_fill,w_500,h_500,g_center/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/blob_AsZi2f5" />
-
-        <GalleryCard image="https://res.cloudinary.com/startup-grind/image/upload/c_fill,w_500,h_500,g_center/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/Web3%20logo_9WYq9up.png" />
-
-        <GalleryCard image="https://res.cloudinary.com/startup-grind/image/upload/c_fill,w_500,h_500,g_center/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/ICON%20DEVFEST_iU4JbWT.png" />
+      {/* Gallery Grid */}
+      <section className="relative z-10 px-6 py-16 sm:px-10 md:px-16 lg:px-[8%] lg:py-20 xl:px-[10%]">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:gap-6">
+          {data.data.map((item) => (
+            <GalleryCard key={item._id} {...item} />
+          ))}
+        </div>
       </section>
     </div>
   );

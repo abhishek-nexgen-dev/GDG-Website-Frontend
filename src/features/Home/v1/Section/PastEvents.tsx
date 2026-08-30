@@ -1,8 +1,5 @@
-import EventCard from "../Components/EventCard";
-import { ArrowUpRight, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import SingleEventCard from "../Components/SingleEventCard";
-
 
 export const PastEvents_Constant = [
   {
@@ -46,15 +43,56 @@ export const PastEvents_Constant = [
     image:
       "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1600&q=80",
   },
+
+  {
+    id: 4,
+    title: "Open Source Community Meetup",
+    category: "Community",
+    description:
+      "Meet open-source contributors, learn how to contribute to real projects, and collaborate with the community.",
+    date: "Oct 10, 2026",
+    time: "2:00 PM onwards",
+    location: "Ranchi, Jharkhand",
+    registrationStatus: "Past",
+    image:
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1600&q=80",
+  },
+
+  {
+    id: 5,
+    title: "Web Development Bootcamp",
+    category: "Bootcamp",
+    description:
+      "A hands-on session covering modern frontend development, React, APIs, and building production-ready applications.",
+    date: "Oct 24 – Oct 25, 2026",
+    time: "9:30 AM onwards",
+    location: "Ranchi, Jharkhand",
+    registrationStatus: "Past",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
+  },
+
+  {
+    id: 6,
+    title: "DevFest Ranchi 2026",
+    category: "Conference",
+    description:
+      "A developer-focused conference featuring technical sessions, community networking, workshops, and inspiring talks.",
+    date: "Nov 21, 2026",
+    time: "9:00 AM onwards",
+    location: "Ranchi, Jharkhand",
+    registrationStatus: "Past",
+    image:
+      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1600&q=80",
+  },
 ];
 
 const PastEvents = () => {
   return (
-    <section className="relative bg-[#050505] px-5 py-12 sm:px-8 sm:py-16 md:px-12 lg:px-[8%] lg:py-20 xl:px-[10%]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-[#4285F4]/[0.035] blur-[120px]" />
-        <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#34A853]/[0.035] blur-[130px]" />
-      </div>
+    <section className="relative overflow-hidden bg-[#050505] px-5 py-20 sm:px-8 sm:py-24 md:px-12 lg:px-[8%] lg:py-[12vh] xl:px-[10%]">
+      <div className="pointer-events-none absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-[#4285F4]/[0.035] blur-[120px]" />
+
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#34A853]/[0.035] blur-[130px]" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* Header */}
@@ -89,35 +127,21 @@ const PastEvents = () => {
         {/* Divider */}
         <div className="mt-10 h-px w-full bg-gradient-to-r from-white/10 via-white/[0.05] to-transparent lg:mt-12" />
 
-
-        
-
-        <div className="relative flex flex-col gap-[7vh] pb-[10vh] lg:gap-14 max-w-5xl mx-auto">
-           {PastEvents_Constant.map((el, index)=>{
-              return (
-                <motion.div
-                  key={el.id}
-                  className="sticky transition-all duration-300"
-                  style={{
-                    top: `${100 + index * 48}px`,
-                    zIndex: 10 + index,
-                  }}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                >
-                  <SingleEventCard
-                    title={el.title}
-                    category={el.category}
-                    description={el.description}
-                    date={el.date}
-                    time={el.time}
-                    location={el.location}
-                    registrationStatus={el.registrationStatus}
-                    image={el.image}
-                  />
-                </motion.div>
-              ) 
-           })}
+        <div className="w-full h-full flex flex-col gap-[7vh] ">
+          {PastEvents_Constant.map((el) => {
+            return (
+              <SingleEventCard
+                title={el.title}
+                category={el.category}
+                description={el.description}
+                date={el.date}
+                time={el.time}
+                location={el.location}
+                registrationStatus={el.registrationStatus}
+                image={el.image}
+              />
+            );
+          })}
         </div>
 
         {/* Event Cards */}
