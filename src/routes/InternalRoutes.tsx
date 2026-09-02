@@ -12,6 +12,7 @@ import UploadImagesPage from "../features/Image/Pages/UploadImagesPage";
 import SendBulkEmailPage from "../features/Email/Pages/SendEmailPage";
 import MemberDetails from "../features/Member/v1/Pages/MemberDetails";
 import Settings from "../features/Settings/Settings";
+import MemberViewEvent from "../features/Event/Pages/MemberViewEvent";
 
 const InternalRoutes = () => {
   return (
@@ -23,8 +24,9 @@ const InternalRoutes = () => {
         <Route path="create" element={<CreateNewMember />} />
         <Route path="profile/:id" element={<MemberDetails />} />
         <Route path="events" element={<ManageEvent />} />
-        <Route path="events/manage" element={<ManageEvent />} />
+        <Route path="event/view/:Slug" element={<MemberViewEvent />} />
         <Route path="events/create" element={<CreateEvent />} />
+           
         <Route path="event" element={<ManageEvent />} />
         <Route path="albums" element={<ManageAlbumsPage />} />
         <Route path="albums/manage" element={<ManageAlbumsPage />} />

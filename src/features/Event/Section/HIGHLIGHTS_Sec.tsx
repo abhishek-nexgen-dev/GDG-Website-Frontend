@@ -1,10 +1,17 @@
 import Highlight from "../Components/Highlight";
 import { Clock3, ShieldCheck, Users, Zap } from "lucide-react";
 import { formatStatus } from "../utils/Event.utils";
-import { singleEventData } from "../data/singleEventData";
 
-const HIGHLIGHTS_Sec = () => {
-  const event = singleEventData;
+import type { EventResponse } from "../type/Event.type";
+
+
+interface EventHignLightsProps {
+  event: EventResponse;
+}
+
+
+const HIGHLIGHTS_Sec = ({event}: EventHignLightsProps) => {
+  
 
   return (
     <section className="mt-4 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm px-5">

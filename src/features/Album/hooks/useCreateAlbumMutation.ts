@@ -1,7 +1,4 @@
-
-
 import { useMutation } from "@tanstack/react-query";
-
 
 import type { AlbumFormData } from "../Validator/ViewAlbum.Validator";
 import { createAlbum } from "../service/Album.service";
@@ -21,4 +18,3 @@ function useCreateAlbumMutation() {
 }
 
 export default useCreateAlbumMutation;
-

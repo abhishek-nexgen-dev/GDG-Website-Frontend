@@ -1,6 +1,6 @@
 import { Zap } from "lucide-react";
 
-import type { EventFormData, EventVisibility, EventStatus } from "../type/Event.type";
+import type { EventFormData, EventVisibility } from "../type/Event.type";
 
 import Section from "../../../Components/Section";
 import Label from "../../../Components/Label";
@@ -103,6 +103,7 @@ const BasicInformation = ({ form, update }: Props) => {
               value={form.visibility}
               onChange={(value) => update("visibility", value as EventVisibility | "")}
             >
+              <option value="Select Visiblity">Select Visiblity</option>
               {EventVisibility_Constant.map((val) => {
                 return <option value={val}>{val}</option>;
               })}
@@ -111,17 +112,15 @@ const BasicInformation = ({ form, update }: Props) => {
 
           {/* STATUS */}
 
-          <div>
+
+           <div className="relative">
             <Label required>Status</Label>
 
-            <Select
+              <SearchableDropdown
+              options={EventStatus_Constant}
+              onChange={(value) => update("status", value)}
               value={form.status}
-              onChange={(value) => update("status", value as EventStatus)}
-            >
-              {EventStatus_Constant.map((val) => {
-                return <option value={val}>{val}</option>;
-              })}
-            </Select>
+            />
           </div>
         </div>
 

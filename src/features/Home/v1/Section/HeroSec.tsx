@@ -17,9 +17,6 @@ const HeroSec = () => {
   const shiftX2 = useTransform(mouseX, [-1000, 1000], [25, -25]);
   const shiftY2 = useTransform(mouseY, [-1000, 1000], [25, -25]);
 
-  const shiftX3 = useTransform(mouseX, [-1000, 1000], [-30, 30]);
-  const shiftY3 = useTransform(mouseY, [-1000, 1000], [-30, 30]);
-
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
@@ -46,10 +43,9 @@ const HeroSec = () => {
           </div>
 
           <h1 className="mt-8 text-5xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Build. Learn. Connect.<br />
-            <span className="text-primary">
-              Grow Together.
-            </span>
+            Build. Learn. Connect.
+            <br />
+            <span className="text-primary">Grow Together.</span>
           </h1>
 
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/60">
@@ -69,20 +65,36 @@ const HeroSec = () => {
           {/* Stats */}
           <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4">
             <div>
-              <div className="text-4xl font-black text-[#4285F4]">800<span className="text-[#4285F4]/70">+</span></div>
-              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">Members</div>
+              <div className="text-4xl font-black text-[#4285F4]">
+                800<span className="text-[#4285F4]/70">+</span>
+              </div>
+              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">
+                Members
+              </div>
             </div>
             <div>
-              <div className="text-4xl font-black text-[#EA4335]">25<span className="text-[#EA4335]/70">+</span></div>
-              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">Events</div>
+              <div className="text-4xl font-black text-[#EA4335]">
+                25<span className="text-[#EA4335]/70">+</span>
+              </div>
+              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">
+                Events
+              </div>
             </div>
             <div>
-              <div className="text-4xl font-black text-[#FBBC04]">15<span className="text-[#FBBC04]/70">+</span></div>
-              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">Communities</div>
+              <div className="text-4xl font-black text-[#FBBC04]">
+                15<span className="text-[#FBBC04]/70">+</span>
+              </div>
+              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">
+                Communities
+              </div>
             </div>
             <div>
-              <div className="text-4xl font-black text-[#34A853]">4<span className="text-[#34A853]/70">+</span></div>
-              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">Projects</div>
+              <div className="text-4xl font-black text-[#34A853]">
+                4<span className="text-[#34A853]/70">+</span>
+              </div>
+              <div className="mt-2 text-sm font-medium tracking-wide text-white/50 uppercase">
+                Projects
+              </div>
             </div>
           </div>
         </div>
@@ -94,7 +106,11 @@ const HeroSec = () => {
             style={{ x: shiftX1, y: shiftY1 }}
             className="absolute left-0 top-10 h-[300px] w-[240px] -rotate-6 overflow-hidden rounded-3xl border-[4px] border-[#0A0A0C] shadow-2xl transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-50"
           >
-            <img src={images[0]} alt="Event 1" className="h-full w-full object-cover grayscale transition-all duration-500 hover:grayscale-0" />
+            <img
+              src={images[0]}
+              alt="Event 1"
+              className="h-full w-full object-cover grayscale transition-all duration-500 hover:grayscale-0"
+            />
             <div className="absolute inset-0 bg-black/20" />
           </motion.div>
 
@@ -103,7 +119,11 @@ const HeroSec = () => {
             style={{ x: shiftX2, y: shiftY2 }}
             className="absolute z-20 h-[380px] w-[280px] rotate-3 overflow-hidden rounded-3xl border-[4px] border-[#0A0A0C] shadow-[0_30px_60px_rgba(0,0,0,0.6)] transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-50"
           >
-            <img src={images[1]} alt="Event 2" className="h-full w-full object-cover grayscale opacity-90 transition-all duration-500 hover:grayscale-0 hover:opacity-100" />
+            <img
+              src={images[1]}
+              alt="Event 2"
+              className="h-full w-full object-cover grayscale opacity-90 transition-all duration-500 hover:grayscale-0 hover:opacity-100"
+            />
           </motion.div>
 
           {/* Floating Action Button */}

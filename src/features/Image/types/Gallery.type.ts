@@ -1,6 +1,6 @@
 export type GalleryCardType = {
   _id: string;
-  title: string,
+  title: string;
   albumImageUrl: string;
   imageCount: number;
   slug: string;

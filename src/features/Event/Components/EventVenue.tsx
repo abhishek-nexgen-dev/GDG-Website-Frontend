@@ -40,6 +40,7 @@ const EventVenue = ({ form, update }: Props) => {
             <Label required>Venue Name</Label>
             <Input
               value={form.venue.venueName}
+              
               onChange={(value) => update("venue", { ...form.venue, venueName: value })}
               placeholder="Enter venue name"
             />

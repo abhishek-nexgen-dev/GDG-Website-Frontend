@@ -7,7 +7,7 @@ const GalleryCard: React.FC<GalleryCardType> = ({
   albumImageUrl,
   imageCount,
   createdAt,
-  description
+  description,
 }) => {
   const formattedDate = new Date(createdAt).toLocaleDateString(undefined, {
     year: "numeric",
@@ -34,12 +34,13 @@ const GalleryCard: React.FC<GalleryCardType> = ({
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
         <div className="flex items-end justify-between rounded-2xl border border-white/10 bg-black/60 px-4 py-3 backdrop-blur-md transition-all duration-300 group-hover:bg-black/80 sm:px-5 sm:py-4">
           <div className="flex-1 pr-4">
-            <h3 className="line-clamp-1 text-base font-bold text-white sm:text-lg md:text-xl" title={description}>
+            <h3
+              className="line-clamp-1 text-base font-bold text-white sm:text-lg md:text-xl"
+              title={description}
+            >
               {title}
             </h3>
-            <p className="mt-1 text-xs font-medium text-gray-300 sm:text-sm">
-              {formattedDate}
-            </p>
+            <p className="mt-1 text-xs font-medium text-gray-300 sm:text-sm">{formattedDate}</p>
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-white shadow-sm backdrop-blur-sm group-hover:bg-white/20 transition-colors">

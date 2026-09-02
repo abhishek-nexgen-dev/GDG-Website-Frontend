@@ -14,7 +14,6 @@ export interface GalleryItem {
 }
 
 export const images: GalleryItem[] = [
- 
   {
     id: "1",
     img: "https://imgs.search.brave.com/gLH5Au-TgJmgV1wUTDMsxAE1QN72OVStsJhB4gbGdj8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNC8w/NS8wNy8wNi80NC9j/YXQtMzM5NDAwXzY0/MC5qcGc",
@@ -22,7 +21,6 @@ export const images: GalleryItem[] = [
     title: "RanchiHacks 2026 Grand Finale",
     category: "Hackathon",
   },
-
 ];
 
 const ImagePage = () => {
@@ -31,7 +29,9 @@ const ImagePage = () => {
 
   // Optional: You can use the slug to filter or customize the gallery content
   const galleryTitle = slug
-    ? decodeURIComponent(slug).replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+    ? decodeURIComponent(slug)
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase())
     : "RanchiHacks 2025";
 
   return (
@@ -43,9 +43,7 @@ const ImagePage = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-sm font-medium text-white/70">
-              {galleryTitle} Gallery
-            </span>
+            <span className="text-sm font-medium text-white/70">{galleryTitle} Gallery</span>
           </div>
 
           {/* Title */}
@@ -71,8 +69,8 @@ const ImagePage = () => {
 
           {/* Subtitle */}
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/60 md:text-lg">
-            Every photo tells a story of innovation, teamwork, and unforgettable memories.
-            Explore the moments that made {galleryTitle} an inspiring journey for every builder.
+            Every photo tells a story of innovation, teamwork, and unforgettable memories. Explore
+            the moments that made {galleryTitle} an inspiring journey for every builder.
           </p>
         </div>
 

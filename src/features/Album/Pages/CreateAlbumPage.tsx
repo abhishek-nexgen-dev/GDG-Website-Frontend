@@ -1,4 +1,3 @@
-
 import {
   ArrowLeft,
   Check,
@@ -20,47 +19,16 @@ import Input from "../../../Components/Input";
 import Label from "../../../Components/Label";
 import uploadImage from "../../../utils/uploadImage";
 
-
 import useCreateAlbum from "../hooks/CreateAlbumForm.hook";
 import useCreateAlbumMutation from "../hooks/useCreateAlbumMutation";
+import Section from "../../../Components/Section";
 
 type CoverMode = "upload" | "url";
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
 
-function Section({
-  number,
-  title,
-  description,
-  icon,
-  children,
-}: {
-  number?: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="min-w-0 overflow-hidden rounded-xl border border-white/[0.06] bg-[#191a1f]">
-      <div className="flex items-start gap-3 border-b border-white/[0.05] px-4 py-3">
-        <div className="mt-0.5 shrink-0 text-emerald-400">{icon}</div>
 
-        <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-zinc-100">
-            {number && `${number}. `}
-            {title}
-          </h2>
-
-          <p className="mt-0.5 text-xs text-zinc-500">{description}</p>
-        </div>
-      </div>
-
-      <div className="min-w-0 p-4">{children}</div>
-    </section>
-  );
-}
 
 function ErrorMessage({ message }: { message?: string }) {
   if (!message) return null;
@@ -69,14 +37,9 @@ function ErrorMessage({ message }: { message?: string }) {
 }
 
 export default function CreateAlbumPage() {
-
-  
   const form = useCreateAlbum();
 
-  const {
-    mutate: createAlbum,
-    isPending,
-  } = useCreateAlbumMutation();
+  const { mutate: createAlbum, isPending } = useCreateAlbumMutation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -115,9 +78,7 @@ export default function CreateAlbumPage() {
     };
   }, [imagePreview]);
 
-  const handleCoverChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleCoverChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file || !file.type.startsWith("image/")) {
@@ -200,9 +161,7 @@ export default function CreateAlbumPage() {
     );
   };
 
-  const handleTagKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" || event.key === ",") {
       event.preventDefault();
       addTag();
@@ -253,14 +212,10 @@ export default function CreateAlbumPage() {
             <div className="mb-2 flex items-center gap-2 text-xs">
               <span className="text-zinc-500">Albums</span>
               <span className="text-zinc-700">/</span>
-              <span className="truncate text-emerald-400">
-                Create New Album
-              </span>
+              <span className="truncate text-emerald-400">Create New Album</span>
             </div>
 
-            <h1 className="text-lg font-semibold tracking-tight">
-              Create New Album
-            </h1>
+            <h1 className="text-lg font-semibold tracking-tight">Create New Album</h1>
 
             <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
               Organize and showcase your event memories in one place.
@@ -282,7 +237,7 @@ export default function CreateAlbumPage() {
         <div className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
           <div className="min-w-0 space-y-5">
             <Section
-              number="1"
+              
               title="Basic Information"
               description="Enter the core details for this album"
               icon={<ImageIcon size={16} />}
@@ -306,9 +261,7 @@ export default function CreateAlbumPage() {
                   <div className="mt-1 flex items-center justify-between gap-3">
                     <ErrorMessage message={errors.title?.message} />
 
-                    <span className="shrink-0 text-xs text-zinc-600">
-                      {title.length}/100
-                    </span>
+                    <span className="shrink-0 text-xs text-zinc-600">{title.length}/100</span>
                   </div>
                 </div>
 
@@ -349,16 +302,14 @@ export default function CreateAlbumPage() {
                   <div className="mt-1 flex items-center justify-between gap-3">
                     <ErrorMessage message={errors.description?.message} />
 
-                    <span className="shrink-0 text-xs text-zinc-600">
-                      {description.length}/500
-                    </span>
+                    <span className="shrink-0 text-xs text-zinc-600">{description.length}/500</span>
                   </div>
                 </div>
               </div>
             </Section>
 
             <Section
-              number="2"
+            
               title="Album Cover"
               description="Upload an image or use an external image URL"
               icon={<ImageIcon size={16} />}
@@ -449,17 +400,11 @@ export default function CreateAlbumPage() {
                         <Upload size={20} />
                       </div>
 
-                      <p className="text-sm font-medium text-zinc-300">
-                        Upload cover image
-                      </p>
+                      <p className="text-sm font-medium text-zinc-300">Upload cover image</p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
-                        Click to browse from your device
-                      </p>
+                      <p className="mt-1 text-xs text-zinc-600">Click to browse from your device</p>
 
-                      <p className="mt-2 text-[11px] text-zinc-700">
-                        JPG, PNG or WEBP recommended
-                      </p>
+                      <p className="mt-2 text-[11px] text-zinc-700">JPG, PNG or WEBP recommended</p>
                     </button>
                   )}
                 </div>
@@ -498,7 +443,7 @@ export default function CreateAlbumPage() {
             </Section>
 
             <Section
-              number="3"
+    
               title="Album Settings"
               description="Configure visibility and organize your album"
               icon={<ShieldCheck size={16} />}
@@ -525,16 +470,10 @@ export default function CreateAlbumPage() {
                       <div className="flex items-center gap-2">
                         <Eye
                           size={16}
-                          className={
-                            visibility === "public"
-                              ? "text-emerald-400"
-                              : "text-zinc-500"
-                          }
+                          className={visibility === "public" ? "text-emerald-400" : "text-zinc-500"}
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Public
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Public</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -560,15 +499,11 @@ export default function CreateAlbumPage() {
                         <Lock
                           size={16}
                           className={
-                            visibility === "private"
-                              ? "text-emerald-400"
-                              : "text-zinc-500"
+                            visibility === "private" ? "text-emerald-400" : "text-zinc-500"
                           }
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Private
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Private</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -578,84 +513,69 @@ export default function CreateAlbumPage() {
                   </div>
                 </div>
 
+                <div>
+                  <Label required>Status</Label>
 
-                 
-<div>
-  <Label required>Status</Label>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setValue("status", "draft", {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      className={`rounded-xl border p-4 text-left transition ${
+                        status === "draft"
+                          ? "border-amber-500/50 bg-amber-500/10"
+                          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText
+                          size={16}
+                          className={status === "draft" ? "text-amber-400" : "text-zinc-500"}
+                        />
 
-  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-    <button
-      type="button"
-      onClick={() =>
-        setValue("status", "draft", {
-          shouldValidate: true,
-          shouldDirty: true,
-        })
-      }
-      className={`rounded-xl border p-4 text-left transition ${
-        status === "draft"
-          ? "border-amber-500/50 bg-amber-500/10"
-          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <FileText
-          size={16}
-          className={
-            status === "draft"
-              ? "text-amber-400"
-              : "text-zinc-500"
-          }
-        />
+                        <span className="text-sm font-medium text-zinc-200">Draft</span>
+                      </div>
 
-        <span className="text-sm font-medium text-zinc-200">
-          Draft
-        </span>
-      </div>
+                      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                        Save the album as a draft and continue editing later.
+                      </p>
+                    </button>
 
-      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
-        Save the album as a draft and continue editing later.
-      </p>
-    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setValue("status", "published", {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      className={`rounded-xl border p-4 text-left transition ${
+                        status === "published"
+                          ? "border-emerald-500/50 bg-emerald-500/10"
+                          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2
+                          size={16}
+                          className={status === "published" ? "text-emerald-400" : "text-zinc-500"}
+                        />
 
-    <button
-      type="button"
-      onClick={() =>
-        setValue("status", "published", {
-          shouldValidate: true,
-          shouldDirty: true,
-        })
-      }
-      className={`rounded-xl border p-4 text-left transition ${
-        status === "published"
-          ? "border-emerald-500/50 bg-emerald-500/10"
-          : "border-white/[0.07] bg-[#202126] hover:border-white/[0.12]"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <CheckCircle2
-          size={16}
-          className={
-            status === "published"
-              ? "text-emerald-400"
-              : "text-zinc-500"
-          }
-        />
+                        <span className="text-sm font-medium text-zinc-200">Published</span>
+                      </div>
 
-        <span className="text-sm font-medium text-zinc-200">
-          Published
-        </span>
-      </div>
+                      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                        Make the album active and ready for users to view.
+                      </p>
+                    </button>
+                  </div>
 
-      <p className="mt-2 text-xs leading-relaxed text-zinc-600">
-        Make the album active and ready for users to view.
-      </p>
-    </button>
-  </div>
-
-  <ErrorMessage message={errors.status?.message} />
-</div>
-
+                  <ErrorMessage message={errors.status?.message} />
+                </div>
 
                 <div>
                   <Label>Tags</Label>
@@ -667,9 +587,7 @@ export default function CreateAlbumPage() {
                           key={tag}
                           className="flex max-w-full items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400"
                         >
-                          <span className="max-w-[180px] truncate">
-                            {tag}
-                          </span>
+                          <span className="max-w-[180px] truncate">{tag}</span>
 
                           <button
                             type="button"
@@ -687,18 +605,14 @@ export default function CreateAlbumPage() {
                         onKeyDown={handleTagKeyDown}
                         onBlur={addTag}
                         placeholder={
-                          tags.length
-                            ? "Add another tag..."
-                            : "Type a tag and press Enter"
+                          tags.length ? "Add another tag..." : "Type a tag and press Enter"
                         }
                         className="min-w-[120px] flex-1 bg-transparent px-1 py-1 text-sm text-zinc-300 outline-none placeholder:text-zinc-600"
                       />
                     </div>
                   </div>
 
-                  <p className="mt-2 text-xs text-zinc-600">
-                    Press Enter or comma to add a tag.
-                  </p>
+                  <p className="mt-2 text-xs text-zinc-600">Press Enter or comma to add a tag.</p>
                 </div>
               </div>
             </Section>
@@ -741,8 +655,7 @@ export default function CreateAlbumPage() {
 
                   <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs text-zinc-500">
                     <span className="flex items-center gap-2">
-                      <ImageIcon size={14} />
-                      0 Photos
+                      <ImageIcon size={14} />0 Photos
                     </span>
 
                     <span className="capitalize">{visibility}</span>
@@ -797,11 +710,7 @@ export default function CreateAlbumPage() {
             >
               <Plus size={16} />
 
-              {isUploading
-                ? "Uploading..."
-                : isPending
-                  ? "Creating..."
-                  : "Create Album"}
+              {isUploading ? "Uploading..." : isPending ? "Creating..." : "Create Album"}
             </button>
           </div>
         </div>

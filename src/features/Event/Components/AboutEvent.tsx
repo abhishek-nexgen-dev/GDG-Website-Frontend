@@ -1,10 +1,18 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowUpRight, Check, Sparkles } from "lucide-react";
-import { singleEventData } from "../data/singleEventData";
 
-const AboutEvent = () => {
-  const { shortDescription, descriptionMarkdown } = singleEventData;
+
+import type { EventResponse } from "../type/Event.type";
+
+
+interface AboutEventProps {
+  event: EventResponse;
+}
+
+const AboutEvent = ({ event }: AboutEventProps) => {
+
+  // console.log(shortDescription , descriptionMarkdown)
 
   return (
     <section
@@ -26,7 +34,7 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
         </h2>
 
         <p className="mt-4 max-w-2xl text-sm leading-7 text-white/45 sm:text-[15px]">
-          {shortDescription}
+          {event.shortDescription}
         </p>
       </div>
 
@@ -74,11 +82,11 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
 
           [&>hr]:my-8
           [&>hr]:border-white/[0.07]
-
           [&>table]:w-full
         "
       >
         <ReactMarkdown
+          
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => <h1>{children}</h1>,
@@ -155,7 +163,7 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
             ),
           }}
         >
-          {descriptionMarkdown}
+          {event.descriptionMarkdown}
         </ReactMarkdown>
       </article>
     </section>

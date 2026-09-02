@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";import gsap from "gsap";
+import { Link, useNavigate } from "react-router-dom";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import useLogin from "../hook/useLogin";

@@ -1,6 +1,14 @@
-import { CalendarDays, Clock3, Globe, MapPin, ShieldCheck, Users } from "lucide-react";
+import { useParams } from "react-router-dom";
 
-import { singleEventData } from "../data/singleEventData";
+import {
+  CalendarDays,
+  Clock3,
+  Globe,
+  MapPin,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
+
 import {
   formatDate,
   formatDateRange,
@@ -10,25 +18,60 @@ import {
 } from "../utils/Event.utils";
 
 import InfoCard from "../Components/InfoCard";
-
 import Detail from "../Components/Detail";
-
-import QuickInfo from "../Components/QuickInfo";
-
 import AboutEvent from "../Components/AboutEvent";
 import EVENT_BANNER from "../Components/EVENT_BANNER";
 import HIGHLIGHTS_Sec from "../Section/HIGHLIGHTS_Sec";
 
-const ViewSingleEventPage = () => {
-  const event = singleEventData;
+import usefetchEventDetaill from "../hook/usefetchEventDetaill";
 
+const ViewSingleEventPage = () => {
+  const { Slug } = useParams<{ Slug: string }>();
+
+  if(!Slug){
+    throw new Error("Slug is required")
+  }
+
+  const {
+    data,
+    isLoading,
+    isError,
+  } = usefetchEventDetaill(Slug);
+
+  // Loading State
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+        <p className="text-sm text-white/60">Loading event details...</p>
+      </main>
+    );
+  }
+
+  // Error State
+  if (isError || !data) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+        <p className="text-sm text-red-400">
+          Failed to load event details.
+        </p>
+      </main>
+    );
+  }
+
+  // API event data
+  const event = data;
+
+  console.log('data', data , 'error', isError)
+
+  // Get event start/end dates
   const eventStart = getEventStartDate();
-  const eventEnd = getEventEndDate();
+  const eventEnd = getEventEndDate(event);
 
   const eventDate = formatDateRange(eventStart, eventEnd);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#050505] text-white">
+      {/* Background Grid */}
       <div className="absolute inset-0 opacity-[0.05]">
         <div
           className="h-full w-full"
@@ -42,57 +85,83 @@ const ViewSingleEventPage = () => {
         />
       </div>
 
+      {/* Background Effects */}
       <div className="absolute left-[-120px] top-[-100px] h-80 w-80 rounded-full bg-[#EA4335]/20 blur-[120px]" />
+
       <div className="absolute right-[-100px] top-[5%] h-96 w-96 rounded-full bg-[#4285F4]/20 blur-[150px]" />
 
       <div className="absolute left-[-120px] top-[15%] h-80 w-80 rounded-full bg-green-700/20 blur-[120px]" />
+
       <div className="absolute right-[-100px] top-[40%] h-96 w-96 rounded-full bg-purple-700/20 blur-[150px]" />
 
       <div className="relative z-10 mx-auto w-full max-w-[90%] px-4 pb-20 pt-6 sm:px-6 lg:px-8">
-        <EVENT_BANNER />
+        {/* Pass event data */}
+        <EVENT_BANNER event={event} />
 
-        <HIGHLIGHTS_Sec />
+        <HIGHLIGHTS_Sec event={event} />
 
         {/* =====================================================
             ABOUT + EVENT DETAILS
         ===================================================== */}
 
-        <section id="overview" className="flex gap-[1vw] justify-between mt-10">
-          <AboutEvent />
+        <section
+          id="overview"
+          className="mt-10 flex justify-between gap-[1vw]"
+        >
+          <AboutEvent event={event} />
 
-          <div className="flex flex-col w-[30%] gap-4">
-            <InfoCard eyebrow="Everything you need" title="Event Details">
+          <div className="flex w-[30%] flex-col gap-4">
+            <InfoCard
+              eyebrow="Everything you need"
+              title="Event Details"
+            >
               <div className="space-y-5">
-                <Detail icon={<CalendarDays size={16} />} label="Event Date" value={eventDate} />
+                {/* Event Date */}
+                <Detail
+                  icon={<CalendarDays size={16} />}
+                  label="Event Date"
+                  value={eventDate}
+                />
 
+                {/* Registration */}
                 <Detail
                   icon={<Clock3 size={16} />}
                   label="Registration"
-                  value={`${formatDate(event.registrationStartAt)} – ${formatDate(
-                    event.registrationEndAt,
+                  value={`${formatDate(
+                    event.registrationStartAt
+                  )} – ${formatDate(
+                    event.registrationEndAt
                   )}`}
                 />
 
+                {/* Venue */}
                 <Detail
                   icon={<MapPin size={16} />}
                   label="Venue"
                   value={
                     <>
-                      {event.venue.venueName}
+                      {event.venue?.venueName}
                       <br />
-                      {event.venue.city}, {event.venue.state}
+                      {event.venue?.city}, {event.venue?.state}
                     </>
                   }
                 />
 
+                {/* Mode */}
                 <Detail
                   icon={<Globe size={16} />}
                   label="Mode"
-                  value={formatStatus(event.venue.mode)}
+                  value={formatStatus(event.venue?.mode)}
                 />
 
-                <Detail icon={<Users size={16} />} label="Team Size" value="2 – 4 Members" />
+                {/* Team Size */}
+                <Detail
+                  icon={<Users size={16} />}
+                  label="Team Size"
+                  value="2 – 4 Members"
+                />
 
+                {/* Status */}
                 <Detail
                   icon={<ShieldCheck size={16} />}
                   label="Status"
@@ -106,9 +175,7 @@ const ViewSingleEventPage = () => {
               </div>
             </InfoCard>
 
-            <InfoCard eyebrow="At a glance" title="Quick Info">
-              <QuickInfo />
-            </InfoCard>
+        
           </div>
         </section>
       </div>

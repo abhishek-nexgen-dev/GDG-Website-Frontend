@@ -1,8 +1,4 @@
-import {
-  CalendarDays,
-  Mail,
-  Sparkles,
-} from "lucide-react";
+import { CalendarDays, Mail, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BsInstagram, BsLinkedin } from "react-icons/bs";
 import gsap from "gsap";
@@ -31,21 +27,13 @@ const LaunchingSoon = () => {
 
     return {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor(
-        (difference / (1000 * 60 * 60)) % 24,
-      ),
-      minutes: Math.floor(
-        (difference / (1000 * 60)) % 60,
-      ),
-      seconds: Math.floor(
-        (difference / 1000) % 60,
-      ),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / (1000 * 60)) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
     };
   };
 
-  const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(),
-  );
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -289,18 +277,14 @@ const LaunchingSoon = () => {
      MOUSE PARALLAX
   ===================================================== */
 
-  const handleMouseMove = (
-    event: React.MouseEvent<HTMLDivElement>,
-  ) => {
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!ganeshRef.current) return;
 
     const { innerWidth, innerHeight } = window;
 
-    const x =
-      (event.clientX / innerWidth - 0.5) * 18;
+    const x = (event.clientX / innerWidth - 0.5) * 18;
 
-    const y =
-      (event.clientY / innerHeight - 0.5) * 18;
+    const y = (event.clientY / innerHeight - 0.5) * 18;
 
     gsap.to(ganeshRef.current, {
       x,
@@ -398,7 +382,6 @@ const LaunchingSoon = () => {
       ================================================= */}
 
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1550px] flex-col px-5 sm:px-8 lg:px-12">
-        
         {/* ================================================
             NAVBAR
         ================================================= */}
@@ -416,9 +399,7 @@ const LaunchingSoon = () => {
                 GDG Ranchi
               </h2>
 
-              <p className="text-[12px] text-zinc-500">
-                Google Developer Groups
-              </p>
+              <p className="text-[12px] text-zinc-500">Google Developer Groups</p>
             </div>
           </div>
 
@@ -451,13 +432,11 @@ const LaunchingSoon = () => {
         ================================================= */}
 
         <section className="grid min-h-0 flex-1 grid-cols-1 items-center lg:grid-cols-[1.05fr_.95fr]">
-          
           {/* ================================================
               LEFT SECTION
           ================================================= */}
 
           <div className="relative flex flex-col justify-center py-8 lg:py-0">
-            
             {/* Mantra */}
 
             <div className="hero-mantra mb-7 flex items-center gap-3 sm:mb-9">
@@ -469,10 +448,6 @@ const LaunchingSoon = () => {
 
               <div className="h-px w-8 bg-gradient-to-l from-transparent to-orange-400/60" />
             </div>
-
-  
-
-        
 
             {/* Main Heading */}
 
@@ -493,16 +468,10 @@ const LaunchingSoon = () => {
             {/* Description */}
 
             <p className="hero-description mt-6 max-w-xl text-sm leading-7 text-zinc-400 sm:mt-7 sm:text-base sm:leading-8">
-              With the blessings of{" "}
-              <span className="font-medium text-zinc-200">
-                Lord Ganesha
-              </span>
-              {" "}— the symbol of wisdom, knowledge, and new beginnings —
-              GDG Ranchi begins a journey to bring together developers,
-              learners, builders, and innovators.
+              With the blessings of <span className="font-medium text-zinc-200">Lord Ganesha</span>{" "}
+              — the symbol of wisdom, knowledge, and new beginnings — GDG Ranchi begins a journey to
+              bring together developers, learners, builders, and innovators.
             </p>
-
-        
 
             {/* Divider */}
 
@@ -512,10 +481,7 @@ const LaunchingSoon = () => {
 
             <div className="launch-info">
               <div className="mb-3 flex items-center gap-2">
-                <CalendarDays
-                  size={13}
-                  className="text-orange-400"
-                />
+                <CalendarDays size={13} className="text-orange-400" />
 
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
                   Launching on Ganesh Chaturthi
@@ -527,9 +493,7 @@ const LaunchingSoon = () => {
                   14 SEPTEMBER
                 </span>
 
-                <span className="mb-1 text-sm text-zinc-500">
-                  2026
-                </span>
+                <span className="mb-1 text-sm text-zinc-500">2026</span>
               </div>
             </div>
 
@@ -541,9 +505,7 @@ const LaunchingSoon = () => {
                   key={item.label}
                   className={`countdown-card relative overflow-hidden rounded-xl border ${item.border} bg-white/[0.025] px-2 py-3 text-center backdrop-blur-sm sm:px-3 sm:py-4`}
                 >
-                  <div
-                    className={`absolute left-0 top-0 h-px w-full ${item.accent} opacity-60`}
-                  />
+                  <div className={`absolute left-0 top-0 h-px w-full ${item.accent} opacity-60`} />
 
                   <p className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                     {String(item.value).padStart(2, "0")}
@@ -555,8 +517,6 @@ const LaunchingSoon = () => {
                 </div>
               ))}
             </div>
-
-    
 
             {/* Quote */}
 
@@ -572,8 +532,7 @@ const LaunchingSoon = () => {
           ================================================= */}
 
           <div className="relative hidden h-full items-center justify-center lg:flex">
-            
-          {/* OM Background */}
+            {/* OM Background */}
 
             <div className="om-symbol absolute right-[8%] top-[10%] select-none text-[280px] font-bold leading-none text-orange-400/[0.04]">
               ॐ
@@ -621,9 +580,7 @@ const LaunchingSoon = () => {
                     Mark the date
                   </p>
 
-                  <p className="mt-1 text-xs font-semibold text-zinc-200">
-                    SEPTEMBER 14
-                  </p>
+                  <p className="mt-1 text-xs font-semibold text-zinc-200">SEPTEMBER 14</p>
                 </div>
               </div>
             </div>
@@ -649,26 +606,18 @@ const LaunchingSoon = () => {
         ================================================= */}
 
         <footer className="flex min-h-[56px] shrink-0 items-center justify-between border-t border-white/[0.06]">
-          <p className="footer-item text-[9px] text-zinc-700 sm:text-[10px]">
-            © 2026 GDG Ranchi
-          </p>
+          <p className="footer-item text-[9px] text-zinc-700 sm:text-[10px]">© 2026 GDG Ranchi</p>
 
           <div className="footer-item flex items-center gap-3">
-            <span className="text-[9px] text-zinc-600">
-              Learn
-            </span>
+            <span className="text-[9px] text-zinc-600">Learn</span>
 
             <span className="h-1 w-1 rounded-full bg-[#4285F4]" />
 
-            <span className="text-[9px] text-zinc-600">
-              Build
-            </span>
+            <span className="text-[9px] text-zinc-600">Build</span>
 
             <span className="h-1 w-1 rounded-full bg-[#34A853]" />
 
-            <span className="text-[9px] text-zinc-600">
-              Connect
-            </span>
+            <span className="text-[9px] text-zinc-600">Connect</span>
           </div>
 
           <a
@@ -677,9 +626,7 @@ const LaunchingSoon = () => {
           >
             <Mail size={11} />
 
-            <span className="hidden sm:inline">
-              Contact
-            </span>
+            <span className="hidden sm:inline">Contact</span>
           </a>
         </footer>
       </div>
