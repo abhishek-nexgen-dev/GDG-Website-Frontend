@@ -16,23 +16,11 @@ interface ScrollStackItemProps {
   className?: string;
 }
 
-export const ScrollStackItem = ({
-  children,
-  className = "",
-}: ScrollStackItemProps) => {
-  return (
-    <div
-      className={`scroll-stack-item mt-[6vh]  w-full ${className}`}
-    >
-      {children}
-    </div>
-  );
+export const ScrollStackItem = ({ children, className = "" }: ScrollStackItemProps) => {
+  return <div className={`scroll-stack-item mt-[6vh]  w-full ${className}`}>{children}</div>;
 };
 
-const ScrollStack = ({
-  children,
-  className = ""
-}: ScrollStackProps) => {
+const ScrollStack = ({ children, className = "" }: ScrollStackProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -41,10 +29,7 @@ const ScrollStack = ({
     if (!container) return;
 
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>(
-        ".scroll-stack-item",
-        container
-      );
+      const cards = gsap.utils.toArray<HTMLElement>(".scroll-stack-item", container);
 
       cards.forEach((card, index) => {
         // Each next card stays above previous card
@@ -77,7 +62,7 @@ const ScrollStack = ({
               end: "top 35%",
               scrub: 1,
             },
-          }
+          },
         );
       });
 

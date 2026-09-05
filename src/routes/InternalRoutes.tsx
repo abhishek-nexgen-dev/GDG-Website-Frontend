@@ -26,7 +26,7 @@ const InternalRoutes = () => {
         <Route path="events" element={<ManageEvent />} />
         <Route path="event/view/:Slug" element={<MemberViewEvent />} />
         <Route path="events/create" element={<CreateEvent />} />
-           
+
         <Route path="event" element={<ManageEvent />} />
         <Route path="albums" element={<ManageAlbumsPage />} />
         <Route path="albums/manage" element={<ManageAlbumsPage />} />

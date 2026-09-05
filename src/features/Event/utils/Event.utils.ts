@@ -8,7 +8,6 @@ export const formatDate = (value?: string) => {
   }).format(new Date(value));
 };
 
-
 export const formatDateRange = (start?: string, end?: string) => {
   if (!start) return "—";
 
@@ -39,7 +38,6 @@ export const formatDateRange = (start?: string, end?: string) => {
   return `${formatDate(start)} – ${formatDate(end)}`;
 };
 
-
 export const formatTime = (value?: string) => {
   if (!value) return "—";
 
@@ -49,7 +47,6 @@ export const formatTime = (value?: string) => {
   }).format(new Date(value));
 };
 
-
 export const formatStatus = (value?: string) => {
   if (!value) return "—";
 
@@ -58,7 +55,6 @@ export const formatStatus = (value?: string) => {
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
-
 
 // ============================================================
 // EVENT DATE HELPERS
@@ -75,7 +71,6 @@ interface EventDateData {
   timeline?: EventTimeline[];
 }
 
-
 export const getEventStartDate = (event?: EventDateData) => {
   if (!event) return undefined;
 
@@ -87,7 +82,6 @@ export const getEventStartDate = (event?: EventDateData) => {
 
   return timeline[0]?.startAt;
 };
-
 
 export const getEventEndDate = (event?: EventDateData) => {
   if (!event) return undefined;

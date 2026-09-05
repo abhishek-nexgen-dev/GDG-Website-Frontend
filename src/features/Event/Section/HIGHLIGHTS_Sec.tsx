@@ -41,7 +41,6 @@ const HIGHLIGHTS_Sec = ({ event }: EventHignLightsProps) => {
   return (
     <section className="hidden md:block mt-5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-md">
       <div className="grid grid-cols-1 divide-y divide-white/[0.07] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
-        
         {/* Event Type */}
         <Highlight
           icon={<Zap size={18} />}
@@ -59,22 +58,14 @@ const HIGHLIGHTS_Sec = ({ event }: EventHignLightsProps) => {
         {/* Mentors */}
         <Highlight
           icon={<Users size={18} />}
-          value={
-            mentorCount > 0
-              ? `${mentorCount}+`
-              : "TBA"
-          }
+          value={mentorCount > 0 ? `${mentorCount}+` : "TBA"}
           label="Expert Mentors"
         />
 
         {/* Event Mode */}
         <Highlight
           icon={<ShieldCheck size={18} />}
-          value={
-            event.venue?.mode
-              ? formatStatus(event.venue.mode)
-              : "TBA"
-          }
+          value={event.venue?.mode ? formatStatus(event.venue.mode) : "TBA"}
           label="Event Mode"
         />
       </div>

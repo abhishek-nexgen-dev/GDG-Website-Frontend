@@ -1,13 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import {
-  CalendarDays,
-  Clock3,
-  Globe,
-  MapPin,
-  ShieldCheck,
-  Users,
-} from "lucide-react";
+import { CalendarDays, Clock3, Globe, MapPin, ShieldCheck, Users } from "lucide-react";
 
 import {
   formatDate,
@@ -57,7 +50,7 @@ const ViewSingleEventPage = () => {
 
   // FIX: Pass 'event' to getEventStartDate as well if the utility expects it
   // Assuming getEventStartDate might need the event object or relies on context
-  const eventStart = getEventStartDate(event); 
+  const eventStart = getEventStartDate(event);
   const eventEnd = getEventEndDate(event);
 
   const eventDate = formatDateRange(eventStart, eventEnd);
@@ -104,26 +97,17 @@ const ViewSingleEventPage = () => {
 
           {/* Details Sidebar - Fixed width on desktop, full width on mobile */}
           <div className="w-full lg:w-[30%] lg:sticky lg:top-6">
-            <InfoCard
-              eyebrow="Everything you need"
-              title="Event Details"
-            >
+            <InfoCard eyebrow="Everything you need" title="Event Details">
               <div className="space-y-6">
                 {/* Event Date */}
-                <Detail
-                  icon={<CalendarDays size={16} />}
-                  label="Event Date"
-                  value={eventDate}
-                />
+                <Detail icon={<CalendarDays size={16} />} label="Event Date" value={eventDate} />
 
                 {/* Registration */}
                 <Detail
                   icon={<Clock3 size={16} />}
                   label="Registration"
-                  value={`${formatDate(
-                    event.registrationStartAt
-                  )} – ${formatDate(
-                    event.registrationEndAt
+                  value={`${formatDate(event.registrationStartAt)} – ${formatDate(
+                    event.registrationEndAt,
                   )}`}
                 />
 
@@ -148,11 +132,7 @@ const ViewSingleEventPage = () => {
                 />
 
                 {/* Team Size */}
-                <Detail
-                  icon={<Users size={16} />}
-                  label="Team Size"
-                  value="2 – 4 Members"
-                />
+                <Detail icon={<Users size={16} />} label="Team Size" value="2 – 4 Members" />
 
                 {/* Status */}
                 <Detail

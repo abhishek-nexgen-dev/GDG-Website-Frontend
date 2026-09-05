@@ -51,24 +51,16 @@ const AboutEvent = ({ event }: AboutEventProps) => {
             ),
 
             h3: ({ children }) => (
-              <h3 className="mt-6 text-base font-semibold text-white/80 sm:mt-8">
-                {children}
-              </h3>
+              <h3 className="mt-6 text-base font-semibold text-white/80 sm:mt-8">{children}</h3>
             ),
 
             p: ({ children }) => (
-              <p className="mt-4 text-sm leading-7 text-white/45 sm:text-[15px]">
-                {children}
-              </p>
+              <p className="mt-4 text-sm leading-7 text-white/45 sm:text-[15px]">{children}</p>
             ),
 
-            ul: ({ children }) => (
-              <ul className="mt-5 space-y-3">{children}</ul>
-            ),
+            ul: ({ children }) => <ul className="mt-5 space-y-3">{children}</ul>,
 
-            ol: ({ children }) => (
-              <ol className="mt-5 space-y-3">{children}</ol>
-            ),
+            ol: ({ children }) => <ol className="mt-5 space-y-3">{children}</ol>,
 
             li: ({ children }) => (
               <li className="flex items-start gap-3 text-sm leading-6 text-white/45">
@@ -119,9 +111,7 @@ const AboutEvent = ({ event }: AboutEventProps) => {
 
             table: ({ children }) => (
               <div className="my-6 overflow-x-auto rounded-lg border border-white/[0.08]">
-                <table className="w-full min-w-[500px] text-left text-sm">
-                  {children}
-                </table>
+                <table className="w-full min-w-[500px] text-left text-sm">{children}</table>
               </div>
             ),
 

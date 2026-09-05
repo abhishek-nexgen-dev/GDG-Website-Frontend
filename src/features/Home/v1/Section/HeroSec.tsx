@@ -1,6 +1,7 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Users } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const images = [
   "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format",
@@ -57,9 +58,12 @@ const HeroSec = () => {
             <button className="rounded-xl bg-primary px-8 py-3.5 font-bold text-white transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(26,115,232,0.3)]">
               Join Community
             </button>
-            <button className="rounded-xl border border-white/15 bg-transparent px-8 py-3.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5">
+            <Link
+              to="/coming-soon"
+              className="rounded-xl border border-white/15 bg-transparent px-8 py-3.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5"
+            >
               Explore Events
-            </button>
+            </Link>
           </div>
 
           {/* Stats */}

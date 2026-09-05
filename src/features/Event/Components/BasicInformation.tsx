@@ -112,11 +112,10 @@ const BasicInformation = ({ form, update }: Props) => {
 
           {/* STATUS */}
 
-
-           <div className="relative">
+          <div className="relative">
             <Label required>Status</Label>
 
-              <SearchableDropdown
+            <SearchableDropdown
               options={EventStatus_Constant}
               onChange={(value) => update("status", value)}
               value={form.status}

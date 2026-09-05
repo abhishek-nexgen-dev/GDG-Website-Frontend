@@ -28,8 +28,6 @@ type CoverMode = "upload" | "url";
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
 
-
-
 function ErrorMessage({ message }: { message?: string }) {
   if (!message) return null;
 
@@ -237,7 +235,6 @@ export default function CreateAlbumPage() {
         <div className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
           <div className="min-w-0 space-y-5">
             <Section
-              
               title="Basic Information"
               description="Enter the core details for this album"
               icon={<ImageIcon size={16} />}
@@ -309,7 +306,6 @@ export default function CreateAlbumPage() {
             </Section>
 
             <Section
-            
               title="Album Cover"
               description="Upload an image or use an external image URL"
               icon={<ImageIcon size={16} />}
@@ -443,7 +439,6 @@ export default function CreateAlbumPage() {
             </Section>
 
             <Section
-    
               title="Album Settings"
               description="Configure visibility and organize your album"
               icon={<ShieldCheck size={16} />}
