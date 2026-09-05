@@ -39,7 +39,7 @@ const HIGHLIGHTS_Sec = ({ event }: EventHignLightsProps) => {
   const mentorCount = event.mentors?.length ?? 0;
 
   return (
-    <section className="mt-5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-md">
+    <section className="hidden md:block mt-5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-md">
       <div className="grid grid-cols-1 divide-y divide-white/[0.07] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
         
         {/* Event Type */}

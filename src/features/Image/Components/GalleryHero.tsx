@@ -55,7 +55,7 @@ const GalleryHero = () => {
       </div>
 
       {/* Right Image */}
-      <div className="relative z-10 flex items-center justify-center">
+      <div className="hidden relative z-10 md:flex items-center justify-center">
         {/* Glow Behind Image */}
         <div className="absolute h-80 w-80 rounded-full bg-gradient-to-r from-[#EA4335]/30 via-[#FBBC04]/20 to-[#34A853]/30 blur-[100px]" />
 

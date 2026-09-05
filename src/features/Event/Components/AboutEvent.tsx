@@ -2,25 +2,17 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowUpRight, Check, Sparkles } from "lucide-react";
 
-
 import type { EventResponse } from "../type/Event.type";
-
 
 interface AboutEventProps {
   event: EventResponse;
 }
 
 const AboutEvent = ({ event }: AboutEventProps) => {
-
-  // console.log(shortDescription , descriptionMarkdown)
-
   return (
-    <section
-      className="w-[70%] py-2 sm:py-8 px-8 rounded-2xl border border-white/[0.08]
-bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
-    >
+    <section className="w-full py-4 sm:py-8 px-4 sm:px-8 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]">
       {/* Header */}
-      <div className="max-w-3xl">
+      <div className="max-w-3xl mx-auto sm:mx-0">
         <div className="mb-3 flex items-center gap-2">
           <Sparkles size={13} strokeWidth={1.8} className="text-[#34A853]" />
 
@@ -29,7 +21,7 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
           </span>
         </div>
 
-        <h2 className="text-2xl font-semibold tracking-[-0.025em] text-white sm:text-3xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-[1.875rem] sm:leading-tight">
           About the Event
         </h2>
 
@@ -41,72 +33,48 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
       {/* Subtle divider */}
       <div className="my-8 h-px w-full bg-white/[0.07]" />
 
-      {/* Markdown */}
-      <article
-        className="
-          max-w-4xl
-
-          [&>h1]:text-2xl
-          [&>h1]:font-semibold
-          [&>h1]:tracking-tight
-          [&>h1]:text-white
-
-          [&>h2]:mt-10
-          [&>h2]:text-lg
-          [&>h2]:font-semibold
-          [&>h2]:tracking-tight
-          [&>h2]:text-white
-          [&>h2:first-child]:mt-0
-
-          [&>h3]:mt-8
-          [&>h3]:text-base
-          [&>h3]:font-semibold
-          [&>h3]:text-white/80
-
-          [&>p]:mt-4
-          [&>p]:text-sm
-          [&>p]:leading-7
-          [&>p]:text-white/45
-
-          [&>ul]:mt-5
-          [&>ul]:space-y-3
-
-          [&>ol]:mt-5
-          [&>ol]:space-y-3
-
-          [&>blockquote]:my-7
-          [&>blockquote]:border-l
-          [&>blockquote]:border-[#34A853]/40
-          [&>blockquote]:pl-5
-          [&>blockquote]:text-white/45
-
-          [&>hr]:my-8
-          [&>hr]:border-white/[0.07]
-          [&>table]:w-full
-        "
-      >
+      {/* Markdown Content */}
+      <article className="max-w-4xl mx-auto px-1 sm:px-0">
         <ReactMarkdown
-          
           remarkPlugins={[remarkGfm]}
           components={{
-            h1: ({ children }) => <h1>{children}</h1>,
+            h1: ({ children }) => (
+              <h1 className="text-2xl font-semibold tracking-tight text-white mt-0 sm:mt-8">
+                {children}
+              </h1>
+            ),
 
-            h2: ({ children }) => <h2>{children}</h2>,
+            h2: ({ children }) => (
+              <h2 className="mt-8 text-lg font-semibold tracking-tight text-white sm:mt-10">
+                {children}
+              </h2>
+            ),
 
-            h3: ({ children }) => <h3>{children}</h3>,
+            h3: ({ children }) => (
+              <h3 className="mt-6 text-base font-semibold text-white/80 sm:mt-8">
+                {children}
+              </h3>
+            ),
 
-            p: ({ children }) => <p>{children}</p>,
+            p: ({ children }) => (
+              <p className="mt-4 text-sm leading-7 text-white/45 sm:text-[15px]">
+                {children}
+              </p>
+            ),
 
-            ul: ({ children }) => <ul>{children}</ul>,
+            ul: ({ children }) => (
+              <ul className="mt-5 space-y-3">{children}</ul>
+            ),
 
-            ol: ({ children }) => <ol>{children}</ol>,
+            ol: ({ children }) => (
+              <ol className="mt-5 space-y-3">{children}</ol>
+            ),
 
             li: ({ children }) => (
               <li className="flex items-start gap-3 text-sm leading-6 text-white/45">
                 <span className="mt-[7px] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#34A853]/10">
                   <Check size={9} strokeWidth={2.5} className="text-[#34A853]" />
                 </span>
-
                 <span>{children}</span>
               </li>
             ),
@@ -117,22 +85,25 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
 
             em: ({ children }) => <em className="text-white/60">{children}</em>,
 
-            blockquote: ({ children }) => <blockquote>{children}</blockquote>,
+            blockquote: ({ children }) => (
+              <blockquote className="my-6 sm:my-7 border-l-4 border-[#34A853]/40 pl-4 text-white/45 italic">
+                {children}
+              </blockquote>
+            ),
 
             a: ({ href, children }) => (
               <a
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-[#4285F4] transition-colors hover:text-[#6ea2ff]"
+                className="inline-flex items-center gap-1 text-[#4285F4] transition-colors hover:text-[#6ea2ff] text-sm"
               >
                 {children}
-
                 <ArrowUpRight size={12} strokeWidth={1.8} />
               </a>
             ),
 
-            hr: () => <hr />,
+            hr: () => <hr className="my-8 border-white/[0.07]" />,
 
             code: ({ children }) => (
               <code className="rounded bg-white/[0.06] px-1.5 py-0.5 text-xs text-[#34A853]">
@@ -147,19 +118,23 @@ bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808]"
             ),
 
             table: ({ children }) => (
-              <div className="my-6 overflow-x-auto">
-                <table className="w-full min-w-[500px] text-left text-sm">{children}</table>
+              <div className="my-6 overflow-x-auto rounded-lg border border-white/[0.08]">
+                <table className="w-full min-w-[500px] text-left text-sm">
+                  {children}
+                </table>
               </div>
             ),
 
             th: ({ children }) => (
-              <th className="border-b border-white/[0.08] px-4 py-3 font-medium text-white/70">
+              <th className="border-b border-white/[0.08] px-3 sm:px-4 py-3 font-medium text-white/70 text-xs sm:text-sm">
                 {children}
               </th>
             ),
 
             td: ({ children }) => (
-              <td className="border-b border-white/[0.05] px-4 py-3 text-white/40">{children}</td>
+              <td className="border-b border-white/[0.05] px-3 sm:px-4 py-3 text-white/40 text-xs sm:text-sm">
+                {children}
+              </td>
             ),
           }}
         >

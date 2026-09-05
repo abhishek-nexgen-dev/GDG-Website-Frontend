@@ -4,6 +4,7 @@ import { Logo } from "./Logo";
 import { Button } from "./Button";
 import { navLinks } from "../data/navigation";
 import clsx from "clsx";
+import { Link } from "react-router-dom";
 
 interface MobileDrawerProps {
   onClose: () => void;
@@ -54,31 +55,38 @@ export function MobileDrawer({ onClose, activeLink, onNavigate }: MobileDrawerPr
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto" aria-label="Mobile navigation">
           {navLinks.map((link, i) => (
-            <motion.a
+            <motion.div
               key={link.href}
-              href={link.href}
-              onClick={() => {
-                onNavigate(link.href);
-                onClose();
-              }}
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.04 }}
-              className={clsx(
-                "rounded-xl px-4 py-3.5 text-[16px] font-medium transition-colors",
-                activeLink === link.href
-                  ? "bg-white/5 text-white"
-                  : "text-text-secondary hover:bg-bg-tertiary hover:text-white",
-              )}
             >
-              {link.label}
-            </motion.a>
+              <Link
+                to={link.href}
+                onClick={() => {
+                  onNavigate(link.href);
+                  onClose();
+                }}
+                className={clsx(
+                  "block rounded-xl px-4 py-3.5 text-[16px] font-medium transition-colors",
+                  activeLink === link.href
+                    ? "bg-white/5 text-white"
+                    : "text-text-secondary hover:bg-bg-tertiary hover:text-white",
+                )}
+              >
+                {link.label}
+              </Link>
+            </motion.div>
           ))}
         </nav>
 
-        <Button variant="primary" size="lg" showArrow className="mt-4 w-full" onClick={onClose}>
-          Join Us
-        </Button>
+        <Link
+          to="/login"
+          onClick={onClose}
+          className="mt-4 w-full rounded-xl bg-white/5 px-4 py-3.5 text-center text-[16px] font-medium text-white transition-colors hover:bg-white/10"
+        >
+          Login
+        </Link>
       </motion.div>
     </motion.div>
   );
