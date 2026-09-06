@@ -9,7 +9,10 @@ export const ViewAlbum_Validator = z.object({
 
   albumImageUrl: z.string().min(1, "Album image is required").url("Please enter a valid image URL"),
 
-  description: z.string().min(1, "Description is required"),
+  description: z
+    .string()
+    .min(25, "Description must be Altest 25 characters")
+    .max(500, "Description must be under 500 characters"),
 
   tags: z.array(z.string()).min(1, "At least one tag is required"),
 

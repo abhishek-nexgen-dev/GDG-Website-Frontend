@@ -1,4 +1,3 @@
-
 import {
   ArrowLeft,
   Check,
@@ -30,8 +29,11 @@ import api from "../../../utils/axios.utils";
 import uploadImage from "../../../utils/uploadImage";
 import useCreateAlbum from "../hooks/CreateAlbumForm.hook";
 import useCreateAlbumMutation from "../hooks/useCreateAlbumMutation";
+import Swal from "sweetalert2";
 
 type CoverMode = "upload" | "url";
+type AlbumStatus = "draft" | "published";
+// type Visibility = "public" | "private";
 
 interface EventItem {
   title?: string;
@@ -48,20 +50,7 @@ function ErrorMessage({ message }: { message?: string }) {
 
 export default function CreateAlbumPage() {
   const form = useCreateAlbum();
-  const { mutate: createAlbum, isPending } = useCreateAlbumMutation();
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const previewUrlRef = useRef<string>("");
-
-  const [coverMode, setCoverMode] =
-    useState<CoverMode>("upload");
-  const [tagInput, setTagInput] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
-
-  const [eventOptions, setEventOptions] = useState<string[]>([]);
-  const [isEventsLoading, setIsEventsLoading] = useState(false);
-  const [eventsError, setEventsError] = useState("");
+  const { mutateAsync, isPending } = useCreateAlbumMutation();
 
   const {
     watch,
@@ -71,39 +60,52 @@ export default function CreateAlbumPage() {
     formState: { errors },
   } = form;
 
-  const title = watch("title") || "";
-  const eventName = watch("EventName") || "";
-  const albumImageUrl = watch("albumImageUrl") || "";
-  const description = watch("description") || "";
-  const tags = watch("tags") || [];
-  const visibility = watch("visibility") || "public";
-  const status = watch("status") || "draft";
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
 
-  const normalizedEventOptions = useMemo(() => {
-    return [...new Set(eventOptions)]
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b));
-  }, [eventOptions]);
+  const [coverMode, setCoverMode] = useState<CoverMode>("upload");
+  const [tagInput, setTagInput] = useState("");
+  const [localPreview, setLocalPreview] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
-  const previewImage = useMemo(() => {
-    return imagePreview || albumImageUrl || DEFAULT_COVER;
-  }, [imagePreview, albumImageUrl]);
+  const [eventOptions, setEventOptions] = useState<string[]>([]);
+  const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [eventsError, setEventsError] = useState("");
 
-  const isLoading = useMemo(() => {
-    return isPending || isUploading;
-  }, [isPending, isUploading]);
+  const title = watch("title") ?? "";
+  const eventName = watch("EventName") ?? "";
+  const albumImageUrl = watch("albumImageUrl") ?? "";
+  const description = watch("description") ?? "";
+  const tags = watch("tags") ?? [];
+  const visibility = watch("visibility") ?? "public";
+  const status = watch("status") ?? "draft";
+
+  const normalizedEventOptions = useMemo(
+    () =>
+      [...new Set(eventOptions)]
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b)),
+    [eventOptions],
+  );
+
+  const previewImage = useMemo(
+    () => localPreview || albumImageUrl || DEFAULT_COVER,
+    [localPreview, albumImageUrl],
+  );
+
+  const isLoading = isPending || isUploading;
 
   const revokePreviewUrl = useCallback(() => {
-    if (previewUrlRef.current.startsWith("blob:")) {
+    if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
-      previewUrlRef.current = "";
+      previewUrlRef.current = null;
     }
   }, []);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchEventNames = async () => {
+    const fetchEvents = async () => {
       try {
         setIsEventsLoading(true);
         setEventsError("");
@@ -122,23 +124,23 @@ export default function CreateAlbumPage() {
         const names = events
           .map((event: EventItem) => event?.title?.trim())
           .filter(
-            (eventTitle: unknown): eventTitle is string =>
-              typeof eventTitle === "string" &&
-              eventTitle.length > 0,
+            (name: unknown): name is string =>
+              typeof name === "string" && name.length > 0,
           );
 
         setEventOptions(names);
       } catch (error: any) {
         if (
           controller.signal.aborted ||
-          error?.name === "CanceledError"
+          error?.name === "CanceledError" ||
+          error?.code === "ERR_CANCELED"
         ) {
           return;
         }
 
         setEventOptions([]);
         setEventsError(
-          "Unable to load event names. Please try again.",
+          "Unable to load events. Please try again.",
         );
       } finally {
         if (!controller.signal.aborted) {
@@ -147,7 +149,7 @@ export default function CreateAlbumPage() {
       }
     };
 
-    fetchEventNames();
+    fetchEvents();
 
     return () => {
       controller.abort();
@@ -160,23 +162,9 @@ export default function CreateAlbumPage() {
     };
   }, [revokePreviewUrl]);
 
-  useEffect(() => {
-    if (coverMode === "url") {
-      revokePreviewUrl();
-      setImagePreview(albumImageUrl);
-    }
-  }, [
-    albumImageUrl,
-    coverMode,
-    revokePreviewUrl,
-  ]);
-
   const updateField = useCallback(
-    <T extends string>(
-      field: any,
-      value: T,
-    ) => {
-      setValue(field, value, {
+    (field: string, value: unknown) => {
+      setValue(field as never, value as never, {
         shouldValidate: true,
         shouldDirty: true,
       });
@@ -184,13 +172,26 @@ export default function CreateAlbumPage() {
     [setValue],
   );
 
+  const handleCoverModeChange = useCallback(
+    (mode: CoverMode) => {
+      setCoverMode(mode);
+
+      if (mode === "url") {
+        revokePreviewUrl();
+        setLocalPreview("");
+      }
+    },
+    [revokePreviewUrl],
+  );
+
   const handleCoverChange = useCallback(
-    async (
-      event: React.ChangeEvent<HTMLInputElement>,
-    ) => {
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
 
-      if (!file || !file.type.startsWith("image/")) {
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        event.target.value = "";
         return;
       }
 
@@ -202,27 +203,37 @@ export default function CreateAlbumPage() {
         const previewUrl = URL.createObjectURL(file);
 
         previewUrlRef.current = previewUrl;
-        setImagePreview(previewUrl);
+        setLocalPreview(previewUrl);
 
         const image = await uploadImage(file);
 
         if (!image?.secure_url) {
-          throw new Error("Image URL was not returned");
+          throw new Error("Image upload failed");
         }
+
+        revokePreviewUrl();
+        setLocalPreview("");
 
         setValue("albumImageUrl", image.secure_url, {
           shouldValidate: true,
           shouldDirty: true,
         });
-      } catch {
+      } catch (error) {
+        console.error("Image upload failed:", error);
+
         revokePreviewUrl();
-        setImagePreview("");
+        setLocalPreview("");
+
         setValue("albumImageUrl", "", {
           shouldValidate: true,
           shouldDirty: true,
         });
       } finally {
         setIsUploading(false);
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     },
     [revokePreviewUrl, setValue],
@@ -230,37 +241,17 @@ export default function CreateAlbumPage() {
 
   const handleImageUrlChange = useCallback(
     (value: string) => {
-      revokePreviewUrl();
-
-      setImagePreview(value);
-
       setValue("albumImageUrl", value, {
         shouldValidate: true,
         shouldDirty: true,
       });
     },
-    [revokePreviewUrl, setValue],
-  );
-
-  const handleCoverModeChange = useCallback(
-    (mode: CoverMode) => {
-      setCoverMode(mode);
-
-      if (mode === "upload") {
-        if (
-          !previewUrlRef.current.startsWith("blob:")
-        ) {
-          setImagePreview("");
-        }
-      }
-    },
-    [],
+    [setValue],
   );
 
   const removeCover = useCallback(() => {
     revokePreviewUrl();
-
-    setImagePreview("");
+    setLocalPreview("");
 
     setValue("albumImageUrl", "", {
       shouldValidate: true,
@@ -275,12 +266,7 @@ export default function CreateAlbumPage() {
   const addTag = useCallback(() => {
     const tag = tagInput.trim().toLowerCase();
 
-    if (!tag) {
-      setTagInput("");
-      return;
-    }
-
-    if (tags.includes(tag)) {
+    if (!tag || tags.includes(tag)) {
       setTagInput("");
       return;
     }
@@ -308,13 +294,10 @@ export default function CreateAlbumPage() {
   );
 
   const handleTagKeyDown = useCallback(
-    (
-      event: React.KeyboardEvent<HTMLInputElement>,
-    ) => {
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Enter" || event.key === ",") {
         event.preventDefault();
         addTag();
-        return;
       }
 
       if (
@@ -331,8 +314,9 @@ export default function CreateAlbumPage() {
   const resetFormState = useCallback(() => {
     revokePreviewUrl();
     reset();
+
     setTagInput("");
-    setImagePreview("");
+    setLocalPreview("");
     setCoverMode("upload");
 
     if (fileInputRef.current) {
@@ -340,35 +324,61 @@ export default function CreateAlbumPage() {
     }
   }, [reset, revokePreviewUrl]);
 
-  const handleCreate = useCallback(
-    (albumStatus: "draft" | "published") => {
-      setValue("status", albumStatus, {
-        shouldValidate: true,
-        shouldDirty: true,
+  const onSubmit = useCallback(
+    async (data: any, albumStatus: AlbumStatus) => {
+      try {
+        const payload = {
+          ...data,
+          status: albumStatus,
+        };
+
+        console.log("Creating album:", payload);
+
+        await mutateAsync(payload);
+
+          Swal.fire({
+        icon: 'success',
+        title: 'Album Created',
+        text: 'Your album has been successfully created!',
+        theme: 'dark',
       });
 
-      handleSubmit((data) => {
-        createAlbum(
-          {
-            ...data,
-            status: albumStatus,
-          },
-          {
-            onSuccess: resetFormState,
-          },
-        );
-      })();
+        resetFormState();
+       
+      } catch (error : any) {
+        console.error("Failed to create album:", error);
+           Swal.fire({
+        icon: 'error',
+        title: 'Creation Failed',
+        text: error.message,
+        theme: 'dark',
+      });
+    
+      }
     },
-    [
-      createAlbum,
-      handleSubmit,
-      resetFormState,
-      setValue,
-    ],
+    [mutateAsync, resetFormState],
   );
 
+  const onInvalid = useCallback((formErrors: unknown) => {
+    console.error("Album form validation failed:", formErrors);
+  }, []);
+
+  const handleCreate = useCallback(
+    (albumStatus: AlbumStatus) => {
+      handleSubmit(
+        (data) => onSubmit(data, albumStatus),
+        onInvalid,
+      )();
+    },
+    [handleSubmit, onInvalid, onSubmit],
+  );
+
+  const handleBack = useCallback(() => {
+    window.history.back();
+  }, []);
+
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#121316] text-white">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#121316] text-white">
       <header className="border-b border-white/[0.05]">
         <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="min-w-0">
@@ -391,6 +401,7 @@ export default function CreateAlbumPage() {
 
           <button
             type="button"
+            onClick={handleBack}
             className="flex shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] px-3 py-2 text-xs text-zinc-400 transition hover:bg-white/[0.04]"
           >
             <ArrowLeft size={14} />
@@ -409,9 +420,15 @@ export default function CreateAlbumPage() {
               description="Enter the core details for this album"
               icon={<ImageIcon size={16} />}
             >
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="md:col-span-2">
-                  <Label required>Album Title</Label>
+              <div className="space-y-5">
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <Label required>Album Title</Label>
+
+                    <span className="text-xs text-zinc-600">
+                      {title.length}/100
+                    </span>
+                  </div>
 
                   <Input
                     value={title}
@@ -422,18 +439,12 @@ export default function CreateAlbumPage() {
                     maxLength={100}
                   />
 
-                  <div className="mt-1 flex items-center justify-between gap-3">
-                    <ErrorMessage
-                      message={errors.title?.message}
-                    />
-
-                    <span className="shrink-0 text-xs text-zinc-600">
-                      {title.length}/100
-                    </span>
-                  </div>
+                  <ErrorMessage
+                    message={errors.title?.message}
+                  />
                 </div>
 
-                <div className="md:col-span-2">
+                <div>
                   <Label required>Event Name</Label>
 
                   <SearchableDropdown
@@ -454,8 +465,14 @@ export default function CreateAlbumPage() {
                   />
                 </div>
 
-                <div className="md:col-span-2">
-                  <Label required>Description</Label>
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <Label required>Description</Label>
+
+                    <span className="text-xs text-zinc-600">
+                      {description.length}/500
+                    </span>
+                  </div>
 
                   <textarea
                     value={description}
@@ -470,15 +487,9 @@ export default function CreateAlbumPage() {
                     className="h-32 w-full resize-none rounded-lg border border-white/[0.07] bg-[#202126] px-3 py-3 text-sm text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
                   />
 
-                  <div className="mt-1 flex items-center justify-between gap-3">
-                    <ErrorMessage
-                      message={errors.description?.message}
-                    />
-
-                    <span className="shrink-0 text-xs text-zinc-600">
-                      {description.length}/500
-                    </span>
-                  </div>
+                  <ErrorMessage
+                    message={errors.description?.message}
+                  />
                 </div>
               </div>
             </Section>
@@ -529,74 +540,72 @@ export default function CreateAlbumPage() {
               />
 
               {coverMode === "upload" ? (
-                <div>
-                  {imagePreview ? (
-                    <div className="relative overflow-hidden rounded-xl border border-emerald-500/30">
-                      <img
-                        src={imagePreview}
-                        alt="Album cover preview"
-                        className="aspect-video w-full object-cover"
-                      />
+                localPreview || albumImageUrl ? (
+                  <div className="relative overflow-hidden rounded-xl border border-emerald-500/30">
+                    <img
+                      src={localPreview || albumImageUrl}
+                      alt="Album cover preview"
+                      className="aspect-video w-full object-cover"
+                    />
 
-                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-black/70 p-3 backdrop-blur-sm">
-                        <button
-                          type="button"
-                          disabled={isUploading}
-                          onClick={() =>
-                            fileInputRef.current?.click()
-                          }
-                          className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-white transition hover:bg-white/20 disabled:opacity-50"
-                        >
-                          <Upload size={13} />
-                          Change
-                        </button>
+                    <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-black/70 p-3 backdrop-blur-sm">
+                      <button
+                        type="button"
+                        disabled={isUploading}
+                        onClick={() =>
+                          fileInputRef.current?.click()
+                        }
+                        className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-white transition hover:bg-white/20 disabled:opacity-50"
+                      >
+                        <Upload size={13} />
+                        Change
+                      </button>
 
-                        <button
-                          type="button"
-                          disabled={isUploading}
-                          onClick={removeCover}
-                          className="flex items-center gap-2 rounded-lg bg-red-500/20 px-3 py-2 text-xs text-red-300 transition hover:bg-red-500/30 disabled:opacity-50"
-                        >
-                          <Trash2 size={13} />
-                          Remove
-                        </button>
-                      </div>
-
-                      {isUploading && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                          <div className="rounded-lg bg-black/70 px-4 py-2 text-sm text-white">
-                            Uploading image...
-                          </div>
-                        </div>
-                      )}
+                      <button
+                        type="button"
+                        disabled={isUploading}
+                        onClick={removeCover}
+                        className="flex items-center gap-2 rounded-lg bg-red-500/20 px-3 py-2 text-xs text-red-300 transition hover:bg-red-500/30 disabled:opacity-50"
+                      >
+                        <Trash2 size={13} />
+                        Remove
+                      </button>
                     </div>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={isUploading}
-                      onClick={() =>
-                        fileInputRef.current?.click()
-                      }
-                      className="flex min-h-56 w-full flex-col items-center justify-center rounded-xl border border-dashed border-emerald-500/30 bg-[#151a18] px-5 text-center transition hover:border-emerald-400/60 hover:bg-[#17201c] disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                        <Upload size={20} />
+
+                    {isUploading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                        <div className="rounded-lg bg-black/70 px-4 py-2 text-sm text-white">
+                          Uploading image...
+                        </div>
                       </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={isUploading}
+                    onClick={() =>
+                      fileInputRef.current?.click()
+                    }
+                    className="flex min-h-56 w-full flex-col items-center justify-center rounded-xl border border-dashed border-emerald-500/30 bg-[#151a18] px-5 text-center transition hover:border-emerald-400/60 hover:bg-[#17201c] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+                      <Upload size={20} />
+                    </div>
 
-                      <p className="text-sm font-medium text-zinc-300">
-                        Upload cover image
-                      </p>
+                    <p className="text-sm font-medium text-zinc-300">
+                      Upload cover image
+                    </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
-                        Click to browse from your device
-                      </p>
+                    <p className="mt-1 text-xs text-zinc-600">
+                      Click to browse from your device
+                    </p>
 
-                      <p className="mt-2 text-[11px] text-zinc-700">
-                        JPG, PNG or WEBP recommended
-                      </p>
-                    </button>
-                  )}
-                </div>
+                    <p className="mt-2 text-[11px] text-zinc-700">
+                      JPG, PNG or WEBP recommended
+                    </p>
+                  </button>
+                )
               ) : (
                 <div className="space-y-4">
                   <div>
@@ -618,10 +627,6 @@ export default function CreateAlbumPage() {
                       <img
                         src={albumImageUrl}
                         alt="Album cover URL preview"
-                        onError={(event) => {
-                          event.currentTarget.style.display =
-                            "none";
-                        }}
                         className="aspect-video w-full object-cover"
                       />
                     </div>
@@ -739,7 +744,7 @@ export default function CreateAlbumPage() {
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
-                        Save the album as a draft and continue editing later.
+                        Save and continue editing later.
                       </p>
                     </button>
 
@@ -770,14 +775,10 @@ export default function CreateAlbumPage() {
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
-                        Make the album active and ready for users to view.
+                        Make the album available to users.
                       </p>
                     </button>
                   </div>
-
-                  <ErrorMessage
-                    message={errors.status?.message}
-                  />
                 </div>
 
                 <div>
@@ -818,6 +819,10 @@ export default function CreateAlbumPage() {
                         }
                         className="min-w-[120px] flex-1 bg-transparent px-1 py-1 text-sm text-zinc-300 outline-none placeholder:text-zinc-600"
                       />
+
+                      <ErrorMessage
+                    message={errors.tags?.message}
+                  />
                     </div>
                   </div>
 
@@ -832,7 +837,7 @@ export default function CreateAlbumPage() {
           <aside className="min-w-0 xl:sticky xl:top-5 xl:self-start">
             <Section
               title="Live Preview"
-              description="Preview how your album information will appear"
+              description="Preview how your album will appear"
               icon={<Eye size={16} />}
             >
               <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#202126]">

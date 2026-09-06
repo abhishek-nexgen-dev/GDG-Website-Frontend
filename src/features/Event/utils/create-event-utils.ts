@@ -146,13 +146,13 @@ export const handleIntroVideoUpload = async ({
 
 export const validateEvent = (form: EventFormData): boolean => {
   console.log("__Issue in validator____");
-  console.log("FOrm data", form);
   const result = EventValidate.safeParse(form);
-
+  
   console.log(result);
-
+  
   if (!result.success) {
     const issue = result.error.issues[0];
+    console.log(issue);
 
     Swal.fire({
       icon: "warning",
@@ -179,6 +179,7 @@ export const saveDraft = async (
   setSaving: Dispatch<SetStateAction<boolean>>,
 ) => {
   try {
+    console.log('Save Draft Form Data', form)
     if (!validateEvent(form)) {
       return;
     }
@@ -187,8 +188,7 @@ export const saveDraft = async (
 
     const payload = {
       ...form,
-      status: "DRAFT",
-      communityId: "9f8e2d3c4b5a678901234567",
+      status: "DRAFT"
     };
 
     console.log("Payload", payload);
@@ -240,9 +240,10 @@ export const publishEvent = async (
 
     const payload = {
       ...form,
-      status: "REGISTRATION_OPEN",
-      communityId: "9f8e2d3c4b5a678901234567",
+      status: form.status
     };
+
+
 
     console.log("Payload", payload);
 
