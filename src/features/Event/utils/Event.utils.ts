@@ -1,5 +1,3 @@
-import { singleEventData } from "../data/singleEventData";
-
 export const formatDate = (value?: string) => {
   if (!value) return "—";
 
@@ -58,22 +56,41 @@ export const formatStatus = (value?: string) => {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-export const getEventEndDate = () => {
-  const timeline = singleEventData.timeline;
+// ============================================================
+// EVENT DATE HELPERS
+// ============================================================
+
+interface EventTimeline {
+  startAt?: string;
+  endAt?: string;
+}
+
+interface EventDateData {
+  registrationStartAt?: string;
+  registrationEndAt?: string;
+  timeline?: EventTimeline[];
+}
+
+export const getEventStartDate = (event?: EventDateData) => {
+  if (!event) return undefined;
+
+  const timeline = event.timeline;
 
   if (!timeline?.length) {
-    return undefined;
-  }
-
-  return timeline[timeline.length - 1]?.endAt;
-};
-
-export const getEventStartDate = () => {
-  const timeline = singleEventData.timeline;
-
-  if (!timeline?.length) {
-    return singleEventData.registrationStartAt;
+    return event.registrationStartAt;
   }
 
   return timeline[0]?.startAt;
+};
+
+export const getEventEndDate = (event?: EventDateData) => {
+  if (!event) return undefined;
+
+  const timeline = event.timeline;
+
+  if (!timeline?.length) {
+    return event.registrationEndAt;
+  }
+
+  return timeline[timeline.length - 1]?.endAt;
 };

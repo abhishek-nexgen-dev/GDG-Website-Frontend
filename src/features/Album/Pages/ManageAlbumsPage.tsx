@@ -7,26 +7,16 @@ import AlbumTable from "../Components/AlbumTable";
 import AlbumPagination from "../Components/AlbumPagination";
 
 import useFetchAlbums from "../hooks/useFetchAlbumMutations";
-import type {
-  Manage_Albums_Card,
-  Visibility,
-} from "../types/Album.type";
+import type { Manage_Albums_Card, Visibility } from "../types/Album.type";
 
 const ManageAlbumsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEvent, setSelectedEvent] = useState("All");
-  const [selectedVisibility, setSelectedVisibility] =
-    useState<Visibility | "All">("All");
-  const [selectedStatus, setSelectedStatus] = useState<
-    Manage_Albums_Card["status"] | "All"
-  >("All");
+  const [selectedVisibility, setSelectedVisibility] = useState<Visibility | "All">("All");
+  const [selectedStatus, setSelectedStatus] = useState<Manage_Albums_Card["status"] | "All">("All");
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-
- 
-
-
 
   const { data, isLoading } = useFetchAlbums(page, limit);
 
@@ -44,48 +34,25 @@ const ManageAlbumsPage = () => {
         album.event?.title?.toLowerCase().includes(query) ||
         album.description?.toLowerCase().includes(query);
 
-      const matchesEvent =
-        selectedEvent === "All" ||
-        album.event?.title === selectedEvent;
+      const matchesEvent = selectedEvent === "All" || album.event?.title === selectedEvent;
 
       const matchesVisibility =
-        selectedVisibility === "All" ||
-        album.visibility === selectedVisibility;
+        selectedVisibility === "All" || album.visibility === selectedVisibility;
 
-      const matchesStatus =
-        selectedStatus === "All" ||
-        album.status === selectedStatus;
+      const matchesStatus = selectedStatus === "All" || album.status === selectedStatus;
 
-      return (
-        matchesSearch &&
-        matchesEvent &&
-        matchesVisibility &&
-        matchesStatus
-      );
+      return matchesSearch && matchesEvent && matchesVisibility && matchesStatus;
     });
-  }, [
-    albums,
-    searchQuery,
-    selectedEvent,
-    selectedVisibility,
-    selectedStatus,
-  ]);
+  }, [albums, searchQuery, selectedEvent, selectedVisibility, selectedStatus]);
 
   const computedStats = useMemo(() => {
     const total = albums.length;
 
-    const totalImages = albums.reduce(
-      (acc, album) => acc + album.imageCount,
-      0
-    );
+    const totalImages = albums.reduce((acc, album) => acc + album.imageCount, 0);
 
-    const publicCount = albums.filter(
-      (album) => album.visibility === "public"
-    ).length;
+    const publicCount = albums.filter((album) => album.visibility === "public").length;
 
-    const privateCount = albums.filter(
-      (album) => album.visibility === "private"
-    ).length;
+    const privateCount = albums.filter((album) => album.visibility === "private").length;
 
     return {
       totalAlbums: {
@@ -98,15 +65,11 @@ const ManageAlbumsPage = () => {
       },
       publicAlbums: {
         value: publicCount,
-        percentage: `${Math.round(
-          (publicCount / (total || 1)) * 100
-        )}% of total`,
+        percentage: `${Math.round((publicCount / (total || 1)) * 100)}% of total`,
       },
       privateAlbums: {
         value: privateCount,
-        percentage: `${Math.round(
-          (privateCount / (total || 1)) * 100
-        )}% of total`,
+        percentage: `${Math.round((privateCount / (total || 1)) * 100)}% of total`,
       },
       storageUsed: {
         value: "—",
@@ -130,14 +93,7 @@ const ManageAlbumsPage = () => {
     selectedStatus !== "All";
 
   const handleExportCSV = () => {
-    const headers = [
-      "Title",
-      "Event",
-      "Images",
-      "Visibility",
-      "Status",
-      "Created At",
-    ];
+    const headers = ["Title", "Event", "Images", "Visibility", "Status", "Created At"];
 
     const rows = filteredAlbums.map((album) => [
       `"${album.title}"`,
@@ -148,10 +104,7 @@ const ManageAlbumsPage = () => {
       `"${new Date(album.createdAt).toLocaleDateString()}"`,
     ]);
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.join(",")),
-    ].join("\n");
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
@@ -161,9 +114,7 @@ const ManageAlbumsPage = () => {
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = `gdg_ranchi_albums_${new Date()
-      .toISOString()
-      .slice(0, 10)}.csv`;
+    link.download = `gdg_ranchi_albums_${new Date().toISOString().slice(0, 10)}.csv`;
 
     document.body.appendChild(link);
     link.click();
@@ -228,9 +179,7 @@ const ManageAlbumsPage = () => {
           }}
           selectedStatus={selectedStatus}
           onStatusChange={(status) => {
-            setSelectedStatus(
-              status as Manage_Albums_Card["status"] | "All"
-            );
+            setSelectedStatus(status as Manage_Albums_Card["status"] | "All");
             setPage(1);
           }}
           onResetFilters={handleResetFilters}
@@ -246,8 +195,7 @@ const ManageAlbumsPage = () => {
         ) : (
           <AlbumTable
             albums={filteredAlbums}
-           
-          
+
             onDeleteAlbum={(id) => console.log(id)}
           />
         )}

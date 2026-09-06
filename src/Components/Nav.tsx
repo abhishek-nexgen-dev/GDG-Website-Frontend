@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("#home");
+  const [activeLink, setActiveLink] = useState("home");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

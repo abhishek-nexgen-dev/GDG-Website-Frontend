@@ -1,9 +1,5 @@
 export type Visibility = "public" | "private";
 
-
-
-
-
 export interface AlbumFormData {
   title: string;
   EventName: string;
@@ -14,8 +10,6 @@ export interface AlbumFormData {
   status: "draft" | "published";
   isDeleted: boolean;
 }
-
-
 
 export interface Manage_Albums_Card {
   _id: string;
@@ -30,8 +24,8 @@ export interface Manage_Albums_Card {
     registrationStartAt: string;
     registrationEndAt: string;
   };
-  visibility: 'public' | 'private';
-  status: 'published' | 'draft' | 'archived';
+  visibility: "public" | "private";
+  status: "published" | "draft" | "archived";
   uploadedBy: string;
   isDeleted: boolean;
   createdAt: string;

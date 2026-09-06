@@ -72,7 +72,7 @@ export interface EventFormData {
 
   visibility: EventVisibility | "";
 
-  status: EventStatus;
+  status: string;
 
   coverImageUrl: string;
 

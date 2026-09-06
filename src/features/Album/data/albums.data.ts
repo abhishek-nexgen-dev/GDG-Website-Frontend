@@ -31,4 +31,3 @@ export const initialAlbumStats: AlbumStats = {
   privateAlbums: { value: 14, percentage: "33% of total" },
   storageUsed: { value: "12.4 GB", trend: "▲ 1.3 GB this month" },
 };
-

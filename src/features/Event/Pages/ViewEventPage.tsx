@@ -1,8 +1,5 @@
-
 const ViewEventPage = () => {
-  return (
-    <div>ViewEventPage</div>
-  )
-}
+  return <div>ViewEventPage</div>;
+};
 
-export default ViewEventPage
+export default ViewEventPage;
