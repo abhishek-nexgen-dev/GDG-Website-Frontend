@@ -2,7 +2,7 @@ import ParticleText from "../../../Components/ParticleText";
 import Masonry from "../../../Components/Masonry";
 import { memo } from "react";
 import ImagePageEffect from "../Components/ImagePageEffect";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 export interface GalleryItem {
   id: string;
   img: string;
@@ -24,6 +24,14 @@ export const images: GalleryItem[] = [
 ];
 
 const ImagePage = () => {
+  const isMaintainance = true
+
+  
+
+  if(isMaintainance){
+    return <Navigate to="/coming-soon" replace />
+  }
+
   const { GalleryName } = useParams();
   const slug = GalleryName || "ranchihacks-2025"; // Fallback to default if no slug
 

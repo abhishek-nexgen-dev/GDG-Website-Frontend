@@ -10,7 +10,7 @@ import MaintenancePage from "../features/Maintenance/MaintenancePage";
 import EventDetailPage from "../features/Event/Pages/EventDetailPage";
 import LaunchingSoon from "../features/Pages/LaunchingSoon";
 import ComingSoon from "../features/Pages/ComingSoon";
-import NotFound from "../features/Pages/NotFound";
+// import NotFound from "../features/Pages/NotFound";
 
 const PublicRoutes = () => {
   return (
