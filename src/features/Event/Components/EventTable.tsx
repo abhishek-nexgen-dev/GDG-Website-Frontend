@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { EventItem, EventStatus } from "../type/Event.type";
 import type { EventCategory } from "../data/events.data";
+import { Link } from "react-router-dom";
 
 interface EventTableProps {
   events: EventItem[];
@@ -220,14 +221,15 @@ const EventTable = ({ events }: EventTableProps) => {
                     {/* Actions */}
                     <td className="relative py-4 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
+                        <Link
+                         to={`/member/event/view/${event.Slug}`}
+                        
 
                           title="View event details"
                           className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition-colors hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
                         >
                           <Eye size={14} />
-                        </button>
+                        </Link>
 
                         {/* Edit event */}
                         <button
