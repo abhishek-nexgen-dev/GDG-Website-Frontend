@@ -10,7 +10,7 @@ import MaintenancePage from "../features/Maintenance/MaintenancePage";
 import EventDetailPage from "../features/Event/Pages/EventDetailPage";
 import LaunchingSoon from "../features/Pages/LaunchingSoon";
 import ComingSoon from "../features/Pages/ComingSoon";
-import NotFound from "../features/Pages/NotFound";
+// import NotFound from "../features/Pages/NotFound";
 
 const PublicRoutes = () => {
   return (
@@ -19,6 +19,7 @@ const PublicRoutes = () => {
         <Route index path="/" element={<HomePage />} />
         <Route path="/events/Gallery" element={<GalleryPage />} />
         <Route path="/Gallery/:GalleryName" element={<ImagePage />} />
+         {/* <Route path="*" element={<NotFound />} /> */}
         <Route path="/event/:Slug" element={<EventDetailPage />} />
         <Route path="/teams" element={<ViewAllTeamPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -27,7 +28,6 @@ const PublicRoutes = () => {
       <Route path="/maintenance" element={<MaintenancePage />} />
       <Route path="/launching-soon" element={<LaunchingSoon />} />
       <Route path="/coming-soon" element={<ComingSoon />} />
-      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { Logo } from "./Logo";
-import { Button } from "./Button";
 import { navLinks } from "../data/navigation";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
