@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import type { Manage_Albums_Card } from "../types/Album.type";
+import { Link } from "react-router-dom";
 
 interface AlbumTableProps {
   albums: Manage_Albums_Card[];
@@ -160,14 +161,12 @@ const AlbumTable = ({
 
                   <td className="relative px-4 py-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        type="button"
-
-                        title="View album"
+                      <Link
+                        to="/member/album/view"
                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition-colors hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
                       >
                         <Eye size={14} />
-                      </button>
+                      </Link>
 
                       <button
                         type="button"
