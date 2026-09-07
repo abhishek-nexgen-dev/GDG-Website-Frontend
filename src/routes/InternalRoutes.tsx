@@ -13,6 +13,7 @@ import SendBulkEmailPage from "../features/Email/Pages/SendEmailPage";
 import MemberDetails from "../features/Member/v1/Pages/MemberDetails";
 import Settings from "../features/Settings/Settings";
 import MemberViewEvent from "../features/Event/Pages/MemberViewEvent";
+import MemberViewSingleAlbum from "../features/Album/Pages/MemberViewSingleAlbum";
 
 const InternalRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const InternalRoutes = () => {
         <Route path="albums" element={<ManageAlbumsPage />} />
         <Route path="albums/manage" element={<ManageAlbumsPage />} />
         <Route path="albums/create" element={<CreateAlbumPage />} />
+        <Route path="album/view" element={<MemberViewSingleAlbum />} />
         <Route path="album" element={<ManageAlbumsPage />} />
         <Route path="images" element={<ManageImagesPage />} />
         <Route path="images/manage" element={<ManageImagesPage />} />
