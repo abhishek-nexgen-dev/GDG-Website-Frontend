@@ -71,6 +71,7 @@ const CreateEvent = () => {
   }, [form, saving, uploadingImage, uploadingVideo]);
 
   const onPublishEvent = useCallback(async () => {
+    
     if (saving || uploadingImage || uploadingVideo) return;
 
     await publishEvent(form, setSaving);
