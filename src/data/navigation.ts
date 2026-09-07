@@ -1,6 +1,6 @@
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Events", href: "/coming-soon" },
+  { label: "Events", href: "/events" },
   { label: "Gallery", href: "/events/Gallery" },
   { label: "Team", href: "/teams" },
   // { label: "About Us", href: "#about" },
@@ -10,7 +10,7 @@ export const navLinks = [
 
 export const stripNavItems = [
   { label: "Home", href: "/" },
-  { label: "Events", href: "/coming-soon" },
+  { label: "Events", href: "/events" },
   { label: "Gallery", href: "/events/Gallery" },
   { label: "Team", href: "/teams" },
   // { label: "About Us", href: "#about" },
