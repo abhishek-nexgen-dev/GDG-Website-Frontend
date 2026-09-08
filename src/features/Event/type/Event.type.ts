@@ -60,7 +60,7 @@ export interface EventTimelineItem {
 }
 
 export interface EventFormData {
-  communityId?: string;
+ 
 
   title: string;
 
@@ -106,7 +106,7 @@ export interface EventFormData {
 export type CreateEventData = EventFormData;
 
 export interface UpdateEventData {
-  communityId?: string;
+ 
 
   title?: string;
 
@@ -155,7 +155,7 @@ export interface EventResponse {
   _id?: string;
   Slug?: string;
 
-  communityId?: string;
+
 
   title: string;
 

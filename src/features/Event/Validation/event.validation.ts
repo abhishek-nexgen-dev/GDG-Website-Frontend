@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EVENT_CONSTANT, EventMode_Constant } from "../Constant/Event.Constant";
+import { EVENT_CONSTANT } from "../Constant/Event.Constant";
 
 export const EventMode = {
   ONLINE: "ONLINE",
@@ -25,7 +25,8 @@ export const EventVisibility = {
   UNLISTED: "UNLISTED",
 } as const;
 
-export type EventVisibility = (typeof EventVisibility)[keyof typeof EventVisibility];
+export type EventVisibility =
+  (typeof EventVisibility)[keyof typeof EventVisibility];
 
 export const EventStatus = {
   DRAFT: "DRAFT",
@@ -36,69 +37,46 @@ export const EventStatus = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus];
-
-// ============================================================
-// HELPER SCHEMAS
-// ============================================================
+export type EventStatus =
+  (typeof EventStatus)[keyof typeof EventStatus];
 
 const dateSchema = z
   .string()
+  .trim()
   .min(1, "Date is required.")
-  .refine((date) => !Number.isNaN(Date.parse(date)), {
+  .refine((value) => !Number.isNaN(Date.parse(value)), {
     message: "Invalid date format.",
   });
 
-// ============================================================
-// VENUE
-// ============================================================
+const objectIdSchema = z.string().length(24, "Invalid ID.");
+
+const optionalString = (
+  min: number,
+  max: number,
+  minMessage?: string,
+  maxMessage?: string,
+) =>
+  z
+    .string()
+    .trim()
+    .min(min, minMessage ?? `Must be at least ${min} characters.`)
+    .max(max, maxMessage ?? `Cannot exceed ${max} characters.`)
+    .optional();
 
 const venueSchema = z.object({
   mode: z.enum(EventMode),
-
-  venueName: z
-    .string()
-    .trim()
-    .min(3, "Venue name must be at least 3 characters.")
-    .max(100, "Venue name cannot exceed 100 characters.")
-    .optional(),
-
-  address: z
-    .string()
-    .trim()
-    .min(5, "Address must be at least 5 characters.")
-    .max(200, "Address cannot exceed 200 characters.")
-    .optional(),
-
-  city: z
-    .string()
-    .trim()
-    .min(2, "City must be at least 2 characters.")
-    .max(50, "City cannot exceed 50 characters.")
-    .optional(),
-
-  state: z
-    .string()
-    .trim()
-    .min(2, "State must be at least 2 characters.")
-    .max(50, "State cannot exceed 50 characters.")
-    .optional(),
-
-  country: z
-    .string()
-    .trim()
-    .min(2, "Country must be at least 2 characters.")
-    .max(50, "Country cannot exceed 50 characters.")
-    .optional(),
-
+  venueName: optionalString(3, 100),
+  address: optionalString(5, 200),
+  city: optionalString(2, 50),
+  state: optionalString(2, 50),
+  country: optionalString(2, 50),
   latitude: z.number().min(-90, "Invalid latitude.").max(90, "Invalid latitude.").optional(),
-
-  longitude: z.number().min(-180, "Invalid longitude.").max(180, "Invalid longitude.").optional(),
+  longitude: z
+    .number()
+    .min(-180, "Invalid longitude.")
+    .max(180, "Invalid longitude.")
+    .optional(),
 });
-
-// ============================================================
-// TICKET
-// ============================================================
 
 const ticketSchema = z.object({
   name: z
@@ -106,18 +84,12 @@ const ticketSchema = z.object({
     .trim()
     .min(3, "Ticket name must be at least 3 characters.")
     .max(50, "Ticket name cannot exceed 50 characters."),
-
   price: z.number().min(0, "Ticket price cannot be negative."),
-
   quantity: z
     .number()
     .int("Ticket quantity must be a whole number.")
     .min(1, "Ticket quantity must be at least 1."),
 });
-
-// ============================================================
-// TIMELINE
-// ============================================================
 
 const timelineSchema = z
   .object({
@@ -126,31 +98,89 @@ const timelineSchema = z
       .trim()
       .min(3, "Timeline title must be at least 3 characters.")
       .max(100, "Timeline title cannot exceed 100 characters."),
-
     startAt: dateSchema,
-
     endAt: dateSchema,
   })
-  .refine((data) => new Date(data.endAt).getTime() > new Date(data.startAt).getTime(), {
-    message: "Timeline end time must be after start time.",
-    path: ["endAt"],
+  .superRefine((data, ctx) => {
+    const start = new Date(data.startAt).getTime();
+    const end = new Date(data.endAt).getTime();
+
+    if (end <= start) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Timeline end time must be after start time.",
+        path: ["endAt"],
+      });
+    }
   });
 
-// ============================================================
-// CREATE EVENT VALIDATION
-// ============================================================
+const validateEventDates = (
+  data: {
+    registrationStartAt?: string;
+    registrationEndAt?: string;
+    timeline?: Array<{
+      startAt: string;
+      endAt: string;
+    }>;
+  },
+  ctx: z.RefinementCtx,
+) => {
+  const registrationStart = data.registrationStartAt
+    ? new Date(data.registrationStartAt).getTime()
+    : undefined;
+
+  const registrationEnd = data.registrationEndAt
+    ? new Date(data.registrationEndAt).getTime()
+    : undefined;
+
+  if (
+    registrationStart !== undefined &&
+    registrationEnd !== undefined &&
+    registrationEnd <= registrationStart
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "Registration end date and time must be after registration start date and time.",
+      path: ["registrationEndAt"],
+    });
+  }
+
+  if (
+    registrationStart === undefined ||
+    registrationEnd === undefined ||
+    !data.timeline?.length
+  ) {
+    return;
+  }
+
+  data.timeline.forEach((item, index) => {
+    const timelineStart = new Date(item.startAt).getTime();
+    const timelineEnd = new Date(item.endAt).getTime();
+
+    if (timelineStart < registrationStart) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Timeline cannot start before the registration start date and time.",
+        path: ["timeline", index, "startAt"],
+      });
+    }
+
+    if (timelineEnd > registrationEnd) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Timeline cannot end after the registration end date and time.",
+        path: ["timeline", index, "endAt"],
+      });
+    }
+  });
+};
 
 export const EventValidate = z
   .object({
-    // ----------------------------------------------------------
-    // Optional slug
-    // ----------------------------------------------------------
-
     Slug: z.string().trim().min(3).max(100).optional(),
-
-    // ----------------------------------------------------------
-    // Basic Information
-    // ----------------------------------------------------------
 
     title: z
       .string()
@@ -162,11 +192,17 @@ export const EventValidate = z
       .string()
       .trim()
       .min(10, "Short description must be at least 10 characters.")
-      .max(400, "Short description cannot exceed 200 characters."),
+      .max(400, "Short description cannot exceed 400 characters."),
 
-    descriptionMarkdown: z.string().trim().min(20, "Description must be at least 20 characters."),
+    descriptionMarkdown: z
+      .string()
+      .trim()
+      .min(20, "Description must be at least 20 characters."),
 
-    redirectUrl: z.string().trim().url("Please provide a valid redirect URL."),
+    redirectUrl: z
+      .string()
+      .trim()
+      .url("Please provide a valid redirect URL."),
 
     tags: z
       .array(z.string().trim().min(1))
@@ -180,55 +216,34 @@ export const EventValidate = z
 
     status: z.enum(EventStatus),
 
-    // ----------------------------------------------------------
-    // Media
-    // ----------------------------------------------------------
+    coverImageUrl: z
+      .string()
+      .trim()
+      .url("Please upload a valid cover image."),
 
-    coverImageUrl: z.string().trim().url("Please upload a valid cover image."),
-
-    introVideoUrl: z.string().trim().url("Please provide a valid intro video URL.").optional(),
-
-    // ----------------------------------------------------------
-    // Registration
-    // ----------------------------------------------------------
+    introVideoUrl: z
+      .string()
+      .trim()
+      .url("Please provide a valid intro video URL.")
+      .optional(),
 
     registrationStartAt: dateSchema,
 
     registrationEndAt: dateSchema,
 
-    // ----------------------------------------------------------
-    // Venue
-    // ----------------------------------------------------------
-
     venue: venueSchema,
 
-    // ----------------------------------------------------------
-    // People
-    // ----------------------------------------------------------
+    mentors: z.array(objectIdSchema).optional(),
 
-    mentors: z.array(z.string().length(24)).optional(),
+    judges: z.array(objectIdSchema).optional(),
 
-    judges: z.array(z.string().length(24)).optional(),
+    partners: z.array(objectIdSchema).optional(),
 
-    partners: z.array(z.string().length(24)).optional(),
-
-    sponsors: z.array(z.string().length(24)).optional(),
-
-    // ----------------------------------------------------------
-    // Tickets
-    // ----------------------------------------------------------
+    sponsors: z.array(objectIdSchema).optional(),
 
     tickets: z.array(ticketSchema).optional(),
 
-    // ----------------------------------------------------------
-    // Timeline
-    // ----------------------------------------------------------
-
     timeline: z.array(timelineSchema).optional(),
-
-    // ----------------------------------------------------------
-    // Rules
-    // ----------------------------------------------------------
 
     rules: z
       .array(
@@ -240,10 +255,6 @@ export const EventValidate = z
       )
       .optional(),
 
-    // ----------------------------------------------------------
-    // Requirements
-    // ----------------------------------------------------------
-
     requirements: z
       .array(
         z
@@ -254,44 +265,25 @@ export const EventValidate = z
       )
       .optional(),
   })
-  .refine(
-    (data) =>
-      new Date(data.registrationEndAt).getTime() > new Date(data.registrationStartAt).getTime(),
-    {
-      message: "Registration end must be after registration start.",
-      path: ["registrationEndAt"],
-    },
-  );
-
-// ============================================================
-// UPDATE EVENT VALIDATION
-// ============================================================
+  .superRefine(validateEventDates);
 
 export const updateEventValidator = z
   .object({
-    // ----------------------------------------------------------
-    // Community
-    // ----------------------------------------------------------
+    communityId: objectIdSchema.optional(),
 
-    communityId: z.string().length(24, "Invalid community ID.").optional(),
+    title: optionalString(
+      5,
+      100,
+      "Event title must be at least 5 characters.",
+      "Event title cannot exceed 100 characters.",
+    ),
 
-    // ----------------------------------------------------------
-    // Basic Information
-    // ----------------------------------------------------------
-
-    title: z
-      .string()
-      .trim()
-      .min(5, "Event title must be at least 5 characters.")
-      .max(100, "Event title cannot exceed 100 characters.")
-      .optional(),
-
-    shortDescription: z
-      .string()
-      .trim()
-      .min(10, "Short description must be at least 10 characters.")
-      .max(200, "Short description cannot exceed 200 characters.")
-      .optional(),
+    shortDescription: optionalString(
+      10,
+      400,
+      "Short description must be at least 10 characters.",
+      "Short description cannot exceed 400 characters.",
+    ),
 
     descriptionMarkdown: z
       .string()
@@ -299,7 +291,11 @@ export const updateEventValidator = z
       .min(20, "Description must be at least 20 characters.")
       .optional(),
 
-    redirectUrl: z.string().trim().url("Please provide a valid redirect URL.").optional(),
+    redirectUrl: z
+      .string()
+      .trim()
+      .url("Please provide a valid redirect URL.")
+      .optional(),
 
     tags: z
       .array(z.string().trim().min(1))
@@ -307,133 +303,66 @@ export const updateEventValidator = z
       .max(10, "Maximum 10 tags are allowed.")
       .optional(),
 
-    category: z.enum(EventMode_Constant).optional(),
+    category: z.enum(EVENT_CONSTANT).optional(),
 
     visibility: z.enum(EventVisibility).optional(),
 
     status: z.enum(EventStatus).optional(),
 
-    // ----------------------------------------------------------
-    // Media
-    // ----------------------------------------------------------
+    coverImageUrl: z
+      .string()
+      .trim()
+      .url("Please provide a valid cover image.")
+      .optional(),
 
-    coverImageUrl: z.string().trim().url("Please provide a valid cover image.").optional(),
-
-    introVideoUrl: z.string().trim().url("Please provide a valid intro video URL.").optional(),
-
-    // ----------------------------------------------------------
-    // Registration
-    // ----------------------------------------------------------
+    introVideoUrl: z
+      .string()
+      .trim()
+      .url("Please provide a valid intro video URL.")
+      .optional(),
 
     registrationStartAt: dateSchema.optional(),
 
     registrationEndAt: dateSchema.optional(),
 
-    // ----------------------------------------------------------
-    // Venue
-    // ----------------------------------------------------------
+    venue: venueSchema.partial().optional(),
 
-    venue: z
-      .object({
-        mode: z.enum(EventMode).optional(),
+    mentors: z.array(objectIdSchema).optional(),
 
-        venueName: z.string().trim().min(3).max(100).optional(),
+    judges: z.array(objectIdSchema).optional(),
 
-        address: z.string().trim().min(5).max(200).optional(),
+    partners: z.array(objectIdSchema).optional(),
 
-        city: z.string().trim().min(2).max(50).optional(),
-
-        state: z.string().trim().min(2).max(50).optional(),
-
-        country: z.string().trim().min(2).max(50).optional(),
-
-        latitude: z.number().min(-90).max(90).optional(),
-
-        longitude: z.number().min(-180).max(180).optional(),
-      })
-      .optional(),
-
-    // ----------------------------------------------------------
-    // People
-    // ----------------------------------------------------------
-
-    mentors: z.array(z.string().length(24)).optional(),
-
-    judges: z.array(z.string().length(24)).optional(),
-
-    partners: z.array(z.string().length(24)).optional(),
-
-    sponsors: z.array(z.string().length(24)).optional(),
-
-    // ----------------------------------------------------------
-    // Tickets
-    // ----------------------------------------------------------
+    sponsors: z.array(objectIdSchema).optional(),
 
     tickets: z.array(ticketSchema).optional(),
 
-    // ----------------------------------------------------------
-    // Timeline
-    // ----------------------------------------------------------
-
     timeline: z.array(timelineSchema).optional(),
 
-    // ----------------------------------------------------------
-    // Rules
-    // ----------------------------------------------------------
+    rules: z
+      .array(z.string().trim().min(5).max(200))
+      .optional(),
 
-    rules: z.array(z.string().trim().min(5).max(200)).optional(),
-
-    // ----------------------------------------------------------
-    // Requirements
-    // ----------------------------------------------------------
-
-    requirements: z.array(z.string().trim().min(5).max(200)).optional(),
+    requirements: z
+      .array(z.string().trim().min(5).max(200))
+      .optional(),
   })
   .strict()
   .superRefine((data, ctx) => {
-    // ----------------------------------------------------------
-    // At least one field must be updated
-    // ----------------------------------------------------------
-
     if (Object.keys(data).length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Provide at least one field to update.",
       });
-
       return;
     }
 
-    // ----------------------------------------------------------
-    // Registration date validation
-    // ----------------------------------------------------------
-
-    if (data.registrationStartAt && data.registrationEndAt) {
-      const start = new Date(data.registrationStartAt).getTime();
-
-      const end = new Date(data.registrationEndAt).getTime();
-
-      if (end <= start) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Registration end must be after registration start.",
-          path: ["registrationEndAt"],
-        });
-      }
-    }
+    validateEventDates(data, ctx);
   });
-
-// ============================================================
-// TYPES
-// ============================================================
 
 export type EventType = z.infer<typeof EventValidate>;
 
 export type UpdateEventType = z.infer<typeof updateEventValidator>;
-
-// ============================================================
-// HELPER TYPES
-// ============================================================
 
 export type EventModeType = EventMode;
 
