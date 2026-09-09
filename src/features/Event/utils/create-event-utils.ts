@@ -9,29 +9,18 @@ import showAlert from "../../../utils/showAlert";
 
 interface UploadImageParams {
   event: React.ChangeEvent<HTMLInputElement>;
-  update: <K extends keyof EventFormData>(
-    key: K,
-    value: EventFormData[K],
-  ) => void;
+  update: <K extends keyof EventFormData>(key: K, value: EventFormData[K]) => void;
   setUploadingImage: Dispatch<SetStateAction<boolean>>;
 }
 
 interface UploadVideoParams {
   event: React.ChangeEvent<HTMLInputElement>;
-  update: <K extends keyof EventFormData>(
-    key: K,
-    value: EventFormData[K],
-  ) => void;
+  update: <K extends keyof EventFormData>(key: K, value: EventFormData[K]) => void;
   setUploadingVideo: Dispatch<SetStateAction<boolean>>;
   setVideoProgress: Dispatch<SetStateAction<number>>;
 }
 
-
-
-const getErrorMessage = (
-  error: unknown,
-  fallback: string,
-): string => {
+const getErrorMessage = (error: unknown, fallback: string): string => {
   if (typeof error === "object" && error !== null) {
     const apiError = error as {
       response?: {
@@ -56,7 +45,6 @@ const getErrorMessage = (
   return fallback;
 };
 
-
 export const handleCoverImageUpload = async ({
   event,
   update,
@@ -67,22 +55,14 @@ export const handleCoverImageUpload = async ({
   if (!file) return;
 
   if (!file.type.startsWith("image/")) {
-    await showAlert(
-      "warning",
-      "Invalid Image",
-      "Please select a valid image file.",
-    );
+    await showAlert("warning", "Invalid Image", "Please select a valid image file.");
 
     event.target.value = "";
     return;
   }
 
   if (file.size > 5 * 1024 * 1024) {
-    await showAlert(
-      "warning",
-      "Image Too Large",
-      "Cover image must be smaller than 5MB.",
-    );
+    await showAlert("warning", "Image Too Large", "Cover image must be smaller than 5MB.");
 
     event.target.value = "";
     return;
@@ -99,15 +79,10 @@ export const handleCoverImageUpload = async ({
 
     update("coverImageUrl", result.secure_url);
 
-    await showAlert(
-      "success",
-      "Image Uploaded",
-      "Cover image uploaded successfully.",
-      {
-        timer: 1500,
-        showConfirmButton: false,
-      },
-    );
+    await showAlert("success", "Image Uploaded", "Cover image uploaded successfully.", {
+      timer: 1500,
+      showConfirmButton: false,
+    });
   } catch (error) {
     console.error("Cover image upload failed:", error);
 
@@ -133,22 +108,14 @@ export const handleIntroVideoUpload = async ({
   if (!file) return;
 
   if (!file.type.startsWith("video/")) {
-    await showAlert(
-      "warning",
-      "Invalid Video",
-      "Please select a valid video file.",
-    );
+    await showAlert("warning", "Invalid Video", "Please select a valid video file.");
 
     event.target.value = "";
     return;
   }
 
   if (file.size > 100 * 1024 * 1024) {
-    await showAlert(
-      "warning",
-      "Video Too Large",
-      "Intro video must be smaller than 100MB.",
-    );
+    await showAlert("warning", "Video Too Large", "Intro video must be smaller than 100MB.");
 
     event.target.value = "";
     return;
@@ -169,15 +136,10 @@ export const handleIntroVideoUpload = async ({
     update("introVideoUrl", result.secure_url);
     setVideoProgress(100);
 
-    await showAlert(
-      "success",
-      "Video Uploaded",
-      "Intro video uploaded successfully.",
-      {
-        timer: 1500,
-        showConfirmButton: false,
-      },
-    );
+    await showAlert("success", "Video Uploaded", "Intro video uploaded successfully.", {
+      timer: 1500,
+      showConfirmButton: false,
+    });
   } catch (error) {
     console.error("Intro video upload failed:", error);
 
@@ -193,11 +155,10 @@ export const handleIntroVideoUpload = async ({
   }
 };
 
-export const validateEvent = async (
-  form: EventFormData,
-): Promise<boolean> => {
+export const validateEvent = async (form: EventFormData): Promise<boolean> => {
   try {
     const result = EventValidate.safeParse(form);
+    console.log(result);
 
     if (result.success) {
       return true;
@@ -215,11 +176,7 @@ export const validateEvent = async (
   } catch (error) {
     console.error("Event validation failed:", error);
 
-    await showAlert(
-      "error",
-      "Validation Failed",
-      "Unable to validate event details.",
-    );
+    await showAlert("error", "Validation Failed", "Unable to validate event details.");
 
     return false;
   }
@@ -244,20 +201,12 @@ export const saveDraft = async (
       status: "DRAFT",
     };
 
-    const { data } = await api.post(
-      "/api/v1/create/newEvent",
-      payload,
-    );
+    const { data } = await api.post("/api/v1/create/newEvent", payload);
 
-    await showAlert(
-      "success",
-      "Draft Saved",
-      "Your event draft has been saved successfully.",
-      {
-        timer: 1800,
-        showConfirmButton: false,
-      },
-    );
+    await showAlert("success", "Draft Saved", "Your event draft has been saved successfully.", {
+      timer: 1800,
+      showConfirmButton: false,
+    });
 
     return data;
   } catch (error) {
@@ -286,20 +235,12 @@ export const publishEvent = async (
 
     if (!isValid) return;
 
-    const { data } = await api.post(
-      "/api/v1/create/newEvent",
-      form,
-    );
+    const { data } = await api.post("/api/v1/create/newEvent", form);
 
-    await showAlert(
-      "success",
-      "Event Published",
-      "Your event has been published successfully.",
-      {
-        timer: 1800,
-        showConfirmButton: false,
-      },
-    );
+    await showAlert("success", "Event Published", "Your event has been published successfully.", {
+      timer: 1800,
+      showConfirmButton: false,
+    });
 
     return data;
   } catch (error) {
@@ -308,10 +249,7 @@ export const publishEvent = async (
     await showAlert(
       "error",
       "Publish Failed",
-      getErrorMessage(
-        error,
-        "Something went wrong while publishing the event.",
-      ),
+      getErrorMessage(error, "Something went wrong while publishing the event."),
     );
 
     return null;

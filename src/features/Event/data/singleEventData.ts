@@ -4,8 +4,6 @@ export const singleEventData: EventResponse = {
   _id: "6a571ef98f5b2a1a45710876",
   Slug: "",
 
-  communityId: "9f8e2d3c4b5a678901234567",
-
   title: "Jharkhand Tech Summit 2026",
 
   shortDescription:

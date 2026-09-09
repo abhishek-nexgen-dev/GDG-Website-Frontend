@@ -17,6 +17,7 @@ import EVENT_BANNER from "../Components/EVENT_BANNER";
 import HIGHLIGHTS_Sec from "../Section/HIGHLIGHTS_Sec";
 
 import usefetchEventDetaill from "../hook/usefetchEventDetaill";
+import GDGLoader from "../../../Components/GDGLoader";
 
 const ViewSingleEventPage = () => {
   const { Slug } = useParams<{ Slug: string }>();
@@ -27,13 +28,8 @@ const ViewSingleEventPage = () => {
 
   const { data, isLoading, isError } = usefetchEventDetaill(Slug);
 
-  // Loading State
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
-        <p className="text-sm text-white/60">Loading event details...</p>
-      </main>
-    );
+    return <GDGLoader />;
   }
 
   // Error State

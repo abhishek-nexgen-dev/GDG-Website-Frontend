@@ -1,18 +1,7 @@
 import { motion } from "motion/react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Compass,
-  MapPin,
-  Sparkles,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Compass, MapPin, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  BsGithub,
-  BsInstagram,
-  BsLinkedin,
-  BsYoutube,
-} from "react-icons/bs";
+import { BsGithub, BsInstagram, BsLinkedin, BsYoutube } from "react-icons/bs";
 
 const COLORS = {
   blue: "#4285F4",
@@ -117,17 +106,11 @@ const NotFound = () => {
             transition={{ type: "spring" }}
             className="h-10 w-10"
           >
-            <img
-              src="/GDG_Logo.svg"
-              alt="GDG Ranchi"
-              className="h-full w-full object-contain"
-            />
+            <img src="/GDG_Logo.svg" alt="GDG Ranchi" className="h-full w-full object-contain" />
           </motion.div>
 
           <div>
-            <h2 className="text-base font-bold tracking-tight">
-              GDG Ranchi
-            </h2>
+            <h2 className="text-base font-bold tracking-tight">GDG Ranchi</h2>
 
             <p className="mt-0.5 text-[8px] tracking-[0.28em] text-white/40">
               COMMUNITY × TECHNOLOGY × IMPACT
@@ -155,10 +138,7 @@ const NotFound = () => {
             hover:text-white
           "
         >
-          <ArrowLeft
-            size={17}
-            className="transition-transform group-hover:-translate-x-1 "
-          />
+          <ArrowLeft size={17} className="transition-transform group-hover:-translate-x-1 " />
 
           <span className="hidden sm:block">Go back</span>
         </motion.button>
@@ -368,7 +348,6 @@ const NotFound = () => {
               "
             >
               You found a path{" "}
-
               <span className="relative inline-block">
                 <span
                   className="
@@ -476,9 +455,7 @@ const NotFound = () => {
 
                 <Compass size={19} className="relative" />
 
-                <span className="relative">
-                  Explore GDG Ranchi
-                </span>
+                <span className="relative">Explore GDG Ranchi</span>
 
                 <ArrowRight
                   size={18}
@@ -523,13 +500,8 @@ const NotFound = () => {
                   hover:bg-white/[0.08]
                 "
               >
-                <Sparkles
-                  size={18}
-                  className="text-[#FBBC05]"
-                />
-
+                <Sparkles size={18} className="text-[#FBBC05]" />
                 Discover Events
-
                 <ArrowRight
                   size={17}
                   className="
@@ -614,9 +586,7 @@ const NotFound = () => {
         <div className="hidden items-center gap-2 text-white/40 sm:flex">
           <MapPin size={15} />
 
-          <span className="text-xs">
-            Ranchi, Jharkhand · India
-          </span>
+          <span className="text-xs">Ranchi, Jharkhand · India</span>
         </div>
 
         {/* SOCIAL */}
@@ -639,23 +609,11 @@ const NotFound = () => {
           AMBIENT PARTICLES
       ========================================================= */}
 
-      <Star
-        className="left-[28%] top-[25%]"
-        color={COLORS.blue}
-        delay={0}
-      />
+      <Star className="left-[28%] top-[25%]" color={COLORS.blue} delay={0} />
 
-      <Star
-        className="right-[30%] top-[35%]"
-        color={COLORS.yellow}
-        delay={1}
-      />
+      <Star className="right-[30%] top-[35%]" color={COLORS.yellow} delay={1} />
 
-      <Star
-        className="left-[42%] bottom-[28%]"
-        color={COLORS.green}
-        delay={2}
-      />
+      <Star className="left-[42%] bottom-[28%]" color={COLORS.green} delay={2} />
     </main>
   );
 };
@@ -664,11 +622,7 @@ const NotFound = () => {
    SOCIAL LINK
 ============================================================= */
 
-const SocialLink = ({
-  icon,
-}: {
-  icon: React.ReactNode;
-}) => {
+const SocialLink = ({ icon }: { icon: React.ReactNode }) => {
   return (
     <motion.a
       href="#"
@@ -693,15 +647,7 @@ const SocialLink = ({
    STAR PARTICLE
 ============================================================= */
 
-const Star = ({
-  className,
-  color,
-  delay,
-}: {
-  className: string;
-  color: string;
-  delay: number;
-}) => {
+const Star = ({ className, color, delay }: { className: string; color: string; delay: number }) => {
   return (
     <motion.div
       animate={{

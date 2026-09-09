@@ -25,8 +25,7 @@ export const EventVisibility = {
   UNLISTED: "UNLISTED",
 } as const;
 
-export type EventVisibility =
-  (typeof EventVisibility)[keyof typeof EventVisibility];
+export type EventVisibility = (typeof EventVisibility)[keyof typeof EventVisibility];
 
 export const EventStatus = {
   DRAFT: "DRAFT",
@@ -37,8 +36,7 @@ export const EventStatus = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type EventStatus =
-  (typeof EventStatus)[keyof typeof EventStatus];
+export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus];
 
 const dateSchema = z
   .string()
@@ -50,12 +48,7 @@ const dateSchema = z
 
 const objectIdSchema = z.string().length(24, "Invalid ID.");
 
-const optionalString = (
-  min: number,
-  max: number,
-  minMessage?: string,
-  maxMessage?: string,
-) =>
+const optionalString = (min: number, max: number, minMessage?: string, maxMessage?: string) =>
   z
     .string()
     .trim()
@@ -71,11 +64,7 @@ const venueSchema = z.object({
   state: optionalString(2, 50),
   country: optionalString(2, 50),
   latitude: z.number().min(-90, "Invalid latitude.").max(90, "Invalid latitude.").optional(),
-  longitude: z
-    .number()
-    .min(-180, "Invalid longitude.")
-    .max(180, "Invalid longitude.")
-    .optional(),
+  longitude: z.number().min(-180, "Invalid longitude.").max(180, "Invalid longitude.").optional(),
 });
 
 const ticketSchema = z.object({
@@ -140,17 +129,12 @@ const validateEventDates = (
   ) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message:
-        "Registration end date and time must be after registration start date and time.",
+      message: "Registration end date and time must be after registration start date and time.",
       path: ["registrationEndAt"],
     });
   }
 
-  if (
-    registrationStart === undefined ||
-    registrationEnd === undefined ||
-    !data.timeline?.length
-  ) {
+  if (registrationStart === undefined || registrationEnd === undefined || !data.timeline?.length) {
     return;
   }
 
@@ -161,8 +145,7 @@ const validateEventDates = (
     if (timelineStart < registrationStart) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          "Timeline cannot start before the registration start date and time.",
+        message: "Timeline cannot start before the registration start date and time.",
         path: ["timeline", index, "startAt"],
       });
     }
@@ -170,8 +153,7 @@ const validateEventDates = (
     if (timelineEnd > registrationEnd) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          "Timeline cannot end after the registration end date and time.",
+        message: "Timeline cannot end after the registration end date and time.",
         path: ["timeline", index, "endAt"],
       });
     }
@@ -194,15 +176,9 @@ export const EventValidate = z
       .min(10, "Short description must be at least 10 characters.")
       .max(400, "Short description cannot exceed 400 characters."),
 
-    descriptionMarkdown: z
-      .string()
-      .trim()
-      .min(20, "Description must be at least 20 characters."),
+    descriptionMarkdown: z.string().trim().min(20, "Description must be at least 20 characters."),
 
-    redirectUrl: z
-      .string()
-      .trim()
-      .url("Please provide a valid redirect URL."),
+    redirectUrl: z.string().trim().url("Please provide a valid redirect URL."),
 
     tags: z
       .array(z.string().trim().min(1))
@@ -216,16 +192,9 @@ export const EventValidate = z
 
     status: z.enum(EventStatus),
 
-    coverImageUrl: z
-      .string()
-      .trim()
-      .url("Please upload a valid cover image."),
+    coverImageUrl: z.string().trim().url("Please upload a valid cover image."),
 
-    introVideoUrl: z
-      .string()
-      .trim()
-      .url("Please provide a valid intro video URL.")
-      .optional(),
+    introVideoUrl: z.string().trim().url("Please provide a valid intro video URL.").optional(),
 
     registrationStartAt: dateSchema,
 
@@ -291,11 +260,7 @@ export const updateEventValidator = z
       .min(20, "Description must be at least 20 characters.")
       .optional(),
 
-    redirectUrl: z
-      .string()
-      .trim()
-      .url("Please provide a valid redirect URL.")
-      .optional(),
+    redirectUrl: z.string().trim().url("Please provide a valid redirect URL.").optional(),
 
     tags: z
       .array(z.string().trim().min(1))
@@ -309,17 +274,9 @@ export const updateEventValidator = z
 
     status: z.enum(EventStatus).optional(),
 
-    coverImageUrl: z
-      .string()
-      .trim()
-      .url("Please provide a valid cover image.")
-      .optional(),
+    coverImageUrl: z.string().trim().url("Please provide a valid cover image.").optional(),
 
-    introVideoUrl: z
-      .string()
-      .trim()
-      .url("Please provide a valid intro video URL.")
-      .optional(),
+    introVideoUrl: z.string().trim().url("Please provide a valid intro video URL.").optional(),
 
     registrationStartAt: dateSchema.optional(),
 
@@ -339,13 +296,9 @@ export const updateEventValidator = z
 
     timeline: z.array(timelineSchema).optional(),
 
-    rules: z
-      .array(z.string().trim().min(5).max(200))
-      .optional(),
+    rules: z.array(z.string().trim().min(5).max(200)).optional(),
 
-    requirements: z
-      .array(z.string().trim().min(5).max(200))
-      .optional(),
+    requirements: z.array(z.string().trim().min(5).max(200)).optional(),
   })
   .strict()
   .superRefine((data, ctx) => {

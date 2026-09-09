@@ -1,4 +1,3 @@
-
 import { useCallback, useMemo, useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 
@@ -28,18 +27,12 @@ const CreateEvent = () => {
   const [videoProgress, setVideoProgress] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const update = useCallback(
-    <K extends keyof EventFormData>(
-      key: K,
-      value: EventFormData[K],
-    ) => {
-      setForm((previous) => ({
-        ...previous,
-        [key]: value,
-      }));
-    },
-    [],
-  );
+  const update = useCallback(<K extends keyof EventFormData>(key: K, value: EventFormData[K]) => {
+    setForm((previous) => ({
+      ...previous,
+      [key]: value,
+    }));
+  }, []);
 
   const onImageUpload = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +64,6 @@ const CreateEvent = () => {
   }, [form, saving, uploadingImage, uploadingVideo]);
 
   const onPublishEvent = useCallback(async () => {
-    
     if (saving || uploadingImage || uploadingVideo) return;
 
     await publishEvent(form, setSaving);
@@ -117,9 +109,7 @@ const CreateEvent = () => {
             >
               <Save size={13} />
 
-              <span className="hidden sm:inline">
-                {saving ? "Saving..." : "Save Draft"}
-              </span>
+              <span className="hidden sm:inline">{saving ? "Saving..." : "Save Draft"}</span>
 
               <span className="sm:hidden">Save</span>
             </button>
@@ -132,9 +122,7 @@ const CreateEvent = () => {
             >
               <ExternalLink size={13} />
 
-              <span>
-                {saving ? "Publishing..." : "Publish Event"}
-              </span>
+              <span>{saving ? "Publishing..." : "Publish Event"}</span>
             </button>
           </div>
         </div>
@@ -143,8 +131,8 @@ const CreateEvent = () => {
       <main className="mx-auto w-full px-4 py-5 sm:px-6 sm:py-7 lg:w-[80%] lg:py-8">
         <div className="mb-6">
           <p className="max-w-2xl text-xs leading-5 text-zinc-600 sm:text-sm">
-            Configure your event information, schedule, venue, media, rules,
-            and participant requirements.
+            Configure your event information, schedule, venue, media, rules, and participant
+            requirements.
           </p>
         </div>
 
@@ -209,4 +197,3 @@ const CreateEvent = () => {
 };
 
 export default CreateEvent;
-

@@ -2,27 +2,67 @@ import { ScrollReveal, ScrollRevealGroup } from "../../../../Components/ScrollRe
 import useFetchUpcomingEvent from "../../../Event/hook/useFetchUpcomingEvent";
 import type { EventResponse } from "../../../Event/type/Event.type";
 import SingleEventCard from "../Components/SingleEventCard";
+import { TbLoader3 } from "react-icons/tb";
+import { useEffect,  useState } from "react";
 
 const UpcomingEvent = () => {
-  const { data, isPending, isError } = useFetchUpcomingEvent();
+  const { data, isPending, isError, isLoading, error } = useFetchUpcomingEvent();
+  const [visibleCount, setVisibleCount] = useState(3);
 
-  if (isPending) {
+  // Lazy load more events when the last visible event comes into view
+  useEffect(() => {
+    if (!isPending && !isError && data?.data?.length) {
+      const options = {
+        root: null,
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            visibleCount < (Array.isArray(data) ? data.length : data.data?.length)
+          ) {
+            setVisibleCount((prev) =>
+              Math.min(prev + 3, (Array.isArray(data) ? data.length : data.data?.length) || 0),
+            );
+          }
+        });
+      }, options);
+
+      const lastCard = document.querySelector(`[data-index="${visibleCount - 1}"]`);
+      if (lastCard) observer.observe(lastCard);
+
+      return () => observer.disconnect();
+    }
+  }, [visibleCount, data, isPending, isError]);
+
+  const events = Array.isArray(data) ? data : data?.data || [];
+  const displayEvents = events.slice(0, visibleCount);
+
+  if (isLoading && isPending) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
-        <p className="text-sm text-white/60">Loading upcoming events...</p>
-      </main>
+      <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex min-h-[300px] items-center justify-center">
+            <TbLoader3 className="animate-spin text-4xl text-amber-500" />
+          </div>
+        </div>
+      </section>
     );
   }
 
-  if (isError || !data) {
+  if (isError) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
-        <p className="text-sm text-red-400">Failed to load upcoming events.</p>
-      </main>
+      <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-red-900/30 bg-red-950/10 p-8">
+            <p className="text-sm text-red-400">{error?.message}</p>
+          </div>
+        </div>
+      </section>
     );
   }
-
-  const events = Array.isArray(data) ? data : data.data || [];
 
   if (events.length === 0) {
     return (
@@ -40,7 +80,6 @@ const UpcomingEvent = () => {
     <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
       {/* Background Effects */}
       <div className="pointer-events-none absolute left-[-100px] top-[-10px] h-80 w-80 rounded-full bg-amber-700/30 blur-[80px]" />
-
       <div className="pointer-events-none absolute bottom-0 right-[-100px] h-80 w-80 rounded-full bg-emerald-600/30 blur-[80px]" />
 
       <div className="relative mx-auto max-w-7xl">
@@ -50,20 +89,17 @@ const UpcomingEvent = () => {
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#34A853] shadow-[0_0_10px_#34A853]" />
-
                 <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#34A853] sm:text-xs">
                   What's happening next
                 </p>
               </div>
-
               <h2 className="text-4xl font-black leading-none tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 Upcoming{" "}
-                <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#4285F4] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#EA4335] via-[FBBC04] to-[#4285F4] bg-clip-text text-transparent">
                   Events
                 </span>
               </h2>
             </div>
-
             <p className="max-w-md text-sm leading-6 text-white/35 sm:text-base">
               The next opportunities to learn, build, connect, and grow with the GDG Ranchi
               community.
@@ -71,19 +107,16 @@ const UpcomingEvent = () => {
           </div>
         </ScrollReveal>
 
-        {/* Events - One after another */}
+        {/* Events */}
         <ScrollRevealGroup>
           <div className="flex flex-col gap-8 lg:gap-12">
-            {events.map((event: EventResponse, index: number) => (
+            {displayEvents.map((event: EventResponse, index: number) => (
               <ScrollReveal key={event._id || index}>
                 <SingleEventCard
                   title={event.title}
-                  category={event.tags?.[0] || "Community Event"}
-                  description={
-                    event.shortDescription ||
-                    "Join the GDG Ranchi community for an exciting upcoming event."
-                  }
-                  Slug={event?.Slug}
+                  category={event.tags?.[0]}
+                  description={event.shortDescription}
+                  Slug={event.Slug}
                   date={
                     event.registrationStartAt
                       ? new Date(event.registrationStartAt).toLocaleDateString("en-IN", {
@@ -114,12 +147,23 @@ const UpcomingEvent = () => {
                       : "Registration Open"
                   }
                   image={event.coverImageUrl}
-                  // redirectUrl={event.redirectUrl}
                 />
               </ScrollReveal>
             ))}
           </div>
         </ScrollRevealGroup>
+
+        {/* Show all button (optional) */}
+        {visibleCount < events.length && (
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={() => setVisibleCount(events.length)}
+              className="rounded-lg bg-gradient-to-r from-[#EA4335] to-[#FBBC04] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl"
+            >
+              Show All Events
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

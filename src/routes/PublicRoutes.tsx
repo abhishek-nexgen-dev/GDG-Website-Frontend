@@ -21,7 +21,7 @@ const PublicRoutes = () => {
         <Route path="/events" element={<Events />} />
         <Route path="/events/Gallery" element={<GalleryPage />} />
         <Route path="/Gallery/:GalleryName" element={<ImagePage />} />
-         {/* <Route path="*" element={<NotFound />} /> */}
+        {/* <Route path="*" element={<NotFound />} /> */}
         <Route path="/event/:Slug" element={<EventDetailPage />} />
         <Route path="/teams" element={<ViewAllTeamPage />} />
         <Route path="/login" element={<LoginPage />} />

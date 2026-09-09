@@ -1,4 +1,3 @@
-
 import Swal from "sweetalert2";
 const alertConfig = {
   background: "#18191d",
@@ -10,7 +9,6 @@ const alertConfig = {
     htmlContainer: "text-xs text-zinc-400",
   },
 };
-
 
 const showAlert = async (
   icon: "success" | "error" | "warning" | "info",
@@ -30,4 +28,4 @@ const showAlert = async (
   });
 };
 
-export default showAlert
+export default showAlert;
