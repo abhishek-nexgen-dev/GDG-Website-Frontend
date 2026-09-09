@@ -1,13 +1,13 @@
-import AboutUsSec from "./Section/AboutUsSec";
-
+import { lazy } from "react";
 import HeroSec from "./Section/HeroSec";
-
-import PastEvents from "./Section/PastEvents";
-import UpcomingEvent from "./Section/UpcomingEvent";
+import AboutUsSec from "./Section/AboutUsSec";
 import WhatWeDoSec from "./Section/WhatWeDoSec";
 import CommunitySec from "./Section/CommunitySec";
 import OrganizersSec from "./Section/OrganizersSec";
 import PartnersSec from "./Section/PartnersSec";
+
+const UpcomingEvent = lazy(() => import("./Section/UpcomingEvent"));
+const PastEvents = lazy(() => import("./Section/PastEvents"));
 
 const HomePage = () => {
   return (

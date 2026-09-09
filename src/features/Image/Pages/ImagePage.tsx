@@ -24,12 +24,10 @@ export const images: GalleryItem[] = [
 ];
 
 const ImagePage = () => {
-  const isMaintainance = true
+  const isMaintainance = true;
 
-  
-
-  if(isMaintainance){
-    return <Navigate to="/coming-soon" replace />
+  if (isMaintainance) {
+    return <Navigate to="/coming-soon" replace />;
   }
 
   const { GalleryName } = useParams();

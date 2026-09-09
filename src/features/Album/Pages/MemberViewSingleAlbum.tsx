@@ -91,9 +91,7 @@ const formatDate = (date: string) =>
   }).format(new Date(date));
 
 const MemberViewSingleAlbum = () => {
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
-    null,
-  );
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const selectedImage = useMemo(() => {
     if (selectedImageIndex === null) return null;
@@ -130,8 +128,7 @@ const MemberViewSingleAlbum = () => {
       ? {
           label: "Public",
           icon: Eye,
-          className:
-            "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+          className: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
         }
       : {
           label: "Private",
@@ -208,9 +205,7 @@ const MemberViewSingleAlbum = () => {
                     </span>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-white sm:text-2xl">
-                    {album.title}
-                  </h2>
+                  <h2 className="text-xl font-semibold text-white sm:text-2xl">{album.title}</h2>
                 </div>
               </div>
 
@@ -231,9 +226,7 @@ const MemberViewSingleAlbum = () => {
                       Description
                     </p>
 
-                    <p className="mt-2 text-sm leading-6 text-zinc-400">
-                      {album.description}
-                    </p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-400">{album.description}</p>
                   </div>
                 )}
               </div>
@@ -242,9 +235,7 @@ const MemberViewSingleAlbum = () => {
             <section className="rounded-lg border border-white/[0.07] bg-[#101211]">
               <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4 sm:px-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-zinc-200">
-                    Album Images
-                  </h3>
+                  <h3 className="text-sm font-semibold text-zinc-200">Album Images</h3>
 
                   <p className="mt-1 text-xs text-zinc-600">
                     {album.images.length} images in this album
@@ -291,9 +282,7 @@ const MemberViewSingleAlbum = () => {
                 <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
                   <Images size={28} className="text-zinc-700" />
 
-                  <p className="mt-3 text-sm text-zinc-500">
-                    No images available
-                  </p>
+                  <p className="mt-3 text-sm text-zinc-500">No images available</p>
 
                   <p className="mt-1 text-xs text-zinc-700">
                     Images added to this album will appear here.
@@ -306,9 +295,7 @@ const MemberViewSingleAlbum = () => {
           <aside className="space-y-5">
             <section className="rounded-lg border border-white/[0.07] bg-[#101211]">
               <div className="border-b border-white/[0.06] px-5 py-4">
-                <h3 className="text-sm font-semibold text-zinc-200">
-                  Album Information
-                </h3>
+                <h3 className="text-sm font-semibold text-zinc-200">Album Information</h3>
               </div>
 
               <div className="divide-y divide-white/[0.05]">
@@ -316,28 +303,17 @@ const MemberViewSingleAlbum = () => {
 
                 <InfoRow label="Slug" value={album.slug} />
 
-                <InfoRow
-                  label="Total Images"
-                  value={`${album.images.length} Images`}
-                />
+                <InfoRow label="Total Images" value={`${album.images.length} Images`} />
 
-                <InfoRow
-                  label="Created"
-                  value={formatDate(album.createdAt)}
-                />
+                <InfoRow label="Created" value={formatDate(album.createdAt)} />
 
-                <InfoRow
-                  label="Last Updated"
-                  value={formatDate(album.updatedAt)}
-                />
+                <InfoRow label="Last Updated" value={formatDate(album.updatedAt)} />
               </div>
             </section>
 
             <section className="rounded-lg border border-white/[0.07] bg-[#101211]">
               <div className="border-b border-white/[0.06] px-5 py-4">
-                <h3 className="text-sm font-semibold text-zinc-200">
-                  Related Information
-                </h3>
+                <h3 className="text-sm font-semibold text-zinc-200">Related Information</h3>
               </div>
 
               <div className="space-y-4 p-5">
@@ -351,9 +327,7 @@ const MemberViewSingleAlbum = () => {
                       Event
                     </p>
 
-                    <p className="mt-1 truncate text-sm text-zinc-300">
-                      {album.event.title}
-                    </p>
+                    <p className="mt-1 truncate text-sm text-zinc-300">{album.event.title}</p>
                   </div>
                 </div>
 
@@ -367,9 +341,7 @@ const MemberViewSingleAlbum = () => {
                       Uploaded By
                     </p>
 
-                    <p className="mt-1 truncate text-sm text-zinc-300">
-                      {album.uploadedBy.name}
-                    </p>
+                    <p className="mt-1 truncate text-sm text-zinc-300">{album.uploadedBy.name}</p>
                   </div>
                 </div>
               </div>
@@ -380,9 +352,7 @@ const MemberViewSingleAlbum = () => {
                 <div className="flex items-center gap-2 border-b border-white/[0.06] px-5 py-4">
                   <Tag size={14} className="text-lime-400" />
 
-                  <h3 className="text-sm font-semibold text-zinc-200">
-                    Tags
-                  </h3>
+                  <h3 className="text-sm font-semibold text-zinc-200">Tags</h3>
                 </div>
 
                 <div className="flex flex-wrap gap-2 p-5">
@@ -435,9 +405,7 @@ const MemberViewSingleAlbum = () => {
             />
 
             <div className="mt-4 flex w-full max-w-4xl items-center justify-between gap-4">
-              <p className="truncate text-sm text-zinc-300">
-                {selectedImage.caption}
-              </p>
+              <p className="truncate text-sm text-zinc-300">{selectedImage.caption}</p>
 
               <span className="shrink-0 text-xs text-zinc-600">
                 {selectedImageIndex + 1} / {album.images.length}
@@ -469,9 +437,7 @@ interface InfoRowProps {
 const InfoRow = ({ label, value }: InfoRowProps) => {
   return (
     <div className="px-5 py-3.5">
-      <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-600">
-        {label}
-      </p>
+      <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-600">{label}</p>
 
       <p className="mt-1 break-all text-xs text-zinc-400">{value}</p>
     </div>

@@ -222,8 +222,7 @@ const EventTable = ({ events }: EventTableProps) => {
                     <td className="relative py-4 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <Link
-                         to={`/member/event/view/${event.Slug}`}
-                        
+                          to={`/member/event/view/${event.Slug}`}
 
                           title="View event details"
                           className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition-colors hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
