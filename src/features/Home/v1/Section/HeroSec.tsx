@@ -55,12 +55,13 @@ const HeroSec = () => {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <button className="rounded-xl bg-primary px-8 py-3.5 font-bold text-white transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(26,115,232,0.3)]">
-              Join Community
+            <button className="relative overflow-hidden rounded-xl bg-[#4285F4] px-8 py-3.5 font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-[#3367d6] hover:shadow-[0_0_40px_rgba(66,133,244,0.4)] group">
+              <span className="relative z-10">Join Community</span>
+              <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-all duration-1000 group-hover:translate-x-full" />
             </button>
             <Link
-              to="/coming-soon"
-              className="rounded-xl border border-white/15 bg-transparent px-8 py-3.5 font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5"
+              to="/events"
+              className="rounded-xl border border-white/10 bg-white/5 px-8 py-3.5 font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg"
             >
               Explore Events
             </Link>

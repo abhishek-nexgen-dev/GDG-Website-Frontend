@@ -15,22 +15,22 @@ export type MemberType = {
   onboardingSource?: onBoardingSourceType;
   primaryRole?: string;
   location: {
-    city: String;
-    state: String;
-    country: String;
-    pinCode: String;
+    city: string;
+    state: string;
+    country: string;
+    pinCode: string;
   };
   skills?: string[];
   areaOfInterest?: string[];
   socialLinks: {
-    linkedin: String;
-    github: String;
-    twitter: String;
-    website: String;
-    instagram: String;
-    youtube: String;
-    portfolio: String;
-    medium: String;
+    linkedin: string;
+    github: string;
+    twitter: string;
+    website: string;
+    instagram: string;
+    youtube: string;
+    portfolio: string;
+    medium: string;
   };
   internalNotes?: string;
   createdAt?: Date;

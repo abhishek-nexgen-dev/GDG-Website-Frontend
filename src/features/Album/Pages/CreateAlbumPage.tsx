@@ -42,6 +42,8 @@ function ErrorMessage({ message }: { message?: string }) {
   return <p className="mt-1.5 text-xs text-red-400">{message}</p>;
 }
 
+const EMPTY_ARRAY: string[] = [];
+
 export default function CreateAlbumPage() {
   const form = useCreateAlbum();
   const { mutateAsync, isPending } = useCreateAlbumMutation();
@@ -70,7 +72,7 @@ export default function CreateAlbumPage() {
   const eventName = watch("EventName") ?? "";
   const albumImageUrl = watch("albumImageUrl") ?? "";
   const description = watch("description") ?? "";
-  const tags = watch("tags") ?? [];
+  const tags = watch("tags") ?? EMPTY_ARRAY;
   const visibility = watch("visibility") ?? "public";
   const status = watch("status") ?? "draft";
 

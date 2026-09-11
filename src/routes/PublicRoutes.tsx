@@ -20,10 +20,14 @@ const PublicRoutes = () => {
         <Route index path="/" element={<HomePage />} />
         <Route path="/events" element={<Events />} />
         <Route path="/events/Gallery" element={<GalleryPage />} />
+        <Route path="/events/gallery" element={<GalleryPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/Gallery/:GalleryName" element={<ImagePage />} />
+        <Route path="/gallery/:GalleryName" element={<ImagePage />} />
         {/* <Route path="*" element={<NotFound />} /> */}
         <Route path="/event/:Slug" element={<EventDetailPage />} />
         <Route path="/teams" element={<ViewAllTeamPage />} />
+        <Route path="/team" element={<ViewAllTeamPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot" element={<ForgotPasswordOtp />} />
       </Route>

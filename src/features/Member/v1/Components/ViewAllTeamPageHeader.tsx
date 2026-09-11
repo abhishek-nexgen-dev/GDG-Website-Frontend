@@ -1,11 +1,31 @@
-import { Search, ShieldCheck, Users } from "lucide-react";
+import { Search, ShieldCheck, Users, X, Sparkles } from "lucide-react";
 import { HiUserGroup } from "react-icons/hi2";
 import DropDown from "../../../../Components/DropDown";
-import { useState } from "react";
 
-const ViewAllTeamPageHeader = () => {
-  const [role, setRole] = useState("");
+interface ViewAllTeamPageHeaderProps {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  selectedCategory: string;
+  onCategoryChange: (cat: string) => void;
+  totalMembersCount?: number;
+}
 
+const CATEGORY_OPTIONS = [
+  { label: "All Teams", value: "all" },
+  { label: "Organizers & Leads", value: "organizer" },
+  { label: "Tech Team", value: "tech" },
+  { label: "Design Team", value: "design" },
+  { label: "Social Media & Outreach", value: "social" },
+  { label: "Core Members", value: "core" },
+];
+
+const ViewAllTeamPageHeader = ({
+  searchQuery,
+  onSearchChange,
+  selectedCategory,
+  onCategoryChange,
+  totalMembersCount = 40,
+}: ViewAllTeamPageHeaderProps) => {
   return (
     <section className="relative z-10 md:px-16 lg:px-[8%] lg:pt-[15vh] xl:px-[10%]">
       {/* Hero */}
@@ -20,12 +40,10 @@ const ViewAllTeamPageHeader = () => {
 
           {/* Heading */}
           <h1 className="mt-7 text-5xl font-extrabold leading-tight lg:text-6xl">
-            {" "}
-            Meet the <br />{" "}
+            Meet the <br />
             <span className="bg-gradient-to-r from-[#4285F4] via-[#EA4335] to-[#34A853] bg-clip-text text-transparent">
-              {" "}
-              Amazing Team{" "}
-            </span>{" "}
+              Amazing Team
+            </span>
           </h1>
 
           {/* Gradient Line */}
@@ -47,8 +65,8 @@ const ViewAllTeamPageHeader = () => {
               </div>
 
               <div>
-                <h3 className="text-3xl font-bold">40+</h3>
-                <p className="text-gray-400">Core Members</p>
+                <h3 className="text-3xl font-bold">{totalMembersCount}+</h3>
+                <p className="text-gray-400">Team Members</p>
               </div>
             </div>
 
@@ -59,8 +77,8 @@ const ViewAllTeamPageHeader = () => {
               </div>
 
               <div>
-                <h3 className="text-3xl font-bold">12</h3>
-                <p className="text-gray-400">Active Teams</p>
+                <h3 className="text-3xl font-bold">5</h3>
+                <p className="text-gray-400">Specialized Tracks</p>
               </div>
             </div>
           </div>
@@ -83,8 +101,8 @@ const ViewAllTeamPageHeader = () => {
 
             {/* Floating Card */}
             <div className="absolute -left-10 top-8 rounded-2xl border border-white/10 bg-[#111111]/80 px-6 py-4 backdrop-blur-xl">
-              <p className="text-sm text-gray-400">Volunteers</p>
-              <h3 className="text-3xl font-bold">100%</h3>
+              <p className="text-sm text-gray-400">Community Driven</p>
+              <h3 className="text-3xl font-bold text-white">100%</h3>
             </div>
 
             {/* Floating Card */}
@@ -96,34 +114,66 @@ const ViewAllTeamPageHeader = () => {
         </div>
       </div>
 
-      {/* Search Section */}
-      <div className="relative mt-20">
-        <div className="rounded-3xl  p-5 backdrop-blur-2xl shadow-[0_20px_80px_rgba(0,0,0,.35)]">
-          <div className="flex flex-col gap-5 lg:flex-row">
-            {/* Search */}
-            <div className="flex h-16 flex-1 items-center rounded-2xl border border-white/10 bg-[#111111]/70 px-5 transition-all duration-300 focus-within:border-[#4285F4]">
-              <Search size={20} className="text-gray-500" />
-
+      {/* Search & Filter Controls */}
+      <div className="relative mt-16">
+        <div className="rounded-3xl border border-white/10 bg-[#111111]/70 p-5 backdrop-blur-2xl shadow-[0_20px_80px_rgba(0,0,0,.35)]">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            {/* Search Input */}
+            <div className="flex h-14 flex-1 items-center rounded-2xl border border-white/10 bg-black/50 px-5 transition-all duration-300 focus-within:border-[#4285F4]">
+              <Search size={20} className="shrink-0 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search team members..."
-                className="ml-4 w-full bg-transparent text-white placeholder:text-gray-500 outline-none"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search team members by name, role, or company..."
+                className="ml-3 w-full bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange("")}
+                  className="rounded-full p-1 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+                  title="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
-            {/* Filter */}
-            <button className="flex h-16 min-w-[240px] items-center justify-center gap-3 rounded-2xl border border-white/10 bg-[#111111]/70 text-gray-300 transition-all duration-300 hover:border-[#4285F4] hover:bg-[#161616] hover:text-white">
-              {/* <SlidersHorizontal size={18} /> */}
+            {/* Category Dropdown (Clean div wrapper, NO nested button) */}
+            <div className="w-full lg:w-72">
               <DropDown
-                value={role}
-                onChange={(value) => setRole(value)}
-                options={[
-                  { label: "Admin", value: "admin" },
-                  { label: "Organizer", value: "organizer" },
-                  { label: "Member", value: "member" },
-                ]}
+                value={selectedCategory}
+                onChange={(value) => onCategoryChange(value)}
+                options={CATEGORY_OPTIONS}
+                className="w-full"
+                triggerClassName="h-14 rounded-2xl border-white/10 bg-black/50 hover:border-[#4285F4] text-sm text-gray-200"
               />
-            </button>
+            </div>
+          </div>
+
+          {/* Quick Filter Chips */}
+          <div className="mt-4 flex flex-wrap items-center gap-2 pt-2 border-t border-white/5">
+            <span className="flex items-center gap-1.5 text-xs text-gray-500 mr-2">
+              <Sparkles size={14} className="text-[#4285F4]" /> Filter:
+            </span>
+            {CATEGORY_OPTIONS.map((opt) => {
+              const isSelected = selectedCategory === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => onCategoryChange(opt.value)}
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                    isSelected
+                      ? "border border-[#4285F4] bg-[#4285F4]/20 text-[#8AB4F8] shadow-[0_0_15px_rgba(66,133,244,0.3)]"
+                      : "border border-white/5 bg-white/[0.03] text-gray-400 hover:border-white/20 hover:text-white"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

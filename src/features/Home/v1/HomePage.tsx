@@ -1,29 +1,40 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import HeroSec from "./Section/HeroSec";
 import AboutUsSec from "./Section/AboutUsSec";
 import WhatWeDoSec from "./Section/WhatWeDoSec";
 import CommunitySec from "./Section/CommunitySec";
 import OrganizersSec from "./Section/OrganizersSec";
-import PartnersSec from "./Section/PartnersSec";
+import SponsorsSec from "./Section/SponsorsSec";
+import TestimonialsSec from "./Section/TestimonialsSec";
+import Achievement from "./Section/Achievement";
 
 const UpcomingEvent = lazy(() => import("./Section/UpcomingEvent"));
 const PastEvents = lazy(() => import("./Section/PastEvents"));
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <HeroSec />
+
+      <Achievement />
+
       <AboutUsSec />
 
       <WhatWeDoSec />
 
       <OrganizersSec />
 
-      <UpcomingEvent />
+      <Suspense fallback={<div className="min-h-[100px]" />}>
+        <UpcomingEvent />
+      </Suspense>
 
-      <PastEvents />
+      <Suspense fallback={<div className="min-h-[100px]" />}>
+        <PastEvents />
+      </Suspense>
 
-      <PartnersSec />
+      <SponsorsSec />
+
+      <TestimonialsSec />
 
       <CommunitySec />
     </div>

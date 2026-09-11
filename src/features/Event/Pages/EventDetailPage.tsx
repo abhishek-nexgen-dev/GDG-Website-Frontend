@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { CalendarDays, Clock3, Globe, MapPin, ShieldCheck, Users } from "lucide-react";
+import { CalendarDays, Clock3, Globe, MapPin, ShieldCheck, Users, BookOpen } from "lucide-react";
 
 import {
   formatDate,
@@ -15,6 +15,8 @@ import Detail from "../Components/Detail";
 import AboutEvent from "../Components/AboutEvent";
 import EVENT_BANNER from "../Components/EVENT_BANNER";
 import HIGHLIGHTS_Sec from "../Section/HIGHLIGHTS_Sec";
+import Timeline from "../Components/Timeline";
+import RulesList from "../Components/RulesList";
 
 import usefetchEventDetaill from "../hook/usefetchEventDetaill";
 import GDGLoader from "../../../Components/GDGLoader";
@@ -87,8 +89,45 @@ const ViewSingleEventPage = () => {
           className="mt-10 flex flex-col-reverse  gap-3 lg:flex-row lg:items-start lg:gap-[2vw]"
         >
           {/* About Section */}
-          <div className="w-full lg:w-[70%]">
+          <div className="w-full lg:w-[70%] flex flex-col gap-8">
             <AboutEvent event={event} />
+
+            {/* Timeline Section */}
+            {event.timeline && event.timeline.length > 0 && (
+              <div className="rounded-2xl border border-white/[0.08] bg-[#0b0d0e] p-6 sm:p-8">
+                <h3 className="text-2xl font-semibold tracking-tight text-white mb-6">Event Timeline</h3>
+                <Timeline timeline={event.timeline} />
+              </div>
+            )}
+
+            {/* Rules & Requirements Grid */}
+            {(event.rules?.length > 0 || event.requirements?.length > 0) && (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {event.rules?.length > 0 && (
+                  <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808] p-6">
+                    <div className="mb-6 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
+                        <ShieldCheck size={20} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-white">Rules & Guidelines</h3>
+                    </div>
+                    <RulesList items={event.rules} />
+                  </div>
+                )}
+                
+                {event.requirements?.length > 0 && (
+                  <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#111315] via-[#0b0d0e] to-[#070808] p-6">
+                    <div className="mb-6 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#34A853]/10 text-[#34A853]">
+                        <BookOpen size={20} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-white">Requirements</h3>
+                    </div>
+                    <RulesList items={event.requirements} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Details Sidebar - Fixed width on desktop, full width on mobile */}

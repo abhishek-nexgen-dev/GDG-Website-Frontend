@@ -13,7 +13,7 @@ export interface GalleryItem {
   height?: number;
 }
 
-export const images: GalleryItem[] = [
+const images: GalleryItem[] = [
   {
     id: "1",
     img: "https://imgs.search.brave.com/gLH5Au-TgJmgV1wUTDMsxAE1QN72OVStsJhB4gbGdj8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNC8w/NS8wNy8wNi80NC9j/YXQtMzM5NDAwXzY0/MC5qcGc",
@@ -24,13 +24,13 @@ export const images: GalleryItem[] = [
 ];
 
 const ImagePage = () => {
+  const { GalleryName } = useParams();
   const isMaintainance = true;
 
   if (isMaintainance) {
     return <Navigate to="/coming-soon" replace />;
   }
 
-  const { GalleryName } = useParams();
   const slug = GalleryName || "ranchihacks-2025"; // Fallback to default if no slug
 
   // Optional: You can use the slug to filter or customize the gallery content

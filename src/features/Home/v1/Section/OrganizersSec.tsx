@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -305,6 +306,17 @@ const OrganizersSec = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* View All Team Link */}
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/teams"
+            className="inline-flex items-center gap-2.5 rounded-2xl border border-[#4285F4]/40 bg-[#4285F4]/15 px-8 py-3.5 text-sm font-bold text-[#8AB4F8] shadow-[0_0_25px_rgba(66,133,244,0.2)] transition-all hover:bg-[#4285F4] hover:text-white hover:shadow-[0_0_35px_rgba(66,133,244,0.5)]"
+          >
+            <span>Meet All Team Members & Leads</span>
+            <Users size={16} />
+          </Link>
         </div>
       </div>
     </section>

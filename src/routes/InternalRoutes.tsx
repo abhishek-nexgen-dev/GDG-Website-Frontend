@@ -21,6 +21,7 @@ const InternalRoutes = () => {
       <Route path="/member" element={<AuthLayout />}>
         <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="Dashboard" element={<DashboardPage />} />
         <Route path="members" element={<MembersDashboardPage />} />
         <Route path="create" element={<CreateNewMember />} />
         <Route path="profile/:id" element={<MemberDetails />} />

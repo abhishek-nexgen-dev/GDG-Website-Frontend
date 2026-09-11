@@ -24,7 +24,7 @@ import { EVENT_CONSTANT } from "../Constant/Event.Constant";
 import EventCard from "../Components/EventCard";
 import GDGLoader from "../../../Components/GDGLoader";
 
-export const EventStatus = {
+const EventStatus = {
   REGISTRATION_OPEN: "REGISTRATION_OPEN",
   REGISTRATION_CLOSED: "REGISTRATION_CLOSED",
   LIVE: "LIVE",
@@ -32,7 +32,7 @@ export const EventStatus = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus];
+type EventStatus = (typeof EventStatus)[keyof typeof EventStatus];
 
 const COMMON_TAGS = [
   "AI",
@@ -272,7 +272,7 @@ const Events = () => {
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-xs font-semibold text-black transition hover:bg-lime-300"
+            className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-xs font-semibold text-black transition hover:bg-blue-400"
           >
             <RefreshCw size={14} />
             Try again
@@ -283,39 +283,38 @@ const Events = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-[#050505] text-white">
       <Background />
 
       <section className="relative border-b border-white/[0.07]">
         <div className="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pb-20 sm:pt-24">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-lime-400/20 bg-lime-400/[0.05] px-4 py-2">
-              <Sparkles size={13} className="text-lime-400" />
-
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-lime-300">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#4285F4]/30 bg-[#4285F4]/10 px-4 py-2">
+              <Sparkles size={13} className="text-[#4285F4]" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8AB4F8]">
                 Discover Experiences
               </span>
             </div>
 
-            <h1 className="mt-7 text-4xl font-semibold tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-8 text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
               Find your next
-              <span className="block bg-gradient-to-b from-white to-zinc-600 bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#4285F4] bg-clip-text text-transparent">
                 great experience.
               </span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-zinc-500 sm:text-base">
+            <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-gray-400 sm:text-base">
               Explore conferences, workshops, meetups and community experiences designed to help you
               learn, connect and build.
             </p>
 
-            <div className="group relative mx-auto mt-10 max-w-2xl">
-              <div className="absolute -inset-1 rounded-2xl bg-lime-400/[0.025] opacity-0 blur-xl transition group-focus-within:opacity-100" />
+            <div className="group relative mx-auto mt-12 max-w-2xl">
+              <div className="absolute -inset-1 rounded-2xl bg-[#4285F4]/[0.05] opacity-0 blur-xl transition group-focus-within:opacity-100" />
 
-              <div className="relative flex h-14 items-center rounded-2xl border border-white/[0.1] bg-[#080808] px-4 transition focus-within:border-lime-400/30">
+              <div className="relative flex h-14 items-center rounded-2xl border border-white/[0.1] bg-white/[0.02] px-4 backdrop-blur-xl transition focus-within:border-[#4285F4]/50 focus-within:bg-white/[0.04]">
                 <Search
                   size={18}
-                  className="shrink-0 text-zinc-500 transition group-focus-within:text-lime-400"
+                  className="shrink-0 text-gray-500 transition group-focus-within:text-[#4285F4]"
                 />
 
                 <input
@@ -341,7 +340,7 @@ const Events = () => {
 
             <div className="mt-7 flex justify-center">
               <div className="flex items-center gap-2 text-[11px] text-zinc-600">
-                <Zap size={13} className="text-lime-400" />
+                <Zap size={13} className="text-blue-500" />
 
                 <span>
                   {totalEvents} curated {totalEvents === 1 ? "experience" : "experiences"} waiting
@@ -370,7 +369,7 @@ const Events = () => {
         <div className="mt-10 flex flex-wrap items-end justify-between gap-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.025]">
-              <Grid2X2 size={17} className="text-lime-400" />
+              <Grid2X2 size={17} className="text-blue-500" />
             </div>
 
             <div>
@@ -394,7 +393,7 @@ const Events = () => {
             <span>Filters</span>
 
             {activeFilterCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-lime-400 px-1 text-[9px] font-bold text-black">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 px-1 text-[9px] font-bold text-black">
                 {activeFilterCount}
               </span>
             )}
@@ -404,7 +403,7 @@ const Events = () => {
         <div className="relative">
           {isFetching && (
             <div className="pointer-events-none absolute right-0 top-5 z-20 flex items-center gap-2 rounded-full border border-white/[0.08] bg-black/80 px-3 py-1.5 text-[10px] text-zinc-500 backdrop-blur-xl">
-              <Loader2 size={11} className="animate-spin text-lime-400" />
+              <Loader2 size={11} className="animate-spin text-blue-500" />
               Updating...
             </div>
           )}
@@ -462,11 +461,11 @@ const Background = memo(() => (
     />
 
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute left-1/2 top-[-280px] h-[650px] w-[900px] -translate-x-1/2 rounded-full bg-lime-400/[0.055] blur-[180px]" />
+      <div className="absolute left-1/2 top-[-280px] h-[650px] w-[900px] -translate-x-1/2 rounded-full bg-blue-500/[0.055] blur-[180px]" />
 
       <div className="absolute left-[5%] top-[35%] h-[250px] w-[250px] rounded-full bg-emerald-500/[0.025] blur-[140px]" />
 
-      <div className="absolute right-[5%] top-[20%] h-[300px] w-[300px] rounded-full bg-lime-300/[0.02] blur-[150px]" />
+      <div className="absolute right-[5%] top-[20%] h-[300px] w-[300px] rounded-full bg-blue-400/[0.02] blur-[150px]" />
     </div>
   </>
 ));
@@ -481,11 +480,11 @@ const StatusButton = memo(
       className={clsx(
         "relative shrink-0 overflow-hidden rounded-xl border px-4 py-2.5 text-xs font-medium transition-all duration-300",
         active
-          ? "border-lime-400/30 bg-lime-400/[0.09] text-lime-300"
+          ? "border-blue-500/30 bg-blue-500/[0.09] text-blue-400"
           : "border-white/[0.08] bg-[#080808] text-zinc-500 hover:border-white/[0.16] hover:text-zinc-300",
       )}
     >
-      {active && <span className="absolute inset-x-4 bottom-0 h-px bg-lime-400" />}
+      {active && <span className="absolute inset-x-4 bottom-0 h-px bg-blue-500" />}
 
       {label}
     </button>
@@ -546,7 +545,7 @@ const Pagination = memo(
               className={clsx(
                 "flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-xs font-medium transition",
                 currentPage === page
-                  ? "bg-lime-400 text-black"
+                  ? "bg-blue-500 text-black"
                   : "border border-white/[0.08] text-zinc-500 hover:border-white/[0.15] hover:text-white",
               )}
             >
@@ -599,7 +598,7 @@ const FilterDrawer = memo(
         <div className="flex items-center justify-between border-b border-white/[0.07] px-6 py-5">
           <div>
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-lime-400" />
+              <Filter size={16} className="text-blue-500" />
 
               <h3 className="text-sm font-semibold text-white">Filter Events</h3>
             </div>
@@ -638,7 +637,7 @@ const FilterDrawer = memo(
                 <button
                   type="button"
                   onClick={onClearTags}
-                  className="text-[11px] font-medium text-lime-400 transition hover:text-lime-300"
+                  className="text-[11px] font-medium text-blue-500 transition hover:text-blue-400"
                 >
                   Reset
                 </button>
@@ -657,7 +656,7 @@ const FilterDrawer = memo(
                     className={clsx(
                       "inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-medium transition-all",
                       selected
-                        ? "border-lime-400/30 bg-lime-400/[0.1] text-lime-300"
+                        ? "border-blue-500/30 bg-blue-500/[0.1] text-blue-400"
                         : "border-white/[0.08] bg-white/[0.02] text-zinc-500 hover:border-white/[0.15] hover:text-zinc-300",
                     )}
                   >
@@ -682,7 +681,7 @@ const FilterDrawer = memo(
           <button
             type="button"
             onClick={onClose}
-            className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white text-xs font-semibold text-black transition hover:bg-lime-300"
+            className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white text-xs font-semibold text-black transition hover:bg-blue-400"
           >
             Show Events
             <ArrowRight size={14} />

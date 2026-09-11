@@ -13,7 +13,7 @@ const useFetchMember = () => {
     },
     onSuccess: (data) => {
       console.log("Mutation successful:", data);
-      useMembers.getInitialState().setMembers(data.data);
+      useMembers.getState().setMembers(data.data);
     },
     onError: (error) => {
       console.error("Mutation error:", error);

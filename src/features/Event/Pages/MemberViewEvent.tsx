@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -318,6 +317,8 @@ const ViewSingleEventPage = () => {
 
   const topRef = useRef<HTMLDivElement>(null);
 
+  const [prevEventId, setPrevEventId] = useState<string | null>(null);
+
   const event = useMemo(() => {
     if (!data) {
       return undefined;
@@ -330,16 +331,12 @@ const ViewSingleEventPage = () => {
     return response.data || (data as EventResponse);
   }, [data]);
 
-  useEffect(() => {
-    if (!event) {
-      return;
-    }
-
+  if (event && event._id !== prevEventId) {
     const nextForm = createForm(event);
-
     setForm(nextForm);
     setInitialForm(nextForm);
-  }, [event]);
+    setPrevEventId(event._id ?? null);
+  }
 
   const eventStart = useMemo(() => (event ? getEventStartDate(event) : undefined), [event]);
 

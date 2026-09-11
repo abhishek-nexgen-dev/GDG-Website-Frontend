@@ -14,8 +14,8 @@ import type { EventStatus, PublicEvent } from "../type/Event.type";
 const STATUS_CONFIG = {
   REGISTRATION_OPEN: {
     label: "Registration Open",
-    dot: "bg-lime-400",
-    className: "border-lime-400/20 bg-lime-400/10 text-lime-300",
+    dot: "bg-blue-500",
+    className: "border-blue-500/20 bg-blue-500/10 text-blue-400",
   },
 
   REGISTRATION_CLOSED: {
@@ -68,7 +68,7 @@ const EventCard = memo(({ event }: { event: PublicEvent }) => {
         hover:shadow-[0_20px_50px_rgba(0,0,0,0.45)]
         focus-visible:outline-none
         focus-visible:ring-2
-        focus-visible:ring-lime-400/60
+        focus-visible:ring-blue-500/60
       "
     >
       {/* IMAGE */}
@@ -141,7 +141,7 @@ const EventCard = memo(({ event }: { event: PublicEvent }) => {
             text-md font-semibold leading-5
             tracking-tight text-zinc-100
             transition-colors
-            group-hover:text-lime-300
+            group-hover:text-blue-400
           "
         >
           {event.title}
@@ -171,7 +171,7 @@ const EventCard = memo(({ event }: { event: PublicEvent }) => {
           <div className="flex min-w-0 items-center gap-2 text-[10px] text-zinc-600">
             <CalendarDays
               size={12}
-              className="shrink-0 text-lime-400/60"
+              className="shrink-0 text-blue-500/60"
             />
 
             <span className="truncate">
@@ -184,7 +184,7 @@ const EventCard = memo(({ event }: { event: PublicEvent }) => {
               flex shrink-0 items-center gap-1
               text-[10px] font-medium text-zinc-500
               transition-colors
-              group-hover:text-lime-400
+              group-hover:text-blue-500
             "
           >
             View

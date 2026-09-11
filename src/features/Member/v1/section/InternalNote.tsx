@@ -1,21 +1,31 @@
-import { Bell, ShieldCheck } from "lucide-react";
-
+import { Bell } from "lucide-react";
 import useMembers from "../store/useMembers";
 import useUpdateMember from "../utils/useDraftMember";
 import Section from "../../../../Components/Section";
+import type { MemberType } from "../type/MemberDetails.type";
 
-type InterNotePropsType = {
+interface InternalNotePropsType {
   isEdit: boolean;
-};
+  data?: MemberType | null;
+  onChange?: (updates: Partial<MemberType>) => void;
+}
 
-const InternalNote = ({ isEdit }: InterNotePropsType) => {
-  const singleMember = useMembers((state) => state.singleMember);
-  const { MemberUpdate } = useUpdateMember(singleMember?._id || "");
+const InternalNote = ({ isEdit, data, onChange }: InternalNotePropsType) => {
+  const storeMember = useMembers((state) => state.singleMember);
+  const currentMember = data ?? storeMember;
+  const { MemberUpdate } = useUpdateMember(currentMember?._id || "");
 
-  // Safety check if singleMember is not loaded
-  if (!singleMember) {
+  if (!currentMember) {
     return null;
   }
+
+  const handleNotesChange = (value: string) => {
+    if (onChange) {
+      onChange({ internalNotes: value });
+    } else {
+      MemberUpdate({ internalNotes: value });
+    }
+  };
 
   return (
     <Section
@@ -24,10 +34,11 @@ const InternalNote = ({ isEdit }: InterNotePropsType) => {
       icon={<Bell size={17} />}
     >
       <textarea
-        value={singleMember.internalNotes || ""}
+        value={currentMember.internalNotes || ""}
         readOnly={!isEdit}
-        onChange={(event) => MemberUpdate({ internalNotes: event.target.value })}
+        onChange={(event) => handleNotesChange(event.target.value)}
         rows={5}
+        placeholder="Add administrative notes, internal member history, or notes for co-organizers..."
         className="
           w-full
           resize-y
@@ -43,24 +54,8 @@ const InternalNote = ({ isEdit }: InterNotePropsType) => {
           outline-none
           placeholder:text-white/20
           focus:border-green-500/40
-          read-only:opacity-70
         "
-        placeholder={isEdit ? "Add internal notes..." : "No internal notes"}
       />
-
-      <div
-        className="
-          mt-3
-          flex
-          items-center
-          gap-2
-          text-[10px]
-          text-white/30
-        "
-      >
-        <ShieldCheck size={13} />
-        Only admins can see this note
-      </div>
     </Section>
   );
 };

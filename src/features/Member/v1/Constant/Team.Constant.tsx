@@ -184,7 +184,7 @@ const teamMembers = [
   {
     id: 7,
     name: "Aman Singh",
-    role: "Tech-Teamr",
+    role: "Tech-Team",
     image:
       "https://imgs.search.brave.com/jvRYOjnJoFsWgS9n4eDam6vrtQFzqBGywjSpGPAMcjM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdj/ZG4uc3RhYmxlZGlm/ZnVzaW9ud2ViLmNv/bS8yMDI2LzUvOC83/ZGM0ZWUyYy03Y2Ji/LTQ5NjctOGRlOS1m/YzA4MzI2OTI1OWIu/d2VicA",
     socialLinks: [

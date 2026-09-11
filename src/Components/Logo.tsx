@@ -23,8 +23,7 @@ export function Logo({ className, showText = true, size = "md" }: LogoProps) {
   const icon = iconSizes[size];
 
   return (
-    <a
-      href="#home"
+    <span
       className={clsx("inline-flex min-w-0 items-center gap-2 sm:gap-2.5", className)}
       aria-label="GDG Ranchi — Home"
     >
@@ -42,6 +41,6 @@ export function Logo({ className, showText = true, size = "md" }: LogoProps) {
           GDG <span className="font-normal text-text-secondary">Ranchi</span>
         </span>
       )}
-    </a>
+    </span>
   );
 }
