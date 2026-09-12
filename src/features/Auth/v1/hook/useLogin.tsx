@@ -20,9 +20,10 @@ const useLogin = () => {
 
     onSuccess: (data: LoginResponse) => {
       console.log("data-->", data);
+      const perms = data.data.perms || data.data.permissions || [];
       useAuth.getState().setAuthUser({
         FindUser: data.data.FindUser,
-        perms: data.data.perms,
+        perms,
       });
     },
   });

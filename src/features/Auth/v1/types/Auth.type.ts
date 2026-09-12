@@ -63,7 +63,8 @@ export interface User {
 
 export interface LoginData {
   FindUser: User;
-  perms: Permission[];
+  perms?: Permission[];
+  permissions?: Permission[];
 }
 
 export interface LoginResponse {

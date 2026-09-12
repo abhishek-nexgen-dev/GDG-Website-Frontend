@@ -64,10 +64,11 @@ const useAuth = create<UseAuthType>((set) => ({
 
   setAuthUser: (data) => {
     try {
+      const permsToStore = data.perms || data.permissions || [];
       localStorage.setItem("gdg_auth_user", JSON.stringify(data.FindUser));
-      localStorage.setItem("gdg_auth_perms", JSON.stringify(data.perms));
+      localStorage.setItem("gdg_auth_perms", JSON.stringify(permsToStore));
+      set({ user: data.FindUser, perms: permsToStore });
     } catch {}
-    set({ user: data.FindUser, perms: data.perms });
   },
 
   resetDefaultPerms: () => {

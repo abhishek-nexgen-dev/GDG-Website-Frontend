@@ -17,8 +17,10 @@ const InternalSideBar = () => {
   const hasPermission = (permissionName?: string, permissionAction?: string) => {
     if (!permissionName) return true;
     return (perms || []).some((p) => {
-      const nameMatch = p.name === permissionName;
-      const actionMatch = permissionAction ? p.action === permissionAction : true;
+      const nameMatch = p.name?.toLowerCase() === permissionName?.toLowerCase();
+      const actionMatch = permissionAction
+        ? p.action?.toLowerCase() === permissionAction?.toLowerCase()
+        : true;
       return nameMatch && actionMatch;
     });
   };

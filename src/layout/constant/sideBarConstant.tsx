@@ -1,4 +1,10 @@
 import { LayoutDashboard, Calendar, Images, Image, Users, Mail } from "lucide-react";
+import {
+  Event_Permissions,
+  Gallery_Permissions,
+  Member_Permissions,
+  Email_Permissions,
+} from "../../features/Permission/constant/Permission.constant";
 
 export interface SideBarItem {
   label: string;
@@ -19,51 +25,51 @@ const sideBarConstant: SideBarItem[] = [
     label: "Events",
     link: "/member/events",
     icon: Calendar,
-    permissionName: "event:view",
+    permissionName: Event_Permissions.VIEW_EVENT,
     permissionAction: "read",
     subItems: [
-      { label: "Manage Events", link: "/member/events", permissionName: "event:view", permissionAction: "read" },
-      { label: "Create Event", link: "/member/events/create", permissionName: "event:create", permissionAction: "create" },
+      { label: "Manage Events", link: "/member/events", permissionName: Event_Permissions.VIEW_EVENT, permissionAction: "read" },
+      { label: "Create Event", link: "/member/events/create", permissionName: Event_Permissions.CREATE_EVENT, permissionAction: "create" },
     ],
   },
   {
     label: "Albums",
     link: "/member/albums",
     icon: Images,
-    permissionName: "gallery:view",
+    permissionName: Gallery_Permissions.VIEW_GALLERY,
     permissionAction: "read",
     subItems: [
-      { label: "Manage Albums", link: "/member/albums", permissionName: "gallery:view", permissionAction: "read" },
-      { label: "Create Album", link: "/member/albums/create", permissionName: "gallery:create", permissionAction: "create" },
+      { label: "Manage Albums", link: "/member/albums", permissionName: Gallery_Permissions.VIEW_GALLERY, permissionAction: "read" },
+      { label: "Create Album", link: "/member/albums/create", permissionName: Gallery_Permissions.CREATE_GALLERY, permissionAction: "create" },
     ],
   },
   {
     label: "Images",
     link: "/member/images",
     icon: Image,
-    permissionName: "gallery:image:view",
+    permissionName: Gallery_Permissions.VIEW_IMAGE,
     permissionAction: "read",
     subItems: [
-      { label: "Manage Images", link: "/member/images", permissionName: "gallery:image:view", permissionAction: "read" },
-      { label: "Upload Images", link: "/member/images/upload", permissionName: "gallery:image:upload", permissionAction: "create" },
+      { label: "Manage Images", link: "/member/images", permissionName: Gallery_Permissions.VIEW_IMAGE, permissionAction: "read" },
+      { label: "Upload Images", link: "/member/images/upload", permissionName: Gallery_Permissions.UPLOAD_IMAGE, permissionAction: "create" },
     ],
   },
   {
     label: "Members",
     link: "/member/members",
     icon: Users,
-    permissionName: "member:view",
+    permissionName: Member_Permissions.VIEW_MEMBER,
     permissionAction: "read",
     subItems: [
-      { label: "All Members", link: "/member/members", permissionName: "member:view", permissionAction: "read" },
-      { label: "Add Member", link: "/member/create", permissionName: "member:create", permissionAction: "create" },
+      { label: "All Members", link: "/member/members", permissionName: Member_Permissions.VIEW_MEMBER, permissionAction: "read" },
+      { label: "Add Member", link: "/member/create", permissionName: Member_Permissions.CREATE_MEMBER, permissionAction: "create" },
     ],
   },
   {
     label: "Emails",
     link: "/member/emails/send",
     icon: Mail,
-    permissionName: "email:send",
+    permissionName: Email_Permissions.SEND_EMAIL,
     permissionAction: "create",
   },
 ];
