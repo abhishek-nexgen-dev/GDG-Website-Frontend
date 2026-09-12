@@ -16,7 +16,7 @@ const InternalSideBar = () => {
 
   const hasPermission = (permissionName?: string, permissionAction?: string) => {
     if (!permissionName) return true;
-    return perms.some((p) => {
+    return (perms || []).some((p) => {
       const nameMatch = p.name === permissionName;
       const actionMatch = permissionAction ? p.action === permissionAction : true;
       return nameMatch && actionMatch;

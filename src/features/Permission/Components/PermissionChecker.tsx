@@ -16,7 +16,7 @@ const PermissionChecker = ({
 }: PermissionCheckerProps) => {
   const { perms } = useAuth();
 
-  const hasPermission = perms.some((permission) => {
+  const hasPermission = (perms || []).some((permission) => {
     const matchesName = permission.name === permissionName;
     const matchesAction = permissionAction ? permission.action === permissionAction : true;
     return matchesName && matchesAction;

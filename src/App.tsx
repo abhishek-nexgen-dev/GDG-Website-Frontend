@@ -1,6 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
-import PublicRoutes from "./routes/PublicRoutes";
-import InternalRoutes from "./routes/InternalRoutes";
+import AppRoutes from "./routes/AppRoutes";
 import gsap from "gsap";
 import { ReactLenis } from "lenis/react";
 import type { LenisRef } from "lenis/react";
@@ -40,8 +39,7 @@ function App() {
       />
 
       <BrowserRouter>
-        <PublicRoutes />
-        <InternalRoutes />
+        <AppRoutes />
       </BrowserRouter>
     </>
   );

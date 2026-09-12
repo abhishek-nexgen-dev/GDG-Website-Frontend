@@ -71,7 +71,7 @@ function getFallbackFilteredEvents(filters: EventFilters) {
       (e) =>
         e.title.toLowerCase().includes(q) ||
         e.shortDescription.toLowerCase().includes(q) ||
-        e.tags.some((t) => t.toLowerCase().includes(q)),
+        (e.tags || []).some((t) => t.toLowerCase().includes(q)),
     );
   }
 
@@ -90,7 +90,7 @@ function getFallbackFilteredEvents(filters: EventFilters) {
   if (filters.tags) {
     const requestedTags = filters.tags.split(",").map((t) => t.trim().toLowerCase());
     filtered = filtered.filter((e) =>
-      e.tags.some((t) => requestedTags.includes(t.toLowerCase())),
+      (e.tags || []).some((t) => requestedTags.includes(t.toLowerCase())),
     );
   }
 

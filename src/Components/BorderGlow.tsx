@@ -175,7 +175,9 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     if (!animated) return;
     const angleStart = 110;
     const angleEnd = 465;
+    // eslint-disable-next-line react/set-state-in-effect
     setSweepActive(true);
+    // eslint-disable-next-line react/set-state-in-effect
     setCursorAngle(angleStart);
 
     animateValue({ duration: 500, onUpdate: (v) => setEdgeProximity(v / 100) });

@@ -26,23 +26,21 @@ export function SearchableDropdown({
 
   const filteredOptions = options.filter((opt) => opt.toLowerCase().includes(search.toLowerCase()));
 
+  const closeDropdown = () => {
+    setIsOpen(false);
+    setSearch("");
+    setActiveIndex(-1);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        closeDropdown();
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Reset search when closing
-  useEffect(() => {
-    if (!isOpen) {
-      setSearch("");
-      setActiveIndex(-1);
-    }
-  }, [isOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) {
@@ -66,15 +64,15 @@ export function SearchableDropdown({
         e.preventDefault();
         if (activeIndex >= 0 && activeIndex < filteredOptions.length) {
           onChange(filteredOptions[activeIndex]);
-          setIsOpen(false);
+          closeDropdown();
         }
         break;
       case "Escape":
         e.preventDefault();
-        setIsOpen(false);
+        closeDropdown();
         break;
       case "Tab":
-        setIsOpen(false);
+        closeDropdown();
         break;
     }
   };
@@ -87,7 +85,7 @@ export function SearchableDropdown({
         </label>
       )}
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => (isOpen ? closeDropdown() : setIsOpen(true))}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="combobox"
