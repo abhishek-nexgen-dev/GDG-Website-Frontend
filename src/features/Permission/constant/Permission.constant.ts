@@ -45,6 +45,17 @@ export const Member_Permissions = {
 };
 
 /* ==========================================================================
+   EMAIL & COMMUNICATIONS PERMISSIONS
+   ========================================================================== */
+
+export const Email_Permissions = {
+  SEND_EMAIL: "email:send",
+  VIEW_EMAIL: "email:view",
+  CREATE_TEMPLATE: "email:create",
+  DELETE_EMAIL: "email:delete",
+};
+
+/* ==========================================================================
    SYSTEM PERMISSIONS
    ========================================================================== */
 

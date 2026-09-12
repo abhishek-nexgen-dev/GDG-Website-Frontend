@@ -27,6 +27,8 @@ import MemberLocation from "../section/MemberLocation";
 import MemberSocialLink from "../section/MemberSocialLink";
 import InternalNote from "../section/InternalNote";
 import PermissionManager from "../Components/PermissionManager";
+import PermissionChecker from "../../../Permission/Components/PermissionChecker";
+import PermissionDenied from "../../../Permission/Components/PermissionDenied";
 import AVAILABLE_PERMISSIONS_CONSTANT from "../Constant/AVAILABLE_PERMISSIONS.Constant";
 import type { MemberType } from "../type/MemberDetails.type";
 import useMemberPermissionsQuery from "../../../Permission/hook/useMemberPermissionsQuery";
@@ -174,11 +176,13 @@ const MemberDetails = () => {
     }
   }, [storeSingleMember, activeMember, setSingleMember]);
 
-  // Trigger network fetch on mount
+  // Trigger network fetch on mount and slug change
   useEffect(() => {
-    if (!id) return;
-    mutate({ Slug: String(id) });
-  }, [id, mutate]);
+    const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
+    if (targetSlug) {
+      mutate({ Slug: targetSlug });
+    }
+  }, [id, storeSingleMember?.Slug, mutate]);
 
   // Handlers for Local Form Editing
   const startEditing = () => {
@@ -331,84 +335,89 @@ const MemberDetails = () => {
   const displayData = isEdit && formData ? formData : activeMember;
 
   return (
-    <div className="min-h-screen text-white">
-      <main className="mx-auto w-full max-w-[1600px] px-3 py-4 sm:px-5 sm:py-6 lg:px-8 lg:py-7 xl:px-10 2xl:px-12">
-        {/* Header */}
-        <header className="mb-5 flex flex-col gap-4 border-b border-[#232830] pb-5 lg:mb-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="min-w-0">
-            <div className="mb-1.5 flex items-center gap-1.5 text-[10px] sm:text-[11px]">
-              <span className="text-white/35">Members</span>
-              <span className="text-white/20">/</span>
-              <span className="truncate text-green-400">
-                {displayData?.firstName} {displayData?.lastName}
-              </span>
+    <PermissionChecker
+      permissionName="member:view"
+      permissionAction="read"
+      fallback={<PermissionDenied />}
+    >
+      <div className="min-h-screen text-white">
+        <main className="mx-auto w-full max-w-[1600px] px-3 py-4 sm:px-5 sm:py-6 lg:px-8 lg:py-7 xl:px-10 2xl:px-12">
+          {/* Header */}
+          <header className="mb-5 flex flex-col gap-4 border-b border-[#232830] pb-5 lg:mb-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[10px] sm:text-[11px]">
+                <span className="text-white/35">Members</span>
+                <span className="text-white/20">/</span>
+                <span className="truncate text-green-400">
+                  {displayData?.firstName} {displayData?.lastName}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="truncate text-lg font-semibold tracking-tight text-white sm:text-xl lg:text-2xl">
+                  {displayData?.firstName} {displayData?.lastName}
+                </h1>
+
+                {isEdit && (
+                  <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-0.5 text-xs font-semibold text-amber-400">
+                    Editing Mode (Buffered)
+                  </span>
+                )}
+
+                {saveSuccessNotice && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-0.5 text-xs font-semibold text-green-400 animate-fadeIn">
+                    <Check size={12} /> Changes Saved Successfully
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="truncate text-lg font-semibold tracking-tight text-white sm:text-xl lg:text-2xl">
-                {displayData?.firstName} {displayData?.lastName}
-              </h1>
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="!inline-flex !items-center !gap-2"
+              >
+                <ArrowLeft size={14} />
+                Back
+              </Button>
 
-              {isEdit && (
-                <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-0.5 text-xs font-semibold text-amber-400">
-                  Editing Mode (Buffered)
-                </span>
-              )}
-
-              {saveSuccessNotice && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-0.5 text-xs font-semibold text-green-400 animate-fadeIn">
-                  <Check size={12} /> Changes Saved Successfully
-                </span>
+              {!isEdit ? (
+                <PermissionChecker permissionName="member:update" permissionAction="update">
+                  <Button
+                    type="button"
+                    onClick={startEditing}
+                    className="!inline-flex !items-center !gap-2 !bg-[#4285F4] !text-white hover:!bg-[#3367D6]"
+                  >
+                    <Pencil size={14} />
+                    Edit Profile
+                  </Button>
+                </PermissionChecker>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    onClick={cancelEditing}
+                    disabled={isSaving}
+                    className="!inline-flex !items-center !gap-2 !border-white/20 !bg-white/5"
+                  >
+                    <X size={14} />
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={saveMember}
+                    disabled={isSaving}
+                    className="!inline-flex !items-center !gap-2 !bg-green-500 !text-black hover:!bg-green-400 font-semibold"
+                  >
+                    <Save size={14} />
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </>
               )}
             </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="!inline-flex !items-center !gap-2"
-            >
-              <ArrowLeft size={14} />
-              Back
-            </Button>
-
-            {!isEdit ? (
-              <>
-                <Button
-                  type="button"
-                  onClick={startEditing}
-                  className="!inline-flex !items-center !gap-2 !bg-[#4285F4] !text-white hover:!bg-[#3367D6]"
-                >
-                  <Pencil size={14} />
-                  Edit Profile
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  type="button"
-                  onClick={cancelEditing}
-                  disabled={isSaving}
-                  className="!inline-flex !items-center !gap-2 !border-white/20 !bg-white/5"
-                >
-                  <X size={14} />
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={saveMember}
-                  disabled={isSaving}
-                  className="!inline-flex !items-center !gap-2 !bg-green-500 !text-black hover:!bg-green-400 font-semibold"
-                >
-                  <Save size={14} />
-                  {isSaving ? "Saving..." : "Save Changes"}
-                </Button>
-              </>
-            )}
-          </div>
-        </header>
+          </header>
 
         {/* Main Grid */}
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px] 2xl:grid-cols-[minmax(0,1fr)_410px] 2xl:gap-6">
@@ -460,19 +469,21 @@ const MemberDetails = () => {
               </div>
             </Section>
 
-            <Section
-              title="Assign Permissions"
-              description="Role-based access permissions"
-              icon={<ShieldCheck size={17} />}
-            >
-              <PermissionManager
-                isEdit={isEdit}
-                permissions={AVAILABLE_PERMISSIONS_CONSTANT}
-                onPermissionsChange={(newPerms) => {
-                  setUpdatedPermissions(newPerms);
-                }}
-              />
-            </Section>
+            <PermissionChecker permissionName="permission:update" permissionAction="update">
+              <Section
+                title="Assign Permissions"
+                description="Role-based access permissions"
+                icon={<ShieldCheck size={17} />}
+              >
+                <PermissionManager
+                  isEdit={isEdit}
+                  permissions={AVAILABLE_PERMISSIONS_CONSTANT}
+                  onPermissionsChange={(newPerms) => {
+                    setUpdatedPermissions(newPerms);
+                  }}
+                />
+              </Section>
+            </PermissionChecker>
 
             <InternalNote
               isEdit={isEdit}
@@ -489,17 +500,19 @@ const MemberDetails = () => {
               icon={<Zap size={17} />}
             >
               <div className="grid gap-2 sm:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={sendEmail}
-                  className="group flex min-w-0 items-center gap-3 rounded-xl border border-[#232830] bg-[#121519] p-3 text-left transition hover:border-[#343b46] hover:bg-[#1b2027]"
-                >
-                  <Send size={16} className="text-white/45 group-hover:text-green-400" />
-                  <div>
-                    <div className="text-[11px] font-medium text-white/75">Send Email</div>
-                    <div className="mt-1 text-[9px] text-white/30">Direct email inquiry</div>
-                  </div>
-                </button>
+                <PermissionChecker permissionName="email:send" permissionAction="create">
+                  <button
+                    type="button"
+                    onClick={sendEmail}
+                    className="group flex min-w-0 items-center gap-3 rounded-xl border border-[#232830] bg-[#121519] p-3 text-left transition hover:border-[#343b46] hover:bg-[#1b2027]"
+                  >
+                    <Send size={16} className="text-white/45 group-hover:text-green-400" />
+                    <div>
+                      <div className="text-[11px] font-medium text-white/75">Send Email</div>
+                      <div className="mt-1 text-[9px] text-white/30">Direct email inquiry</div>
+                    </div>
+                  </button>
+                </PermissionChecker>
 
                 <button
                   type="button"
@@ -515,17 +528,19 @@ const MemberDetails = () => {
                   </div>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={startEditing}
-                  className="group flex min-w-0 items-center gap-3 rounded-xl border border-[#232830] bg-[#121519] p-3 text-left transition hover:border-[#343b46] hover:bg-[#1b2027]"
-                >
-                  <Pencil size={16} className="text-white/45 group-hover:text-blue-400" />
-                  <div>
-                    <div className="text-[11px] font-medium text-white/75">Edit Member</div>
-                    <div className="mt-1 text-[9px] text-white/30">Modify account fields</div>
-                  </div>
-                </button>
+                <PermissionChecker permissionName="member:update" permissionAction="update">
+                  <button
+                    type="button"
+                    onClick={startEditing}
+                    className="group flex min-w-0 items-center gap-3 rounded-xl border border-[#232830] bg-[#121519] p-3 text-left transition hover:border-[#343b46] hover:bg-[#1b2027]"
+                  >
+                    <Pencil size={16} className="text-white/45 group-hover:text-blue-400" />
+                    <div>
+                      <div className="text-[11px] font-medium text-white/75">Edit Member</div>
+                      <div className="mt-1 text-[9px] text-white/30">Modify account fields</div>
+                    </div>
+                  </button>
+                </PermissionChecker>
 
                 <button
                   type="button"
@@ -558,6 +573,7 @@ const MemberDetails = () => {
         </div>
       </main>
     </div>
+    </PermissionChecker>
   );
 };
 

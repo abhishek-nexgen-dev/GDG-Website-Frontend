@@ -3,8 +3,7 @@ import useAuth from "../../Auth/v1/store/useAuth";
 
 interface PermissionCheckerProps {
   permissionName: string;
-
-  permissionAction: string;
+  permissionAction?: string;
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
@@ -17,9 +16,11 @@ const PermissionChecker = ({
 }: PermissionCheckerProps) => {
   const { perms } = useAuth();
 
-  const hasPermission = perms.some(
-    (permission) => permission.name === permissionName && permission.action === permissionAction,
-  );
+  const hasPermission = perms.some((permission) => {
+    const matchesName = permission.name === permissionName;
+    const matchesAction = permissionAction ? permission.action === permissionAction : true;
+    return matchesName && matchesAction;
+  });
 
   // Permission granted → render the protected content
   if (hasPermission) {

@@ -1,5 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import PermissionChecker from "../../Permission/Components/PermissionChecker";
+import PermissionDenied from "../../Permission/Components/PermissionDenied";
 import {
   AlertCircle,
   ArrowLeft,
@@ -186,14 +189,37 @@ Best regards,
     setContent((current) => current + INSERT_SNIPPETS[type]);
   };
 
+  const [isSending, setIsSending] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!receiverEmail || !subject || !content.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Required Fields Missing",
+        text: "Please provide a recipient email, subject, and message body.",
+        background: "#161a1f",
+        color: "#ffffff",
+        confirmButtonColor: "#22c55e",
+      });
       return;
     }
 
-    navigate("/member/emails");
+    setIsSending(true);
+    setTimeout(() => {
+      setIsSending(false);
+      Swal.fire({
+        icon: "success",
+        title: "Email Dispatched",
+        text: sendType === "now"
+          ? `Your email has been sent successfully to ${receiverEmail}.`
+          : `Your email is scheduled to be delivered to ${receiverEmail} on ${scheduledDateTime}.`,
+        background: "#161a1f",
+        color: "#ffffff",
+        confirmButtonColor: "#22c55e",
+      });
+    }, 1000);
   };
 
   const handleTestEmail = () => {
@@ -209,7 +235,12 @@ Best regards,
   // ==========================================================
 
   return (
-    <div className="mx-auto min-h-full w-full max-w-5xl px-4 py-6 text-white sm:px-6 sm:py-8">
+    <PermissionChecker
+      permissionName="email:send"
+      permissionAction="create"
+      fallback={<PermissionDenied />}
+    >
+      <div className="mx-auto min-h-full w-full max-w-5xl px-4 py-6 text-white sm:px-6 sm:py-8">
       {/* ======================================================
           HEADER
       ====================================================== */}
@@ -574,12 +605,14 @@ Best regards,
                   shadow-green-500/10
                   transition
                   hover:bg-[#16a34a]
+                  disabled:opacity-50 disabled:cursor-not-allowed
                   sm:flex-none
                 "
+                disabled={isSending}
               >
                 <Sparkles size={14} />
 
-                {sendType === "now" ? "Send Email" : "Schedule Email"}
+                {isSending ? "Sending..." : sendType === "now" ? "Send Email" : "Schedule Email"}
               </button>
             </div>
           </div>
@@ -665,6 +698,7 @@ Best regards,
         </div>
       )}
     </div>
+    </PermissionChecker>
   );
 };
 

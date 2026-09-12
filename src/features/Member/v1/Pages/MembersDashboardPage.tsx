@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useMembers from "../store/useMembers";
 import type { fetchMembersType } from "../type/MemberDetails.type";
 import useFetchMember from "../hook/useFetchMembers";
@@ -22,6 +23,7 @@ const isJoinedThisMonth = (joinedOn: string) => {
 };
 
 const MembersDashboardPage = () => {
+  const navigate = useNavigate();
   const members = useMembers((state) => state.members);
   const setMembers = useMembers((state) => state.setMembers);
 
@@ -38,15 +40,18 @@ const MembersDashboardPage = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
+  // Trigger API fetching on mount
   useEffect(() => {
-    if (members.length === 0) {
-      mutate({ limit: 100, page: 1 });
-    }
-  }, [members.length, mutate]);
+    mutate({ limit: 100, page: 1 });
+  }, [mutate]);
 
+  // Sync API result into Zustand store
   useEffect(() => {
-    if (isSuccess && data && Array.isArray(data) && data.length > 0) {
-      setMembers(data);
+    if (isSuccess && data) {
+      const incoming = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : null;
+      if (incoming && incoming.length > 0) {
+        setMembers(incoming);
+      }
     }
   }, [isSuccess, data, setMembers]);
 
@@ -169,9 +174,10 @@ const MembersDashboardPage = () => {
     }
   };
 
-  const handleViewMember = (member: fetchMembersType) => setSelectedMemberId(member._id);
-
-  // if (!isSuccess && members.length === 0) return <div className="p-4 text-white">Loading members...</div>;
+  const handleViewMember = (member: fetchMembersType) => {
+    setSelectedMemberId(member._id);
+    navigate(`/member/profile/${member.Slug}`);
+  };
 
   return (
     <main className="w-full min-w-0 px-4 py-5 text-white sm:px-6 lg:px-8">
@@ -208,13 +214,15 @@ const MembersDashboardPage = () => {
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={handleDeleteSelected}
-                className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition-colors hover:bg-red-500/15 hover:text-red-200"
-              >
-                Delete selected
-              </button>
+              <PermissionChecker permissionName="member:delete" permissionAction="delete">
+                <button
+                  type="button"
+                  onClick={handleDeleteSelected}
+                  className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition-colors hover:bg-red-500/15 hover:text-red-200"
+                >
+                  Delete selected
+                </button>
+              </PermissionChecker>
               <button
                 type="button"
                 onClick={handleClearSelection}

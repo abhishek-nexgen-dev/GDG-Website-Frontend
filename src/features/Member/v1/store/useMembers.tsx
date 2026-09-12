@@ -100,6 +100,51 @@ const INITIAL_MEMBERS: fetchMembersType[] = [
   },
 ];
 
+const DEFAULT_PROFILE: MemberType = {
+  _id: "admin-current-user",
+  Slug: "abhishek-gupta",
+  firstName: "Abhishek",
+  lastName: "Gupta",
+  email: "abhishek.gupta@gdgranchi.in",
+  imageUrl:
+    "https://res.cloudinary.com/startup-grind/image/upload/c_fill,w_250,h_250,g_center/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/avatars/tushar_raj_mumONGR.jpg",
+  primaryRole: "Full Stack Developer & Admin",
+  membershipStatus: "Active",
+  Bio: "Lead community organizer, full stack engineer, and Google Developer Group tech enthusiast passionate about open technology and community empowerment.",
+  location: {
+    city: "Ranchi",
+    state: "Jharkhand",
+    country: "India",
+    pinCode: "834001",
+  },
+  socialLinks: {
+    linkedin: "https://linkedin.com/in/abhishekgupta",
+    github: "https://github.com/abhishekgupta",
+    twitter: "https://twitter.com/abhishekgupta",
+    website: "https://abhishekgupta.dev",
+    instagram: "",
+    youtube: "",
+    portfolio: "https://abhishekgupta.dev",
+    medium: "",
+  },
+  skills: ["React", "TypeScript", "Node.js", "Docker", "Cloud Native", "GDG Leadership"],
+  areaOfInterest: ["Cloud Architecture", "Generative AI", "Web Ecosystems"],
+  internalNotes: "Core community administrator and chapter organizer.",
+};
+
+const getInitialSingleMember = (): MemberType => {
+  try {
+    const stored = localStorage.getItem("gdg_member_single_profile");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.firstName) {
+        return parsed;
+      }
+    }
+  } catch {}
+  return DEFAULT_PROFILE;
+};
+
 interface UseMembersState {
   members: fetchMembersType[];
   singleMember: MemberType | null;
@@ -121,11 +166,16 @@ interface UseMembersType extends UseMembersState, UseMembersActions {}
 export const useMembers = create<UseMembersType>((set) => ({
   isEditSingleMember: false,
   members: INITIAL_MEMBERS,
-  singleMember: null,
+  singleMember: getInitialSingleMember(),
 
   setMembers: (members) => set({ members }),
 
-  setSingleMember: (singleMember) => set({ singleMember }),
+  setSingleMember: (singleMember) => {
+    try {
+      localStorage.setItem("gdg_member_single_profile", JSON.stringify(singleMember));
+    } catch {}
+    set({ singleMember });
+  },
 
   addMember: (newMember) => {
     const id = `m-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
@@ -153,6 +203,12 @@ export const useMembers = create<UseMembersType>((set) => ({
       const updatedSingle = shouldUpdateSingle
         ? ({ ...state.singleMember, ...updates } as MemberType)
         : state.singleMember;
+
+      if (updatedSingle) {
+        try {
+          localStorage.setItem("gdg_member_single_profile", JSON.stringify(updatedSingle));
+        } catch {}
+      }
 
       const updatedMembers = state.members.map((m) =>
         m._id === id

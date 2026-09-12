@@ -4,12 +4,28 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { LogOut, Settings, ChevronDown, User } from "lucide-react";
 import gsap from "gsap";
 import useNavStore from "../store/nav.store";
+import useAuth from "../../features/Auth/v1/store/useAuth";
 
 const InternalSideBar = () => {
   let isOpen = useNavStore((state) => state.isSideBarOpen);
   const handleSideBar = useNavStore((state) => state.handleSideBar);
   const onClose = () => handleSideBar(false);
   const location = useLocation();
+
+  const perms = useAuth((state) => state.perms);
+
+  const hasPermission = (permissionName?: string, permissionAction?: string) => {
+    if (!permissionName) return true;
+    return perms.some((p) => {
+      const nameMatch = p.name === permissionName;
+      const actionMatch = permissionAction ? p.action === permissionAction : true;
+      return nameMatch && actionMatch;
+    });
+  };
+
+  const visibleSidebarItems = sideBarConstant.filter((item) =>
+    hasPermission(item.permissionName, item.permissionAction),
+  );
 
   const sidebarRef = useRef<HTMLElement>(null);
   const menuItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -189,9 +205,12 @@ const InternalSideBar = () => {
         </p>
 
         <nav className="flex flex-col gap-1">
-          {sideBarConstant.map((item, index) => {
+          {visibleSidebarItems.map((item, index) => {
             const Icon = item.icon;
-            const hasSub = Boolean(item.subItems && item.subItems.length > 0);
+            const validSubItems = item.subItems?.filter((sub) =>
+              hasPermission(sub.permissionName, sub.permissionAction),
+            );
+            const hasSub = Boolean(validSubItems && validSubItems.length > 0);
             const isParentActive =
               item.label === "Events"
                 ? location.pathname.startsWith("/member/event")
@@ -199,9 +218,12 @@ const InternalSideBar = () => {
                   ? location.pathname.startsWith("/member/album")
                   : item.label === "Images"
                     ? location.pathname.startsWith("/member/image")
-                    : item.label === "Emails"
-                      ? location.pathname.startsWith("/member/email")
-                      : false;
+                    : item.label === "Members"
+                      ? location.pathname.startsWith("/member/member") ||
+                        location.pathname.startsWith("/member/create")
+                      : item.label === "Emails"
+                        ? location.pathname.startsWith("/member/email")
+                        : false;
             const isExpanded = expandedMenus[item.label] ?? isParentActive;
 
             return (
@@ -287,7 +309,7 @@ const InternalSideBar = () => {
                 {/* Submenu items */}
                 {hasSub && isExpanded && (
                   <div className="ml-4 flex flex-col gap-1 border-l border-white/[0.08] pl-3 py-1">
-                    {item.subItems?.map((sub) => {
+                    {validSubItems?.map((sub) => {
                       const isSubActive =
                         location.pathname === sub.link ||
                         (sub.link === "/member/events" &&
