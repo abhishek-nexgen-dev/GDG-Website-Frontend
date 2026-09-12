@@ -14,6 +14,7 @@ import {
   Check,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import Section from "../../../../Components/Section";
 import { Button } from "../../../../Components/Button";
 import useFetchMemberProfile from "../hook/useFetchMemberProfile";
@@ -28,6 +29,9 @@ import InternalNote from "../section/InternalNote";
 import PermissionManager from "../Components/PermissionManager";
 import AVAILABLE_PERMISSIONS_CONSTANT from "../Constant/AVAILABLE_PERMISSIONS.Constant";
 import type { MemberType } from "../type/MemberDetails.type";
+import useMemberPermissionsQuery from "../../../Permission/hook/useMemberPermissionsQuery";
+import useAssignPermissionsMutation from "../../../Permission/hook/useAssignPermissionsMutation";
+import type { Permission } from "../../../Auth/v1/types/Auth.type";
 
 const MemberDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,26 +50,67 @@ const MemberDetails = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState(false);
+  const [updatedPermissions, setUpdatedPermissions] = useState<Permission[] | null>(null);
 
   const { mutate, isPending } = useFetchMemberProfile();
+  useMemberPermissionsQuery(id);
+  const assignPermissionsMutation = useAssignPermissionsMutation();
 
   // Resolve active member from store, API, or fallback list
   const activeMember: MemberType | null = useMemo(() => {
-    if (storeSingleMember && (storeSingleMember._id === id || storeSingleMember.Slug === id)) {
-      return storeSingleMember;
+    if (id && id !== "me") {
+      if (storeSingleMember && (storeSingleMember._id === id || storeSingleMember.Slug === id)) {
+        return storeSingleMember;
+      }
+
+      const found = members.find((m) => m._id === id || m.Slug === id);
+      if (found) {
+        return {
+          _id: found._id,
+          Slug: found.Slug,
+          firstName: found.firstName,
+          lastName: found.lastName,
+          email: found.email,
+          imageUrl: found.imageUrl,
+          primaryRole: found.primaryRole,
+          membershipStatus: (found.membershipStatus as any) || "Active",
+          Bio: "Community core contributor and Google Developer Group tech enthusiast.",
+          location: {
+            city: "Ranchi",
+            state: "Jharkhand",
+            country: "India",
+            pinCode: "834001",
+          },
+          socialLinks: {
+            linkedin: `https://linkedin.com/in/${found.Slug}`,
+            github: `https://github.com/${found.Slug}`,
+            twitter: `https://twitter.com/${found.Slug}`,
+            website: `https://${found.Slug}.dev`,
+            instagram: "",
+            youtube: "",
+            portfolio: `https://${found.Slug}.dev`,
+            medium: "",
+          },
+          skills: ["React", "TypeScript", "Google Cloud", "Community Building"],
+          areaOfInterest: ["Generative AI", "Web Development", "Mobile Architecture"],
+          internalNotes: "Verified active GDG Ranchi member.",
+        };
+      }
     }
 
-    const found = members.find((m) => m._id === id || m.Slug === id);
-    if (found) {
+    // Default or self-profile
+    if (storeSingleMember) return storeSingleMember;
+    if (members.length > 0) {
+      const first = members[0];
       return {
-        _id: found._id,
-        Slug: found.Slug,
-        firstName: found.firstName,
-        lastName: found.lastName,
-        email: found.email,
-        imageUrl: found.imageUrl,
-        primaryRole: found.primaryRole,
-        membershipStatus: (found.membershipStatus as any) || "Active",
+        _id: first._id,
+        Slug: first.Slug,
+        firstName: first.firstName,
+        lastName: first.lastName,
+        email: first.email,
+        imageUrl: first.imageUrl,
+        primaryRole: first.primaryRole,
+        membershipStatus: (first.membershipStatus as any) || "Active",
         Bio: "Community core contributor and Google Developer Group tech enthusiast.",
         location: {
           city: "Ranchi",
@@ -74,13 +119,13 @@ const MemberDetails = () => {
           pinCode: "834001",
         },
         socialLinks: {
-          linkedin: `https://linkedin.com/in/${found.Slug}`,
-          github: `https://github.com/${found.Slug}`,
-          twitter: `https://twitter.com/${found.Slug}`,
-          website: `https://${found.Slug}.dev`,
+          linkedin: `https://linkedin.com/in/${first.Slug}`,
+          github: `https://github.com/${first.Slug}`,
+          twitter: `https://twitter.com/${first.Slug}`,
+          website: `https://${first.Slug}.dev`,
           instagram: "",
           youtube: "",
-          portfolio: `https://${found.Slug}.dev`,
+          portfolio: `https://${first.Slug}.dev`,
           medium: "",
         },
         skills: ["React", "TypeScript", "Google Cloud", "Community Building"],
@@ -89,7 +134,37 @@ const MemberDetails = () => {
       };
     }
 
-    return storeSingleMember;
+    return {
+      _id: "admin-current-user",
+      Slug: "abhishek-gupta",
+      firstName: "Abhishek",
+      lastName: "Gupta",
+      email: "abhishek.gupta@gdgranchi.in",
+      imageUrl:
+        "https://imgs.search.brave.com/no76xWdefnmcUXaHMUQlfShcooGDzJkYqZhSZGLlQkg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMS53/cC5jb20vd3d3LnNo/dXR0ZXJzdG9jay5j/b20vYmxvZy93cC1j/b250ZW50L3VwbG9h/ZHMvc2l0ZXMvNS8y/MDI0LzA2L3Byb2Zp/bGVfcGhvdG9fc2Ft/cGxlXzEyLmpwZz9z/c2w9MQ",
+      primaryRole: "Full Stack Developer & Admin",
+      membershipStatus: "Active" as any,
+      Bio: "Lead community organizer, full stack engineer, and Google Developer Group tech enthusiast.",
+      location: {
+        city: "Ranchi",
+        state: "Jharkhand",
+        country: "India",
+        pinCode: "834001",
+      },
+      socialLinks: {
+        linkedin: "https://linkedin.com/in/abhishekgupta",
+        github: "https://github.com/abhishekgupta",
+        twitter: "https://twitter.com/abhishekgupta",
+        website: "https://abhishekgupta.dev",
+        instagram: "",
+        youtube: "",
+        portfolio: "https://abhishekgupta.dev",
+        medium: "",
+      },
+      skills: ["React", "TypeScript", "Node.js", "Cloud Architecture", "GDG Community"],
+      areaOfInterest: ["Generative AI", "Web Development", "Community Leadership"],
+      internalNotes: "Core Administrator & Chapter Lead.",
+    };
   }, [storeSingleMember, members, id]);
 
   // Sync to store when fallback member is resolved and store was null
@@ -133,11 +208,36 @@ const MemberDetails = () => {
     // Commit local form state cleanly to the Zustand store once
     updateMember(activeMember._id, formData);
 
+    // Persist permissions via API if adjusted
+    if (updatedPermissions && activeMember._id) {
+      assignPermissionsMutation.mutate({
+        memberId: activeMember._id,
+        permission: updatedPermissions.map((p) => ({
+          name: p.name,
+          action: p.action || "read",
+          resource: p.resource || "general",
+          description: p.description,
+          level: (p as any).level || 1,
+        })),
+      });
+    }
+
     setTimeout(() => {
       setIsSaving(false);
       setIsEdit(false);
       setIsEditSingleMember(false);
       setSaveSuccessNotice(true);
+      Swal.fire({
+        title: "Profile Saved!",
+        text: "Member profile information updated successfully.",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 2500,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
       setTimeout(() => setSaveSuccessNotice(false), 2500);
     }, 300);
   };
@@ -148,6 +248,17 @@ const MemberDetails = () => {
     try {
       await navigator.clipboard.writeText(targetEmail);
       setCopySuccess(true);
+      Swal.fire({
+        title: "Email Copied!",
+        text: targetEmail,
+        icon: "info",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
       setTimeout(() => setCopySuccess(false), 1500);
     } catch {
       setCopySuccess(false);
@@ -174,6 +285,17 @@ const MemberDetails = () => {
     anchor.click();
     anchor.remove();
     URL.revokeObjectURL(url);
+    Swal.fire({
+      title: "Data Exported!",
+      text: `${dataToExport.firstName}-${dataToExport.lastName}-member.json downloaded.`,
+      icon: "success",
+      toast: true,
+      position: "top-end",
+      timer: 2500,
+      showConfirmButton: false,
+      background: "#181b20",
+      color: "#ffffff",
+    });
   };
 
   const openPortfolio = () => {
@@ -347,7 +469,7 @@ const MemberDetails = () => {
                 isEdit={isEdit}
                 permissions={AVAILABLE_PERMISSIONS_CONSTANT}
                 onPermissionsChange={(newPerms) => {
-                  console.log("Permissions updated:", newPerms);
+                  setUpdatedPermissions(newPerms);
                 }}
               />
             </Section>

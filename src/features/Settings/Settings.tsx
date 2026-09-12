@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   ChevronDown,
@@ -11,7 +12,11 @@ import {
   UserRound,
   Wrench,
   Zap,
+  Save,
+  Pencil,
+  ExternalLink,
 } from "lucide-react";
+import Swal from "sweetalert2";
 
 import Section from "../../Components/Section";
 import Badge from "../../Components/Badge";
@@ -208,14 +213,25 @@ const Toggle = ({
 // ============================================================
 
 const Settings = () => {
-  const [settings, setSettings] = useState<UserSettings>(initialSettings);
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    try {
+      const stored = localStorage.getItem("gdg_user_settings");
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {
+      // fallback
+    }
+    return initialSettings;
+  });
 
+  const [isEditingUser, setIsEditingUser] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
-
   const [isDeleting, setIsDeleting] = useState(false);
 
   // ==========================================================
-  // UPDATE PREFERENCE
+  // UPDATE PREFERENCE & USER
   // ==========================================================
 
   const updatePreference = <K extends keyof UserSettings["preferences"]>(
@@ -229,6 +245,48 @@ const Settings = () => {
         [key]: value,
       },
     }));
+  };
+
+  const updateUserField = <K extends keyof UserSettings["user"]>(
+    key: K,
+    value: UserSettings["user"][K],
+  ) => {
+    setSettings((current) => ({
+      ...current,
+      user: {
+        ...current.user,
+        [key]: value,
+      },
+    }));
+  };
+
+  const saveAllSettings = () => {
+    setIsSaving(true);
+    try {
+      localStorage.setItem("gdg_user_settings", JSON.stringify(settings));
+      setIsEditingUser(false);
+      Swal.fire({
+        title: "Settings Saved!",
+        text: "Your profile and preference updates are saved.",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
+    } catch {
+      Swal.fire({
+        title: "Save Error",
+        text: "Could not save settings locally.",
+        icon: "error",
+        background: "#181b20",
+        color: "#ffffff",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // ==========================================================
@@ -249,6 +307,17 @@ const Settings = () => {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(settings.user.email);
+      Swal.fire({
+        title: "Email Copied!",
+        text: settings.user.email,
+        icon: "info",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
     } catch {
       // Clipboard unavailable.
     }
@@ -270,17 +339,12 @@ const Settings = () => {
     });
 
     const url = URL.createObjectURL(blob);
-
     const link = document.createElement("a");
-
     link.href = url;
-
     link.download = `${settings.user.firstName}-${settings.user.lastName}-data.json`;
-
     document.body.appendChild(link);
     link.click();
     link.remove();
-
     URL.revokeObjectURL(url);
   };
 
@@ -293,19 +357,32 @@ const Settings = () => {
       return;
     }
 
-    const confirmed = window.confirm(
-      "Are you absolutely sure you want to permanently delete your account?",
-    );
+    const result = await Swal.fire({
+      title: "Delete Account Permanently?",
+      text: "Are you absolutely sure? All data, settings and permissions will be lost.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#27272a",
+      confirmButtonText: "Yes, permanently delete",
+      background: "#151a20",
+      color: "#ffffff",
+    });
 
-    if (!confirmed) return;
+    if (!result.isConfirmed) return;
 
     setIsDeleting(true);
 
     try {
-      // Replace with API call.
-      // await deleteMember(settings.user.memberId);
-
-      console.log("Deleting account:", settings.user.memberId);
+      localStorage.removeItem("gdg_user_settings");
+      await Swal.fire({
+        title: "Account Deleted",
+        text: "Your account data has been reset.",
+        icon: "info",
+        background: "#151a20",
+        color: "#ffffff",
+      });
+      setDeleteConfirmation("");
     } finally {
       setIsDeleting(false);
     }
@@ -369,7 +446,6 @@ const Settings = () => {
           "
         >
           {/* subtle background glow */}
-
           <div
             className="
               pointer-events-none
@@ -384,54 +460,133 @@ const Settings = () => {
             "
           />
 
-          <div className="relative flex items-center gap-3">
-            <div
-              className="
-                flex
-                h-10
-                w-10
-                shrink-0
-                items-center
-                justify-center
-                rounded-xl
-                border
-                border-emerald-500/15
-                bg-emerald-500/10
-                text-emerald-400
-                shadow-[0_0_30px_rgba(16,185,129,0.05)]
-              "
-            >
-              <ShieldCheck size={19} />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-emerald-500/15
+                  bg-emerald-500/10
+                  text-emerald-400
+                  shadow-[0_0_30px_rgba(16,185,129,0.05)]
+                "
+              >
+                <ShieldCheck size={19} />
+              </div>
+
+              <div className="min-w-0">
+                <h1
+                  className="
+                    text-lg
+                    font-bold
+                    tracking-tight
+                    text-white
+
+                    sm:text-xl
+
+                    lg:text-2xl
+                  "
+                >
+                  Settings
+                </h1>
+
+                <p
+                  className="
+                    mt-0.5
+                    text-[10px]
+                    leading-5
+                    text-white/35
+
+                    sm:text-xs
+                  "
+                >
+                  Manage your account preferences, profile details and system settings.
+                </p>
+              </div>
             </div>
 
-            <div className="min-w-0">
-              <h1
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Link
+                to="/member/profile"
                 className="
-                  text-lg
-                  font-bold
-                  tracking-tight
-                  text-white
-
-                  sm:text-xl
-
-                  lg:text-2xl
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  px-3.5
+                  py-2
+                  text-xs
+                  font-medium
+                  text-zinc-300
+                  transition
+                  hover:bg-white/[0.08]
+                  hover:text-white
                 "
               >
-                Settings
-              </h1>
+                <UserRound size={14} />
+                <span>View Profile</span>
+                <ExternalLink size={12} className="text-white/40" />
+              </Link>
 
-              <p
+              <button
+                type="button"
+                onClick={() => setIsEditingUser((prev) => !prev)}
+                className={`
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  rounded-xl
+                  border
+                  px-3.5
+                  py-2
+                  text-xs
+                  font-medium
+                  transition
+                  ${
+                    isEditingUser
+                      ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+                      : "border-white/10 bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08] hover:text-white"
+                  }
+                `}
+              >
+                <Pencil size={13} />
+                <span>{isEditingUser ? "Close Profile Edit" : "Edit Profile"}</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={saveAllSettings}
                 className="
-                  mt-0.5
-                  text-[10px]
-                  leading-5
-                  text-white/35
-
-                  sm:text-xs
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  rounded-xl
+                  bg-emerald-500
+                  px-4
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-black
+                  shadow-[0_2px_12px_rgba(16,185,129,0.3)]
+                  transition
+                  hover:bg-emerald-400
+                  disabled:opacity-50
                 "
               >
-                Manage your account preferences and settings.
-              </p>
+                <Save size={13} />
+                <span>{isSaving ? "Saving..." : "Save Changes"}</span>
+              </button>
             </div>
           </div>
         </header>
@@ -590,54 +745,106 @@ const Settings = () => {
               </div>
 
               {/* ACCOUNT DETAILS */}
+              <div className="flex flex-col gap-4">
+                <div
+                  className="
+                    grid
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-white/[0.06]
+                    bg-[#121519]
 
-              <div
-                className="
-                  grid
-                  overflow-hidden
-                  rounded-2xl
-                  border
-                  border-white/[0.06]
-                  bg-[#121519]
+                    sm:grid-cols-2
+                  "
+                >
+                  <div className="border-b border-white/[0.05] sm:border-r">
+                    <Input
+                      label="Member ID"
+                      value={settings.user.memberId}
+                      onChange={() => {}}
+                      readonly
+                    />
+                  </div>
 
-                  sm:grid-cols-2
-                "
-              >
-                <div className="border-b border-white/[0.05] sm:border-r">
-                  <Input
-                    label="Member ID"
-                    value={settings.user.memberId}
-                    onChange={() => {}}
-                    readonly
-                  />
+                  <div className="border-b border-white/[0.05]">
+                    <Input
+                      label="Primary Role"
+                      value={settings.user.role}
+                      onChange={(val) => updateUserField("role", val)}
+                      readonly={!isEditingUser}
+                    />
+                  </div>
+
+                  <div className="border-b border-white/[0.05] sm:border-b-0 sm:border-r">
+                    <Input
+                      label="Member Since"
+                      value={settings.user.memberSince}
+                      onChange={() => {}}
+                      readonly
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      label="Onboarding Source"
+                      value={settings.user.onboardingSource}
+                      onChange={() => {}}
+                      readonly
+                    />
+                  </div>
                 </div>
 
-                <div className="border-b border-white/[0.05]">
-                  <Input
-                    label="Primary Role"
-                    value={settings.user.role}
-                    onChange={() => {}}
-                    readonly
-                  />
-                </div>
+                {isEditingUser && (
+                  <div className="rounded-2xl border border-emerald-500/20 bg-[#121519] p-4 sm:p-5 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
+                        Edit Profile Information
+                      </h3>
+                      <span className="text-[10px] text-white/40">Live updates</span>
+                    </div>
 
-                <div className="border-b border-white/[0.05] sm:border-b-0 sm:border-r">
-                  <Input
-                    label="Member Since"
-                    value={settings.user.memberSince}
-                    onChange={() => {}}
-                    readonly
-                  />
-                </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Input
+                        label="First Name"
+                        value={settings.user.firstName}
+                        onChange={(val) => updateUserField("firstName", val)}
+                      />
+                      <Input
+                        label="Last Name"
+                        value={settings.user.lastName}
+                        onChange={(val) => updateUserField("lastName", val)}
+                      />
+                      <Input
+                        label="Email Address"
+                        value={settings.user.email}
+                        onChange={(val) => updateUserField("email", val)}
+                      />
+                      <Input
+                        label="Location"
+                        value={settings.user.location}
+                        onChange={(val) => updateUserField("location", val)}
+                      />
+                    </div>
 
-                <div>
-                  <Input
-                    label="Onboarding Source"
-                    value={settings.user.onboardingSource}
-                    onChange={() => {}}
-                    readonly
-                  />
-                </div>
+                    <div className="flex items-center justify-end gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingUser(false)}
+                        className="rounded-xl border border-white/10 px-3.5 py-1.5 text-xs text-white/60 hover:bg-white/5 hover:text-white"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={saveAllSettings}
+                        className="rounded-xl bg-emerald-500 px-4 py-1.5 text-xs font-semibold text-black hover:bg-emerald-400"
+                      >
+                        Save Profile
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Section>

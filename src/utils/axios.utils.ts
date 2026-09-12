@@ -6,7 +6,7 @@ interface RetryAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || "https://gdg-website-hi0h.onrender.com",
   withCredentials: true,
 
   headers: {

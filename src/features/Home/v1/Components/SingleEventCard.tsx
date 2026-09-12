@@ -15,8 +15,9 @@ type SingleEventProps = {
 
 const SingleEventCard = (event: SingleEventProps) => {
   return (
-    <div className="group relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.025] backdrop-blur-xl">
-      <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-[#34A853]/[0.07] blur-[100px]" />
+    <div className="group relative overflow-hidden rounded-[28px] border border-white/[0.12] bg-[#0c0c10] shadow-[0_-16px_45px_rgba(0,0,0,0.92),0_25px_60px_rgba(0,0,0,0.9)] backdrop-blur-none">
+      <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-[#34A853]/[0.08] blur-[100px]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.03] via-transparent to-black/40" />
 
       <div className="relative grid lg:grid-cols-[1.15fr_0.85fr]">
         <div className="relative min-h-[320px] overflow-hidden sm:min-h-[420px] lg:min-h-[520px]">

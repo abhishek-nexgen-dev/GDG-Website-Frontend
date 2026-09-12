@@ -34,24 +34,24 @@ const OrganizersSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden bg-[#000000] py-24 text-white selection:bg-[#EA4335]/30"
+      className="relative overflow-hidden bg-[#000000] py-20 sm:py-24 text-white selection:bg-[#EA4335]/30"
     >
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6">
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
         {/* Section Header */}
-        <div className="org-header mb-20 flex flex-col items-center text-center">
+        <div className="org-header mb-12 sm:mb-20 flex flex-col items-center text-center">
           {/* Badge */}
           <div className="flex justify-center">
-            <span className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
+            <span className="rounded-full border border-white/10 bg-white/5 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
               ✦ MEET THE TEAM
             </span>
           </div>
 
           {/* Heading */}
-          <h2 className="mt-8 text-center text-5xl font-black leading-none text-white sm:text-6xl lg:text-7xl">
+          <h2 className="mt-6 sm:mt-8 text-center text-4xl sm:text-5xl lg:text-7xl font-black leading-none text-white">
             Our <span className="text-[#1a73e8]">Organizers</span>
           </h2>
 
-          <p className="mx-auto mt-8 max-w-3xl text-center text-lg leading-9 text-gray-400">
+          <p className="mx-auto mt-6 sm:mt-8 max-w-3xl text-center text-base sm:text-lg leading-8 sm:leading-9 text-gray-400">
             The passionate team working behind the scenes to bring the GDG community together.
           </p>
         </div>

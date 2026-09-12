@@ -23,6 +23,7 @@ import type { Filters, PublicEvent, RegistrationFilter } from "../type/Event.typ
 import { EVENT_CONSTANT } from "../Constant/Event.Constant";
 import EventCard from "../Components/EventCard";
 import GDGLoader from "../../../Components/GDGLoader";
+import useEventStore from "../store/useEventStore";
 
 const EventStatus = {
   REGISTRATION_OPEN: "REGISTRATION_OPEN",
@@ -126,7 +127,20 @@ const getPaginationRange = (currentPage: number, totalPages: number): (number | 
 };
 
 const Events = () => {
-  const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
+  const storeSearch = useEventStore((state) => state.search);
+  const storeCategory = useEventStore((state) => state.category);
+  const storeStatus = useEventStore((state) => state.status);
+  const setStoreSearch = useEventStore((state) => state.setSearch);
+  const setStoreCategory = useEventStore((state) => state.setCategory);
+  const setStoreStatus = useEventStore((state) => state.setStatus);
+  const resetStoreFilters = useEventStore((state) => state.resetFilters);
+
+  const [filters, setFilters] = useState<Filters>(() => ({
+    search: storeSearch || "",
+    category: storeCategory || "",
+    status: (storeStatus as RegistrationFilter) || "all",
+    selectedTags: [],
+  }));
   const [currentPage, setCurrentPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -163,8 +177,12 @@ const Events = () => {
       [key]: value,
     }));
 
+    if (key === "search") setStoreSearch(String(value));
+    if (key === "category") setStoreCategory(String(value));
+    if (key === "status") setStoreStatus(String(value));
+
     setCurrentPage(1);
-  }, []);
+  }, [setStoreSearch, setStoreCategory, setStoreStatus]);
 
   const toggleTag = useCallback((tag: string) => {
     setFilters((previous) => ({
@@ -188,9 +206,10 @@ const Events = () => {
 
   const clearFilters = useCallback(() => {
     setFilters(INITIAL_FILTERS);
+    resetStoreFilters();
     setDebouncedSearch("");
     setCurrentPage(1);
-  }, []);
+  }, [resetStoreFilters]);
 
   const apiFilters = useMemo(
     () => ({

@@ -47,29 +47,29 @@ const WhatWeDoSec = () => {
   );
 
   return (
-    <section ref={containerRef} className="relative overflow-hidden bg-[#050505] py-28">
+    <section ref={containerRef} className="relative overflow-hidden bg-[#050505] py-24 sm:py-28">
       {/* Background Glow */}
       <div className="absolute inset-0">
-        <div className="absolute left-0 top-40 h-96 w-96 rounded-full bg-[#EA4335]/10 blur-[140px]" />
-        <div className="absolute right-0 top-32 h-96 w-96 rounded-full bg-[#34A853]/10 blur-[140px]" />
-        <div className="absolute left-1/2 bottom-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
+        <div className="absolute left-0 top-20 sm:top-40 h-64 w-64 sm:h-96 sm:w-96 rounded-full bg-[#EA4335]/10 blur-[100px] sm:blur-[140px]" />
+        <div className="absolute right-0 top-20 sm:top-32 h-64 w-64 sm:h-96 sm:w-96 rounded-full bg-[#34A853]/10 blur-[100px] sm:blur-[140px]" />
+        <div className="absolute left-1/2 bottom-0 h-56 w-56 sm:h-72 sm:w-72 -translate-x-1/2 rounded-full bg-[#4285F4]/10 blur-[80px] sm:blur-[120px]" />
       </div>
 
-      <div className="wwd-header relative mx-auto max-w-7xl px-6">
+      <div className="wwd-header relative mx-auto max-w-7xl px-4 sm:px-6">
         {/* Badge */}
         <div className="flex justify-center">
-          <span className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
+          <span className="rounded-full border border-white/10 bg-white/5 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
             ✦ WHAT WE DO
           </span>
         </div>
 
         {/* Heading */}
-        <h2 className="mt-8 text-center text-5xl font-black leading-none text-white sm:text-6xl lg:text-7xl">
+        <h2 className="mt-6 sm:mt-8 text-center text-4xl sm:text-5xl lg:text-7xl font-black leading-none text-white">
           What <span className="text-[#1a73e8]">We Do</span>
         </h2>
 
         {/* Description */}
-        <p className="mx-auto mt-8 max-w-3xl text-center text-lg leading-9 text-gray-400">
+        <p className="mx-auto mt-6 sm:mt-8 max-w-3xl text-center text-base sm:text-lg leading-8 sm:leading-9 text-gray-400">
           We create opportunities for developers to <span className="text-white">learn</span>,
           <span className="text-white"> build</span>,<span className="text-white"> connect</span>,
           and
@@ -79,9 +79,9 @@ const WhatWeDoSec = () => {
         </p>
       </div>
 
-      <div className="wwd-grid mx-auto mt-20 grid max-w-7xl grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="wwd-grid mx-auto mt-12 sm:mt-20 grid max-w-7xl grid-cols-1 gap-6 px-4 sm:px-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Learn Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04]">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 bg-white/[0.02] p-8 sm:p-10 transition-colors duration-500 hover:bg-white/[0.04]">
           {/* Texture Overlay */}
           <div
             className="absolute inset-0 z-0 opacity-[0.03] mix-blend-overlay"
@@ -126,7 +126,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Connect Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2 lg:flex-row lg:items-center lg:gap-12">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 bg-white/[0.02] p-8 sm:p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2 lg:flex-row lg:items-center lg:gap-12">
           {/* Texture Overlay */}
           <div
             className="absolute inset-0 z-0 opacity-10"
@@ -198,7 +198,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Build Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 bg-white/[0.02] p-8 sm:p-10 transition-colors duration-500 hover:bg-white/[0.04] lg:col-span-2">
           {/* Texture Overlay */}
           <div
             className="absolute inset-0 z-0 opacity-10"
@@ -219,7 +219,7 @@ const WhatWeDoSec = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
             </div>
-            <div className="lg:w-1/2">
+            <div className="lg:w-1/2 mt-6 lg:mt-0">
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-[#FBBC04]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +246,7 @@ const WhatWeDoSec = () => {
         </div>
 
         {/* Grow Card */}
-        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] p-10 transition-colors duration-500 hover:bg-white/[0.04]">
+        <div className="wwd-card group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 bg-white/[0.02] p-8 sm:p-10 transition-colors duration-500 hover:bg-white/[0.04]">
           {/* Texture Overlay */}
           <div
             className="absolute inset-0 z-0 opacity-[0.04]"

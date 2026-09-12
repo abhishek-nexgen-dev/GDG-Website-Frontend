@@ -27,7 +27,7 @@ const ViewAllTeamPageHeader = ({
   totalMembersCount = 40,
 }: ViewAllTeamPageHeaderProps) => {
   return (
-    <section className="relative z-10 md:px-16 lg:px-[8%] lg:pt-[15vh] xl:px-[10%]">
+    <section className="relative z-10 px-4 sm:px-6 md:px-16 lg:px-[8%] pt-28 sm:pt-32 lg:pt-[15vh] xl:px-[10%]">
       {/* Hero */}
       <div className="grid items-center gap-16 lg:grid-cols-2">
         {/* Left */}

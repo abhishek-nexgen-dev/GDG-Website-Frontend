@@ -29,8 +29,32 @@ const LoginPage = () => {
     });
   }, []);
 
+  const handleGoogleSignIn = () => {
+    Swal.fire({
+      title: "Google Authentication",
+      text: "Redirecting to Google OAuth SSO for GDG Ranchi...",
+      icon: "info",
+      background: "#111116",
+      color: "#ffffff",
+      confirmButtonColor: "#4285F4",
+      confirmButtonText: "Continue",
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      Swal.fire({
+        title: "Missing Credentials",
+        text: "Please enter both your email address and password.",
+        icon: "warning",
+        background: "#111116",
+        color: "#ffffff",
+        confirmButtonColor: "#34A853",
+      });
+      return;
+    }
 
     // Assuming email and password are state variables or props available here
     mutate(
@@ -41,19 +65,25 @@ const LoginPage = () => {
 
           Swal.fire({
             title: "Login Successful",
-            text: "Login Successful!",
+            text: "Welcome back to GDG Ranchi!",
             icon: "success",
-            confirmButtonText: "Okay",
+            background: "#111116",
+            color: "#ffffff",
+            confirmButtonColor: "#34A853",
+            confirmButtonText: "Go to Dashboard",
           }).then(() => {
             navigate("/member/Dashboard", { replace: true });
           });
         },
         onError: (error: any) => {
           Swal.fire({
-            title: "Login Failed",
-            text: error.message || "An error occurred",
+            title: "Authentication Notice",
+            text: error.message || "Invalid credentials or account not verified yet.",
             icon: "error",
-            confirmButtonText: "Cool",
+            background: "#111116",
+            color: "#ffffff",
+            confirmButtonColor: "#EA4335",
+            confirmButtonText: "Try Again",
           });
         },
       },
@@ -199,6 +229,7 @@ const LoginPage = () => {
 
               <button
                 type="button"
+                onClick={handleGoogleSignIn}
                 className="flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-white/10 bg-white/[0.025] text-sm font-medium text-white/80 transition-all hover:border-white/20 hover:bg-white/[0.06]"
               >
                 <FaGoogle size={15} className="text-[#4285F4]" />

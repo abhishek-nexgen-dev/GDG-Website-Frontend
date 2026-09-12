@@ -13,7 +13,7 @@ const PastEvents = lazy(() => import("./Section/PastEvents"));
 
 const HomePage = () => {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-clip">
       <HeroSec />
 
       <Achievement />

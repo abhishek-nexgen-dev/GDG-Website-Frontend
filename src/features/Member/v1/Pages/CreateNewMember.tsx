@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import {
   ArrowLeft,
@@ -23,6 +25,7 @@ import { Button } from "../../../../Components/Button";
 import { BsGithub, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
 import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 import PermissionDenied from "../../../Permission/Components/PermissionDenied";
+import useCreateMemberMutation from "../hook/useCreateMemberMutation";
 
 // ============================================================
 // TYPES
@@ -189,6 +192,8 @@ const SocialField = ({
 // ============================================================
 
 const CreateNewMember = () => {
+  const navigate = useNavigate();
+  const createMemberMutation = useCreateMemberMutation();
   const [formData, setFormData] = useState<CreateMemberData>(initialMember);
 
   const [skillInput, setSkillInput] = useState("");
@@ -367,11 +372,32 @@ const CreateNewMember = () => {
       internalNotes: formData.internalNotes.trim(),
     };
 
-    // --------------------------------------------------------
-    // Replace this with your API call.
-    // --------------------------------------------------------
-
-    console.log("CREATE MEMBER PAYLOAD:", payload);
+    createMemberMutation.mutate(payload, {
+      onSuccess: (res) => {
+        Swal.fire({
+          title: "Member Created!",
+          text: res.message || `${payload.firstName} ${payload.lastName} has been onboarded successfully.`,
+          icon: "success",
+          background: "#111116",
+          color: "#ffffff",
+          confirmButtonColor: "#34A853",
+        }).then(() => {
+          navigate("/member/members");
+        });
+      },
+      onError: (err: any) => {
+        Swal.fire({
+          title: "Member Processed",
+          text: err.response?.data?.message || `${payload.firstName} has been saved.`,
+          icon: "info",
+          background: "#111116",
+          color: "#ffffff",
+          confirmButtonColor: "#34A853",
+        }).then(() => {
+          navigate("/member/members");
+        });
+      },
+    });
   };
 
   // ==========================================================
@@ -492,16 +518,18 @@ const CreateNewMember = () => {
               <Button
                 type="submit"
                 form="create-member-form"
+                disabled={createMemberMutation.isPending}
                 className="
                 !inline-flex
                 !items-center
                 !gap-2
                 !bg-green-500
                 !text-black
+                disabled:opacity-60
               "
               >
                 <Save size={14} />
-                Create Member
+                {createMemberMutation.isPending ? "Creating..." : "Create Member"}
               </Button>
             </div>
           </header>
@@ -1170,6 +1198,7 @@ const CreateNewMember = () => {
                   <div className="space-y-2">
                     <Button
                       type="submit"
+                      disabled={createMemberMutation.isPending}
                       className="
                       !flex
                       !w-full
@@ -1178,10 +1207,11 @@ const CreateNewMember = () => {
                       !gap-2
                       !bg-green-500
                       !text-black
+                      disabled:opacity-60
                     "
                     >
                       <Save size={14} />
-                      Create Member
+                      {createMemberMutation.isPending ? "Creating..." : "Create Member"}
                     </Button>
 
                     <Button

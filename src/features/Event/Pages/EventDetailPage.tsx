@@ -75,7 +75,7 @@ const ViewSingleEventPage = () => {
       <div className="pointer-events-none absolute left-[-120px] top-[15%] h-80 w-80 rounded-full bg-green-700/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-[-100px] top-[40%] h-96 w-96 rounded-full bg-purple-700/20 blur-[150px]" />
 
-      <div className="relative z-10 mx-auto w-full max-w-[90%] px-4 pb-20 pt-6 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-16 sm:pt-24 sm:px-6 lg:px-8">
         {/* Banner and Highlights */}
         <EVENT_BANNER event={event} />
         <HIGHLIGHTS_Sec event={event} />

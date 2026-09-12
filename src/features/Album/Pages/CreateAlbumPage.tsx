@@ -19,19 +19,15 @@ import Input from "../../../Components/Input";
 import Label from "../../../Components/Label";
 import Section from "../../../Components/Section";
 import { SearchableDropdown } from "../../../Components/SearchableDropdown";
-import api from "../../../utils/axios.utils";
 import uploadImage from "../../../utils/uploadImage";
 import useCreateAlbum from "../hooks/CreateAlbumForm.hook";
 import useCreateAlbumMutation from "../hooks/useCreateAlbumMutation";
+import useFetchAllEventNamesQuery from "../../Event/hook/useFetchAllEventNamesQuery";
 import Swal from "sweetalert2";
 
 type CoverMode = "upload" | "url";
 type AlbumStatus = "draft" | "published";
 // type Visibility = "public" | "private";
-
-interface EventItem {
-  title?: string;
-}
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
@@ -64,9 +60,11 @@ export default function CreateAlbumPage() {
   const [localPreview, setLocalPreview] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  const [eventOptions, setEventOptions] = useState<string[]>([]);
-  const [isEventsLoading, setIsEventsLoading] = useState(true);
-  const [eventsError, setEventsError] = useState("");
+  const {
+    data: eventNamesData,
+    isLoading: isEventsLoading,
+    error: eventsError,
+  } = useFetchAllEventNamesQuery();
 
   const title = watch("title") ?? "";
   const eventName = watch("EventName") ?? "";
@@ -76,10 +74,13 @@ export default function CreateAlbumPage() {
   const visibility = watch("visibility") ?? "public";
   const status = watch("status") ?? "draft";
 
-  const normalizedEventOptions = useMemo(
-    () => [...new Set(eventOptions)].filter(Boolean).sort((a, b) => a.localeCompare(b)),
-    [eventOptions],
-  );
+  const normalizedEventOptions = useMemo(() => {
+    if (!eventNamesData || !Array.isArray(eventNamesData)) return [];
+    const names = eventNamesData
+      .map((item: any) => (typeof item === "string" ? item : item?.title)?.trim())
+      .filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
+    return [...new Set(names)].sort((a, b) => a.localeCompare(b));
+  }, [eventNamesData]);
 
   const previewImage = useMemo(
     () => localPreview || albumImageUrl || DEFAULT_COVER,
@@ -93,50 +94,6 @@ export default function CreateAlbumPage() {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
     }
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchEvents = async () => {
-      try {
-        setIsEventsLoading(true);
-        setEventsError("");
-
-        const response = await api.get("/api/v1/findAllEventName", {
-          signal: controller.signal,
-        });
-
-        const events = Array.isArray(response.data?.data) ? response.data.data : [];
-
-        const names = events
-          .map((event: EventItem) => event?.title?.trim())
-          .filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
-
-        setEventOptions(names);
-      } catch (error: any) {
-        if (
-          controller.signal.aborted ||
-          error?.name === "CanceledError" ||
-          error?.code === "ERR_CANCELED"
-        ) {
-          return;
-        }
-
-        setEventOptions([]);
-        setEventsError("Unable to load events. Please try again.");
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsEventsLoading(false);
-        }
-      }
-    };
-
-    fetchEvents();
-
-    return () => {
-      controller.abort();
-    };
   }, []);
 
   useEffect(() => {
@@ -414,7 +371,7 @@ export default function CreateAlbumPage() {
                     value={eventName}
                     onChange={(value) => updateField("EventName", value)}
                     placeholder={isEventsLoading ? "Loading events..." : "Select an event"}
-                    error={eventsError || errors.EventName?.message}
+                    error={eventsError?.message || errors.EventName?.message}
                   />
                 </div>
 

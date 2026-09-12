@@ -1,5 +1,7 @@
-import { useState, useMemo } from "react";
-import { Upload, Download } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { Upload, Download, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { initialImagesList, type ImageItem } from "../data/images.data";
 import ImageStatsCards from "../Components/ImageStatsCards";
 import ImageFilterBar from "../Components/ImageFilterBar";
@@ -11,7 +13,29 @@ import UploadImagesModal from "../Components/UploadImagesModal";
 import ImageViewModal from "../Components/ImageViewModal";
 
 const ManageImagesPage = () => {
-  const [images, setImages] = useState<ImageItem[]>(initialImagesList);
+  const navigate = useNavigate();
+  const [images, setImages] = useState<ImageItem[]>(() => {
+    try {
+      const stored = localStorage.getItem("gdg_managed_images");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // fallback
+    }
+    return initialImagesList;
+  });
+
+  // Sync to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("gdg_managed_images", JSON.stringify(images));
+    } catch {
+      // ignore
+    }
+  }, [images]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAlbum, setSelectedAlbum] = useState("All");
   const [selectedEvent, setSelectedEvent] = useState("All");
@@ -111,14 +135,65 @@ const ManageImagesPage = () => {
     }
   };
 
-  const handleDeleteSelected = () => {
-    setImages((prev) => prev.filter((img) => !selectedIds.includes(img.id)));
-    setSelectedIds([]);
+  const handleDeleteSelected = async () => {
+    const result = await Swal.fire({
+      title: `Delete ${selectedIds.length} Images?`,
+      text: "This will remove the selected images from your managed gallery.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#27272a",
+      confirmButtonText: "Yes, delete",
+      background: "#151a20",
+      color: "#ffffff",
+    });
+
+    if (result.isConfirmed) {
+      setImages((prev) => prev.filter((img) => !selectedIds.includes(img.id)));
+      setSelectedIds([]);
+      Swal.fire({
+        title: "Deleted!",
+        text: "Images have been deleted successfully.",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 2500,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
+    }
   };
 
-  const handleDeleteSingle = (id: string) => {
-    setImages((prev) => prev.filter((img) => img.id !== id));
-    setSelectedIds((prev) => prev.filter((item) => item !== id));
+  const handleDeleteSingle = async (id: string) => {
+    const imgToDelete = images.find((i) => i.id === id);
+    const result = await Swal.fire({
+      title: "Delete Image?",
+      text: `Are you sure you want to delete "${imgToDelete?.fileName || "this image"}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#27272a",
+      confirmButtonText: "Yes, delete",
+      background: "#151a20",
+      color: "#ffffff",
+    });
+
+    if (result.isConfirmed) {
+      setImages((prev) => prev.filter((img) => img.id !== id));
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+      Swal.fire({
+        title: "Deleted!",
+        text: "Image deleted successfully.",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
+    }
   };
 
   // Upload handler
@@ -129,6 +204,17 @@ const ManageImagesPage = () => {
       timeAgo: "Just now",
     };
     setImages((prev) => [newImage, ...prev]);
+    Swal.fire({
+      title: "Image Added!",
+      text: `"${newImage.fileName}" has been added.`,
+      icon: "success",
+      toast: true,
+      position: "top-end",
+      timer: 3000,
+      showConfirmButton: false,
+      background: "#181b20",
+      color: "#ffffff",
+    });
   };
 
   // Export CSV
@@ -178,14 +264,24 @@ const ManageImagesPage = () => {
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-2 rounded-xl border border-[#232830] bg-[#161a1f] px-4 py-2.5 text-xs font-semibold text-white/90 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
+            className="flex items-center gap-2 rounded-xl border border-[#232830] bg-[#161a1f] px-3.5 py-2.5 text-xs font-semibold text-white/90 transition-colors hover:border-[#2f3540] hover:bg-[#1a1f26] hover:text-white"
           >
             <Download size={15} strokeWidth={2} />
-            <span>Export Images</span>
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">Export</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/member/images/upload")}
+            className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2.5 text-xs font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/20"
+          >
+            <Plus size={15} strokeWidth={2.5} />
+            <span>New Image Page</span>
           </button>
 
           <button
@@ -194,7 +290,7 @@ const ManageImagesPage = () => {
             className="flex items-center gap-2 rounded-xl bg-[#22c55e] px-4 py-2.5 text-xs font-semibold text-black transition-colors hover:bg-[#16a34a]"
           >
             <Upload size={16} strokeWidth={2.5} />
-            <span>Upload Images</span>
+            <span>Quick Upload</span>
           </button>
         </div>
       </div>

@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import useCreateEventMutation from "../hook/useCreateEventMutation";
+import showAlert from "../../../utils/showAlert";
 
 import type { EventFormData } from "../type/Event.type";
 import { initialEventFormData } from "../data/eventForm.data";
@@ -16,11 +19,12 @@ import EventRequirements from "../Components/EventRequirements";
 import {
   handleCoverImageUpload,
   handleIntroVideoUpload,
-  publishEvent,
   saveDraft,
 } from "../utils/create-event-utils";
 
 const CreateEvent = () => {
+  const navigate = useNavigate();
+  const createEventMutation = useCreateEventMutation();
   const [form, setForm] = useState<EventFormData>(initialEventFormData);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
@@ -58,20 +62,36 @@ const CreateEvent = () => {
   );
 
   const onSaveDraft = useCallback(async () => {
-    if (saving || uploadingImage || uploadingVideo) return;
+    if (saving || uploadingImage || uploadingVideo || createEventMutation.isPending) return;
 
     await saveDraft(form, setSaving);
-  }, [form, saving, uploadingImage, uploadingVideo]);
+  }, [form, saving, uploadingImage, uploadingVideo, createEventMutation.isPending]);
 
   const onPublishEvent = useCallback(async () => {
-    if (saving || uploadingImage || uploadingVideo) return;
+    if (saving || uploadingImage || uploadingVideo || createEventMutation.isPending) return;
 
-    await publishEvent(form, setSaving);
-  }, [form, saving, uploadingImage, uploadingVideo]);
+    createEventMutation.mutate(form as any, {
+      onSuccess: () => {
+        showAlert("success", "Event Published", "Your event has been published successfully.", {
+          timer: 1800,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/events");
+        });
+      },
+      onError: (error: any) => {
+        showAlert(
+          "error",
+          "Publish Failed",
+          error?.response?.data?.message || "Something went wrong while publishing the event."
+        );
+      },
+    });
+  }, [form, saving, uploadingImage, uploadingVideo, createEventMutation, navigate]);
 
   const isBusy = useMemo(
-    () => saving || uploadingImage || uploadingVideo,
-    [saving, uploadingImage, uploadingVideo],
+    () => saving || uploadingImage || uploadingVideo || createEventMutation.isPending,
+    [saving, uploadingImage, uploadingVideo, createEventMutation.isPending],
   );
 
   return (
@@ -95,6 +115,7 @@ const CreateEvent = () => {
           <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
+              onClick={() => navigate(-1)}
               disabled={isBusy}
               className="hidden rounded-md border border-white/[0.08] px-3 py-2 text-xs font-medium text-zinc-500 transition hover:bg-white/[0.03] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 sm:block"
             >
@@ -122,7 +143,7 @@ const CreateEvent = () => {
             >
               <ExternalLink size={13} />
 
-              <span>{saving ? "Publishing..." : "Publish Event"}</span>
+              <span>{createEventMutation.isPending || saving ? "Publishing..." : "Publish Event"}</span>
             </button>
           </div>
         </div>

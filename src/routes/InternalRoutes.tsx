@@ -24,6 +24,8 @@ const InternalRoutes = () => {
         <Route path="Dashboard" element={<DashboardPage />} />
         <Route path="members" element={<MembersDashboardPage />} />
         <Route path="create" element={<CreateNewMember />} />
+        <Route path="profile" element={<MemberDetails />} />
+        <Route path="Profile" element={<MemberDetails />} />
         <Route path="profile/:id" element={<MemberDetails />} />
         <Route path="events" element={<ManageEvent />} />
         <Route path="event/view/:Slug" element={<MemberViewEvent />} />
@@ -41,6 +43,7 @@ const InternalRoutes = () => {
         <Route path="image" element={<ManageImagesPage />} />
         <Route path="emails/send" element={<SendBulkEmailPage />} />
         <Route path="Settings" element={<Settings />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );
