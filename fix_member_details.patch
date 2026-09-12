@@ -1,0 +1,29 @@
+--- src/features/Member/v1/Pages/MemberDetails.tsx
++++ src/features/Member/v1/Pages/MemberDetails.tsx
+@@ -54,8 +54,10 @@
+   const [saveSuccessNotice, setSaveSuccessNotice] = useState(false);
+   const [updatedPermissions, setUpdatedPermissions] = useState<Permission[] | null>(null);
+ 
+-  const { mutate, isPending } = useFetchMemberProfile();
++  const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
++  const { isFetching: isPending } = useFetchMemberProfile(targetSlug);
+   useMemberPermissionsQuery(id);
++  
+   const assignPermissionsMutation = useAssignPermissionsMutation();
+ 
+   // Resolve active member from store, API, or fallback list
+@@ -176,14 +178,6 @@
+     return DEFAULT_PROFILE;
+   }, [id, members, storeSingleMember]);
+ 
+-  // Initial Data Fetch
+-  useEffect(() => {
+-    const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
+-    if (targetSlug) {
+-      mutate({ Slug: targetSlug });
+-    }
+-  }, [id, storeSingleMember?.Slug, mutate]);
+-
+   // Handlers for Local Form Editing
+   const startEditing = () => {
+     if (activeMember) {

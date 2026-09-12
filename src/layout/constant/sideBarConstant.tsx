@@ -1,9 +1,8 @@
-import { LayoutDashboard, Calendar, Images, Image, Users, Mail } from "lucide-react";
+import { LayoutDashboard, Calendar, Images, Image, Users } from "lucide-react";
 import {
   Event_Permissions,
   Gallery_Permissions,
   Member_Permissions,
-  Email_Permissions,
 } from "../../features/Permission/constant/Permission.constant";
 
 export interface SideBarItem {
@@ -64,13 +63,6 @@ const sideBarConstant: SideBarItem[] = [
       { label: "All Members", link: "/member/members", permissionName: Member_Permissions.VIEW_MEMBER, permissionAction: "read" },
       { label: "Add Member", link: "/member/create", permissionName: Member_Permissions.CREATE_MEMBER, permissionAction: "create" },
     ],
-  },
-  {
-    label: "Emails",
-    link: "/member/emails/send",
-    icon: Mail,
-    permissionName: Email_Permissions.SEND_EMAIL,
-    permissionAction: "create",
   },
 ];
 

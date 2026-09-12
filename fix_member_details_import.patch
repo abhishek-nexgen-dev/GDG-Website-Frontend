@@ -1,0 +1,18 @@
+--- src/features/Member/v1/Pages/MemberDetails.tsx
++++ src/features/Member/v1/Pages/MemberDetails.tsx
+@@ -16,6 +16,7 @@
+ import Swal from "sweetalert2";
+ import Section from "../../../../Components/Section";
+ import { Button } from "../../../../Components/Button";
++import useUpdateMemberMutation from "../hook/useUpdateMemberMutation";
+ import useFetchMemberProfile from "../hook/useFetchMemberProfile";
+ import useMembers from "../store/useMembers";
+ import TagEditor from "../Components/TagEditor";
+@@ -56,6 +57,7 @@
+ 
+   const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
+   const { isLoading: isPending } = useFetchMemberProfile(targetSlug);
++  const updateMemberMutation = useUpdateMemberMutation();
+   useMemberPermissionsQuery(id);
+   const assignPermissionsMutation = useAssignPermissionsMutation();
+ 

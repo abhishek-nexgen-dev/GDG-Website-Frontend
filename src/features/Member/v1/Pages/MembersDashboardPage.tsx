@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useMembers from "../store/useMembers";
 import type { fetchMembersType } from "../type/MemberDetails.type";
-import useFetchMember from "../hook/useFetchMembers";
+import useFetchAllMembersQuery from "../hook/useFetchAllMembersQuery";
 import MemberStatsCards from "../Components/MemberStatsCards";
 import MemberFilterBar from "../Components/MemberFilterBar";
 import MemberTable from "../Components/MemberTable";
@@ -30,7 +30,7 @@ const MembersDashboardPage = () => {
   const deleteMember = useMembers((state) => state.deleteMember);
   const updateMember = useMembers((state) => state.updateMember);
 
-  const { mutate, data, isSuccess } = useFetchMember();
+  const { data, isSuccess } = useFetchAllMembersQuery(1, 100);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState(ALL_FILTER);
@@ -40,18 +40,10 @@ const MembersDashboardPage = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
-  // Trigger API fetching on mount
-  useEffect(() => {
-    mutate({ limit: 100, page: 1 });
-  }, [mutate]);
-
   // Sync API result into Zustand store
   useEffect(() => {
     if (isSuccess && data) {
-      const incoming = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : null;
-      if (incoming && incoming.length > 0) {
-        setMembers(incoming);
-      }
+      setMembers(data as any);
     }
   }, [isSuccess, data, setMembers]);
 

@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import Section from "../../../../Components/Section";
 import { Button } from "../../../../Components/Button";
 import useFetchMemberProfile from "../hook/useFetchMemberProfile";
+import useUpdateMemberMutation from "../hook/useUpdateMemberMutation";
 import useMembers from "../store/useMembers";
 import TagEditor from "../Components/TagEditor";
 
@@ -54,7 +55,9 @@ const MemberDetails = () => {
   const [saveSuccessNotice, setSaveSuccessNotice] = useState(false);
   const [updatedPermissions, setUpdatedPermissions] = useState<Permission[] | null>(null);
 
-  const { mutate, isPending } = useFetchMemberProfile();
+  const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
+  const { isLoading: isPending } = useFetchMemberProfile(targetSlug);
+  const updateMemberMutation = useUpdateMemberMutation();
   useMemberPermissionsQuery(id);
   const assignPermissionsMutation = useAssignPermissionsMutation();
 
@@ -176,14 +179,6 @@ const MemberDetails = () => {
     }
   }, [storeSingleMember, activeMember, setSingleMember]);
 
-  // Trigger network fetch on mount and slug change
-  useEffect(() => {
-    const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
-    if (targetSlug) {
-      mutate({ Slug: targetSlug });
-    }
-  }, [id, storeSingleMember?.Slug, mutate]);
-
   // Handlers for Local Form Editing
   const startEditing = () => {
     if (activeMember) {
@@ -209,41 +204,56 @@ const MemberDetails = () => {
     if (!formData || !activeMember) return;
     setIsSaving(true);
 
-    // Commit local form state cleanly to the Zustand store once
-    updateMember(activeMember._id, formData);
+    updateMemberMutation.mutate(
+      { memberId: activeMember._id, data: formData },
+      {
+        onSuccess: () => {
+          // Commit local form state cleanly to the Zustand store once
+          updateMember(activeMember._id, formData);
 
-    // Persist permissions via API if adjusted
-    if (updatedPermissions && activeMember._id) {
-      assignPermissionsMutation.mutate({
-        memberId: activeMember._id,
-        permission: updatedPermissions.map((p) => ({
-          name: p.name,
-          action: p.action || "read",
-          resource: p.resource || "general",
-          description: p.description,
-          level: (p as any).level || 1,
-        })),
-      });
-    }
+          // Persist permissions via API if adjusted
+          if (updatedPermissions && activeMember._id) {
+            assignPermissionsMutation.mutate({
+              memberId: activeMember._id,
+              permission: updatedPermissions.map((p) => ({
+                name: p.name,
+                action: p.action || "read",
+                resource: p.resource || "general",
+                description: p.description,
+                level: (p as any).level || 1,
+              })),
+            });
+          }
 
-    setTimeout(() => {
-      setIsSaving(false);
-      setIsEdit(false);
-      setIsEditSingleMember(false);
-      setSaveSuccessNotice(true);
-      Swal.fire({
-        title: "Profile Saved!",
-        text: "Member profile information updated successfully.",
-        icon: "success",
-        toast: true,
-        position: "top-end",
-        timer: 2500,
-        showConfirmButton: false,
-        background: "#181b20",
-        color: "#ffffff",
-      });
-      setTimeout(() => setSaveSuccessNotice(false), 2500);
-    }, 300);
+          setIsSaving(false);
+          setIsEdit(false);
+          setIsEditSingleMember(false);
+          setSaveSuccessNotice(true);
+          Swal.fire({
+            title: "Profile Saved!",
+            text: "Member profile information updated successfully.",
+            icon: "success",
+            toast: true,
+            position: "top-end",
+            timer: 2500,
+            showConfirmButton: false,
+            background: "#181b20",
+            color: "#ffffff",
+          });
+          setTimeout(() => setSaveSuccessNotice(false), 2500);
+        },
+        onError: () => {
+          setIsSaving(false);
+          Swal.fire({
+            title: "Error",
+            text: "Failed to update member profile.",
+            icon: "error",
+            background: "#111116",
+            color: "#ffffff"
+          });
+        }
+      }
+    );
   };
 
   const copyEmail = async () => {

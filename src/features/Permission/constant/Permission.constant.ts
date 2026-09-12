@@ -10,7 +10,6 @@ export const Event_Permissions = {
 /* ==========================================================================
    GALLERY PERMISSIONS
    ========================================================================== */
-
 export const Gallery_Permissions = {
   CREATE_GALLERY: "gallery:create",
   VIEW_GALLERY: "gallery:view",
@@ -25,7 +24,6 @@ export const Gallery_Permissions = {
 /* ==========================================================================
    USER PERMISSIONS
    ========================================================================== */
-
 export const User_Permissions = {
   CREATE_USERS: "user:create",
   VIEW_USERS: "user:view",
@@ -36,7 +34,6 @@ export const User_Permissions = {
 /* ==========================================================================
    ORGANIZATION MEMBER PERMISSIONS
    ========================================================================== */
-
 export const Member_Permissions = {
   CREATE_MEMBER: "member:create",
   VIEW_MEMBER: "member:view",
@@ -45,20 +42,8 @@ export const Member_Permissions = {
 };
 
 /* ==========================================================================
-   EMAIL & COMMUNICATIONS PERMISSIONS
-   ========================================================================== */
-
-export const Email_Permissions = {
-  SEND_EMAIL: "email:send",
-  VIEW_EMAIL: "email:view",
-  CREATE_TEMPLATE: "email:create",
-  DELETE_EMAIL: "email:delete",
-};
-
-/* ==========================================================================
    SYSTEM PERMISSIONS
    ========================================================================== */
-
 export const Permission_Permissions = {
   CREATE_PERMISSION: "permission:create",
   VIEW_PERMISSION: "permission:view",
@@ -70,7 +55,6 @@ export const Permission_Permissions = {
    EVENT ROLE PERMISSIONS
    (NOT Organization Permissions)
    ========================================================================== */
-
 export const Judge_Permissions = {
   ADD_JUDGE: "judge:add",
   REMOVE_JUDGE: "judge:remove",

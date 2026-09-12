@@ -1,10 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   ArrowLeft,
-  FileText,
   Globe2,
   Image as ImageIcon,
   MapPin,
@@ -24,184 +23,56 @@ import Input from "../../../../Components/Input";
 import Label from "../../../../Components/Label";
 import Badge from "../../../../Components/Badge";
 import { Button } from "../../../../Components/Button";
-import { BsGithub, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
+
 import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 import PermissionDenied from "../../../Permission/Components/PermissionDenied";
 import useCreateMemberMutation from "../hook/useCreateMemberMutation";
 import uploadImage from "../../../../utils/uploadImage";
-
-// ============================================================
-// TYPES
-// ============================================================
-
-type Location = {
-  city: string;
-  state: string;
-  country: string;
-  pinCode: string;
-};
-
-type SocialLinks = {
-  linkedin: string;
-  github: string;
-  twitter: string;
-  website: string;
-  instagram: string;
-  youtube: string;
-  portfolio: string;
-  medium: string;
-};
-
-type CreateMemberData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-
-  Bio: string;
-
-  imageUrl: string;
-  publicProfileUrl: string;
-
-  membershipStatus: string;
-  onboardingSource: string;
-  primaryRole: string;
-
-  location: Location;
-
-  socialLinks: SocialLinks;
-
-  skills: string[];
-  areaOfInterest: string[];
-
-  internalNotes: string;
-};
-
-// ============================================================
-// INITIAL STATE
-// ============================================================
-
-const initialMember: CreateMemberData = {
-  firstName: "",
-  lastName: "",
-  email: "",
-
-  Bio: "",
-
-  imageUrl: "",
-  publicProfileUrl: "",
-
-  membershipStatus: "On Boarding",
-  onboardingSource: "website",
-  primaryRole: "Full Stack Developer",
-
-  location: {
-    city: "",
-    state: "",
-    country: "",
-    pinCode: "",
-  },
-
-  socialLinks: {
-    linkedin: "",
-    github: "",
-    twitter: "",
-    website: "",
-    instagram: "",
-    youtube: "",
-    portfolio: "",
-    medium: "",
-  },
-
-  skills: [],
-
-  areaOfInterest: [],
-
-  internalNotes: "",
-};
+import { useCreateMemberDraft, type CreateMemberData } from "../store/useCreateMemberDraft";
 
 // ============================================================
 // CONSTANTS
 // ============================================================
-
 const roles = [
   "Full Stack Developer",
-  "Backend Developer",
   "Frontend Developer",
+  "Backend Developer",
   "UI/UX Designer",
-  "DevOps Engineer",
-  "AI/ML Engineer",
-  "Mobile Developer",
+  "Product Manager",
+  "Core Team",
   "Organizer",
+  "Contributor",
 ];
 
-const membershipStatuses = ["On Boarding", "Active", "Inactive", "Suspended"];
-
-const onboardingSources = ["website", "referral", "event", "community", "social_media", "other"];
-
-const interests = [
-  "OPEN_SOURCE",
-  "AI",
-  "WEB_DEVELOPMENT",
-  "MOBILE_DEVELOPMENT",
-  "DEVOPS",
-  "CLOUD",
-  "CYBER_SECURITY",
-  "UI_UX",
-];
-
-// ============================================================
-// SOCIAL FIELD
-// ============================================================
-
-const SocialField = ({
-  label,
-  icon,
-  value,
-  placeholder,
-  onChange,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  value: string;
-  placeholder: string;
-  onChange: (value: string) => void;
-}) => {
-  return (
-    <div className="min-w-0">
-      <div
-        className="
-          mb-1.5
-          flex
-          items-center
-          gap-1.5
-          text-[10px]
-          font-medium
-          text-white/35
-          sm:text-[11px]
-        "
-      >
-        <span className="text-white/30">{icon}</span>
-
-        {label}
-      </div>
-
-      <Input value={value} onChange={onChange} placeholder={placeholder} />
-    </div>
-  );
-};
-
-// ============================================================
-// CREATE MEMBER
-// ============================================================
+const membershipStatuses = ["Active", "Inactive", "On Boarding", "Offline"];
+const onboardingSources = ["website", "referral", "event", "social_media"];
 
 const CreateNewMember = () => {
   const navigate = useNavigate();
   const createMemberMutation = useCreateMemberMutation();
-  const [formData, setFormData] = useState<CreateMemberData>(initialMember);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [skillInput, setSkillInput] = useState("");
+
+  const { draft, setDraft, clearDraft } = useCreateMemberDraft();
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<CreateMemberData>({
+    defaultValues: draft,
+  });
+
+  // Watch all values to auto-save to draft
+  const currentValues = useWatch({ control }) as CreateMemberData;
+
+  useEffect(() => {
+    setDraft(currentValues);
+  }, [currentValues, setDraft]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -210,7 +81,7 @@ const CreateNewMember = () => {
     try {
       setIsUploadingImage(true);
       const res = await uploadImage(file);
-      updateField("imageUrl", res.secure_url);
+      setValue("imageUrl", res.secure_url, { shouldValidate: true, shouldDirty: true });
     } catch (error) {
       console.error(error);
       Swal.fire({
@@ -226,177 +97,77 @@ const CreateNewMember = () => {
   };
 
   // ==========================================================
-  // BASIC FIELD UPDATE
-  // ==========================================================
-
-  const updateField = <K extends keyof CreateMemberData>(key: K, value: CreateMemberData[K]) => {
-    setFormData((current) => ({
-      ...current,
-      [key]: value,
-    }));
-  };
-
-  // ==========================================================
-  // LOCATION UPDATE
-  // ==========================================================
-
-  const updateLocation = <K extends keyof Location>(key: K, value: Location[K]) => {
-    setFormData((current) => ({
-      ...current,
-
-      location: {
-        ...current.location,
-        [key]: value,
-      },
-    }));
-  };
-
-  // ==========================================================
-  // SOCIAL UPDATE
-  // ==========================================================
-
-  const updateSocial = <K extends keyof SocialLinks>(key: K, value: SocialLinks[K]) => {
-    setFormData((current) => ({
-      ...current,
-
-      socialLinks: {
-        ...current.socialLinks,
-        [key]: value,
-      },
-    }));
-  };
-
-  // ==========================================================
   // SKILLS
   // ==========================================================
-
   const addSkill = () => {
     const skill = skillInput.trim();
-
     if (!skill) return;
 
-    const exists = formData.skills.some((item) => item.toLowerCase() === skill.toLowerCase());
+    const currentSkills = control._formValues.skills || [];
+    const exists = currentSkills.some((item: string) => item.toLowerCase() === skill.toLowerCase());
 
     if (exists) {
       setSkillInput("");
       return;
     }
 
-    setFormData((current) => ({
-      ...current,
-      skills: [...current.skills, skill],
-    }));
-
+    setValue("skills", [...currentSkills, skill]);
     setSkillInput("");
   };
 
   const removeSkill = (skill: string) => {
-    setFormData((current) => ({
-      ...current,
-
-      skills: current.skills.filter((item) => item !== skill),
-    }));
+    const currentSkills = control._formValues.skills || [];
+    setValue("skills", currentSkills.filter((item: string) => item !== skill));
   };
 
   // ==========================================================
   // INTERESTS
   // ==========================================================
-
   const toggleInterest = (interest: string) => {
-    setFormData((current) => {
-      const exists = current.areaOfInterest.includes(interest);
-
-      return {
-        ...current,
-
-        areaOfInterest: exists
-          ? current.areaOfInterest.filter((item) => item !== interest)
-          : [...current.areaOfInterest, interest],
-      };
-    });
-  };
-
-  // ==========================================================
-  // VALIDATION
-  // ==========================================================
-
-  const validateForm = () => {
-    if (!formData.firstName.trim()) {
-      alert("First name is required.");
-      return false;
+    const currentInterests = control._formValues.areaOfInterest || [];
+    const exists = currentInterests.includes(interest);
+    
+    if (exists) {
+      setValue("areaOfInterest", currentInterests.filter((item: string) => item !== interest));
+    } else {
+      setValue("areaOfInterest", [...currentInterests, interest]);
     }
-
-    if (!formData.lastName.trim()) {
-      alert("Last name is required.");
-      return false;
-    }
-
-    if (!formData.email.trim()) {
-      alert("Email is required.");
-      return false;
-    }
-
-    if (!formData.primaryRole) {
-      alert("Primary role is required.");
-      return false;
-    }
-
-    return true;
   };
 
   // ==========================================================
   // SUBMIT
   // ==========================================================
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!validateForm()) return;
+  const onSubmitForm = (data: CreateMemberData) => {
+    if (!data.firstName?.trim() || !data.lastName?.trim() || !data.email?.trim() || !data.primaryRole) {
+      alert("First name, last name, email, and primary role are required.");
+      return;
+    }
 
     const payload: CreateMemberData = {
-      ...formData,
-
-      firstName: formData.firstName.trim(),
-
-      lastName: formData.lastName.trim(),
-
-      email: formData.email.trim(),
-
-      Bio: formData.Bio.trim(),
-
-      imageUrl: formData.imageUrl.trim(),
-
-      publicProfileUrl: formData.publicProfileUrl.trim(),
-
+      ...data,
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      email: data.email.trim(),
+      Bio: data.Bio.trim(),
+      imageUrl: data.imageUrl.trim(),
+      publicProfileUrl: data.publicProfileUrl.trim(),
       location: {
-        city: formData.location.city.trim(),
-
-        state: formData.location.state.trim(),
-
-        country: formData.location.country.trim(),
-
-        pinCode: formData.location.pinCode.trim(),
+        city: data.location.city.trim(),
+        state: data.location.state.trim(),
+        country: data.location.country.trim(),
+        pinCode: data.location.pinCode.trim(),
       },
-
       socialLinks: {
-        linkedin: formData.socialLinks.linkedin.trim(),
-
-        github: formData.socialLinks.github.trim(),
-
-        twitter: formData.socialLinks.twitter.trim(),
-
-        website: formData.socialLinks.website.trim(),
-
-        instagram: formData.socialLinks.instagram.trim(),
-
-        youtube: formData.socialLinks.youtube.trim(),
-
-        portfolio: formData.socialLinks.portfolio.trim(),
-
-        medium: formData.socialLinks.medium.trim(),
+        linkedin: data.socialLinks.linkedin.trim(),
+        github: data.socialLinks.github.trim(),
+        twitter: data.socialLinks.twitter.trim(),
+        website: data.socialLinks.website.trim(),
+        instagram: data.socialLinks.instagram.trim(),
+        youtube: data.socialLinks.youtube.trim(),
+        portfolio: data.socialLinks.portfolio.trim(),
+        medium: data.socialLinks.medium.trim(),
       },
-
-      internalNotes: formData.internalNotes.trim(),
+      internalNotes: data.internalNotes.trim(),
     };
 
     createMemberMutation.mutate(payload, {
@@ -409,40 +180,28 @@ const CreateNewMember = () => {
           color: "#ffffff",
           confirmButtonColor: "#34A853",
         }).then(() => {
+          clearDraft();
           navigate("/member/members");
         });
       },
-      onError: (err: any) => {
+      onError: (error: any) => {
         Swal.fire({
-          title: "Member Processed",
-          text: err.response?.data?.message || `${payload.firstName} has been saved.`,
-          icon: "info",
+          title: "Error",
+          text: error?.response?.data?.message || "Something went wrong while creating the member.",
+          icon: "error",
           background: "#111116",
           color: "#ffffff",
-          confirmButtonColor: "#34A853",
-        }).then(() => {
-          navigate("/member/members");
+          confirmButtonColor: "#EF4444",
         });
       },
     });
   };
 
-  // ==========================================================
-  // RESET
-  // ==========================================================
-
   const handleReset = () => {
-    const confirmed = window.confirm("Clear all entered member information?");
-
-    if (!confirmed) return;
-
-    setFormData(initialMember);
+    clearDraft();
+    reset(draft);
     setSkillInput("");
   };
-
-  // ==========================================================
-  // RENDER
-  // ==========================================================
 
   return (
     <PermissionChecker
@@ -450,122 +209,62 @@ const CreateNewMember = () => {
       permissionName="member:create"
       fallback={<PermissionDenied />}
     >
-      <div className="min-h-screen text-white">
-        <main
+      <div className="min-h-screen bg-[#0A0A0A] text-white">
+        {/* ==================================================
+          HEADER
+        ================================================== */}
+        <header
           className="
-          mx-auto
-          w-full
-          max-w-[1600px]
-          px-3
+          sticky
+          top-0
+          z-10
+          border-b
+          border-[#232830]
+          bg-[#0A0A0A]/80
+          px-4
           py-4
-          sm:px-5
-          sm:py-6
+          backdrop-blur-md
+          sm:px-6
           lg:px-8
-          lg:py-7
-          xl:px-10
-          2xl:px-12
         "
         >
-          {/* ==================================================
-            HEADER
-        ================================================== */}
-
-          <header
-            className="
-            mb-5
-            flex
-            flex-col
-            gap-4
-            border-b
-            border-[#232830]
-            pb-5
-            lg:mb-6
-            lg:flex-row
-            lg:items-center
-            lg:justify-between
-          "
-          >
-            <div>
-              <div
-                className="
-                mb-1.5
-                flex
-                items-center
-                gap-1.5
-                text-[10px]
-                text-white/35
-                sm:text-[11px]
-              "
-              >
-                <span>Members</span>
-
-                <span className="text-white/20">/</span>
-
-                <span className="text-green-400">Create New</span>
-              </div>
-
-              <h1
-                className="
-                text-lg
-                font-bold
-                tracking-tight
-                sm:text-xl
-                lg:text-2xl
-              "
-              >
-                Create New Member
-              </h1>
-
-              <p
-                className="
-                mt-1
-                text-[10px]
-                text-white/35
-                sm:text-[11px]
-              "
-              >
-                Add a new member to your community.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Button
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
                 type="button"
-                onClick={() => window.history.back()}
+                onClick={() => navigate("/member/members")}
                 className="
-                !inline-flex
-                !items-center
-                !gap-2
-              "
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#1A1A1A]
+                  text-white/60
+                  transition-colors
+                  hover:bg-[#232830]
+                  hover:text-white
+                "
               >
-                <ArrowLeft size={14} />
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                form="create-member-form"
-                disabled={createMemberMutation.isPending}
-                className="
-                !inline-flex
-                !items-center
-                !gap-2
-                !bg-green-500
-                !text-black
-                disabled:opacity-60
-              "
-              >
-                <Save size={14} />
-                {createMemberMutation.isPending ? "Creating..." : "Create Member"}
-              </Button>
+                <ArrowLeft size={18} />
+              </button>
+              <div>
+                <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
+                  <UserRound size={22} className="text-emerald-400" />
+                  Onboard Member
+                </h1>
+                <p className="mt-1 text-xs text-white/50">Add a new member to the community</p>
+              </div>
             </div>
-          </header>
+          </div>
+        </header>
 
-          {/* ==================================================
-            FORM
+        {/* ==================================================
+          MAIN CONTENT
         ================================================== */}
-
-          <form id="create-member-form" onSubmit={handleSubmit}>
+        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <form id="create-member-form" onSubmit={handleSubmit(onSubmitForm)}>
             <div
               className="
               grid
@@ -596,42 +295,72 @@ const CreateNewMember = () => {
                     sm:grid-cols-2
                   "
                   >
-                    <Input
-                      label="First Name"
-                      value={formData.firstName}
-                      onChange={(value) => updateField("firstName", value)}
-                      placeholder="Enter first name"
+                    <Controller
+                      name="firstName"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="First Name"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Enter first name"
+                        />
+                      )}
                     />
 
-                    <Input
-                      label="Last Name"
-                      value={formData.lastName}
-                      onChange={(value) => updateField("lastName", value)}
-                      placeholder="Enter last name"
+                    <Controller
+                      name="lastName"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Last Name"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Enter last name"
+                        />
+                      )}
                     />
 
-                    <Input
-                      label="Email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(value) => updateField("email", value)}
-                      placeholder="member@example.com"
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Email"
+                          type="email"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="member@example.com"
+                        />
+                      )}
                     />
 
-                    <Input
-                      label="Public Profile URL"
-                      type="url"
-                      value={formData.publicProfileUrl}
-                      onChange={(value) => updateField("publicProfileUrl", value)}
-                      placeholder="https://..."
+                    <Controller
+                      name="publicProfileUrl"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Public Profile URL"
+                          type="url"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="https://..."
+                        />
+                      )}
                     />
 
                     <div className="sm:col-span-2">
-                      <Input
-                        label="Bio"
-                        value={formData.Bio}
-                        onChange={(value) => updateField("Bio", value)}
-                        placeholder="Backend Developer | Open Source Contributor"
+                      <Controller
+                        name="Bio"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            label="Bio"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Backend Developer | Open Source Contributor"
+                          />
+                        )}
                       />
                     </div>
                   </div>
@@ -651,16 +380,9 @@ const CreateNewMember = () => {
                     grid
                     gap-5
                     lg:grid-cols-[140px_minmax(0,1fr)]
-                    lg:items-center
                   "
                   >
-                    <div
-                      className="
-                      flex
-                      justify-center
-                      lg:justify-start
-                    "
-                    >
+                    <div className="flex flex-col items-center gap-3 sm:items-start">
                       <div
                         className="
                         flex
@@ -675,9 +397,9 @@ const CreateNewMember = () => {
                         bg-[#121519]
                       "
                       >
-                        {formData.imageUrl ? (
+                        {currentValues.imageUrl ? (
                           <img
-                            src={formData.imageUrl}
+                            src={currentValues.imageUrl}
                             alt="Member preview"
                             className="
                             h-full
@@ -695,12 +417,18 @@ const CreateNewMember = () => {
                     </div>
 
                     <div className="flex flex-col gap-3 w-full">
-                      <Input
-                        label="Image URL"
-                        type="url"
-                        value={formData.imageUrl}
-                        onChange={(value) => updateField("imageUrl", value)}
-                        placeholder="https://example.com/avatar.jpg"
+                      <Controller
+                        name="imageUrl"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            label="Image URL"
+                            type="url"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="https://example.com/avatar.jpg"
+                          />
+                        )}
                       />
                       
                       <div className="flex items-center gap-4">
@@ -759,43 +487,57 @@ const CreateNewMember = () => {
 
                 <Section
                   title="Location"
-                  description="Add the member's current location"
+                  description="Where is this member based?"
                   icon={<MapPin size={17} />}
                 >
-                  <div
-                    className="
-                    grid
-                    grid-cols-2
-                    gap-4
-                    sm:grid-cols-4
-                  "
-                  >
-                    <Input
-                      label="City"
-                      value={formData.location.city}
-                      onChange={(value) => updateLocation("city", value)}
-                      placeholder="Toronto"
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Controller
+                      name="location.city"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="City"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="e.g., Ranchi"
+                        />
+                      )}
                     />
-
-                    <Input
-                      label="State / Province"
-                      value={formData.location.state}
-                      onChange={(value) => updateLocation("state", value)}
-                      placeholder="Ontario"
+                    <Controller
+                      name="location.state"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="State"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="e.g., Jharkhand"
+                        />
+                      )}
                     />
-
-                    <Input
-                      label="Country"
-                      value={formData.location.country}
-                      onChange={(value) => updateLocation("country", value)}
-                      placeholder="Canada"
+                    <Controller
+                      name="location.country"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Country"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="e.g., India"
+                        />
+                      )}
                     />
-
-                    <Input
-                      label="Pin Code"
-                      value={formData.location.pinCode}
-                      onChange={(value) => updateLocation("pinCode", value)}
-                      placeholder="M5V 3L9"
+                    <Controller
+                      name="location.pinCode"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Pin Code"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="e.g., 834001"
+                        />
+                      )}
                     />
                   </div>
                 </Section>
@@ -806,246 +548,59 @@ const CreateNewMember = () => {
 
                 <Section
                   title="Social Links"
-                  description="Connect the member's social and professional profiles"
+                  description="Connect the member's online profiles"
                   icon={<Globe2 size={17} />}
                 >
-                  <div
-                    className="
-                    grid
-                    gap-4
-                    sm:grid-cols-2
-                  "
-                  >
-                    <SocialField
-                      label="LinkedIn"
-                      icon={<BsLinkedin size={13} />}
-                      value={formData.socialLinks.linkedin}
-                      placeholder="https://linkedin.com/in/..."
-                      onChange={(value) => updateSocial("linkedin", value)}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Controller
+                      name="socialLinks.linkedin"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="LinkedIn URL"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="https://linkedin.com/in/..."
+                        />
+                      )}
                     />
-
-                    <SocialField
-                      label="GitHub"
-                      icon={<BsGithub size={13} />}
-                      value={formData.socialLinks.github}
-                      placeholder="https://github.com/..."
-                      onChange={(value) => updateSocial("github", value)}
+                    <Controller
+                      name="socialLinks.github"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="GitHub URL"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="https://github.com/..."
+                        />
+                      )}
                     />
-
-                    <SocialField
-                      label="Twitter / X"
-                      icon={<BsTwitter size={13} />}
-                      value={formData.socialLinks.twitter}
-                      placeholder="https://twitter.com/..."
-                      onChange={(value) => updateSocial("twitter", value)}
+                    <Controller
+                      name="socialLinks.twitter"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Twitter URL"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="https://twitter.com/..."
+                        />
+                      )}
                     />
-
-                    <SocialField
-                      label="Website"
-                      icon={<Globe2 size={13} />}
-                      value={formData.socialLinks.website}
-                      placeholder="https://example.com"
-                      onChange={(value) => updateSocial("website", value)}
-                    />
-
-                    <SocialField
-                      label="Instagram"
-                      icon={<BsInstagram size={13} />}
-                      value={formData.socialLinks.instagram}
-                      placeholder="https://instagram.com/..."
-                      onChange={(value) => updateSocial("instagram", value)}
-                    />
-
-                    <SocialField
-                      label="YouTube"
-                      icon={<BsYoutube size={13} />}
-                      value={formData.socialLinks.youtube}
-                      placeholder="https://youtube.com/@..."
-                      onChange={(value) => updateSocial("youtube", value)}
-                    />
-
-                    <SocialField
-                      label="Portfolio"
-                      icon={<Globe2 size={13} />}
-                      value={formData.socialLinks.portfolio}
-                      placeholder="https://portfolio..."
-                      onChange={(value) => updateSocial("portfolio", value)}
-                    />
-
-                    <SocialField
-                      label="Medium"
-                      icon={<FileText size={13} />}
-                      value={formData.socialLinks.medium}
-                      placeholder="https://medium.com/@..."
-                      onChange={(value) => updateSocial("medium", value)}
+                    <Controller
+                      name="socialLinks.website"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Personal Website"
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="https://..."
+                        />
+                      )}
                     />
                   </div>
-                </Section>
-
-                {/* =================================================
-                  SKILLS
-              ================================================= */}
-
-                <Section
-                  title="Skills"
-                  description="Add the member's technical skills"
-                  icon={<Sparkles size={17} />}
-                >
-                  <div className="flex gap-2">
-                    <div className="min-w-0 flex-1">
-                      <Input
-                        value={skillInput}
-                        onChange={setSkillInput}
-                        placeholder="Type a skill and press Enter"
-                      />
-                    </div>
-
-                    <Button
-                      type="button"
-                      onClick={addSkill}
-                      className="
-                      !inline-flex
-                      !h-9
-                      !shrink-0
-                      !items-center
-                      !gap-1.5
-                      !bg-green-500
-                      !px-3
-                      !text-black
-                    "
-                    >
-                      <Plus size={13} />
-                      Add
-                    </Button>
-                  </div>
-
-                  {formData.skills.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {formData.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="
-                            inline-flex
-                            items-center
-                            gap-1.5
-                            rounded-lg
-                            border
-                            border-emerald-500/20
-                            bg-emerald-500/10
-                            px-2.5
-                            py-1.5
-                            text-[10px]
-                            text-emerald-400
-                          "
-                        >
-                          {skill}
-
-                          <button
-                            type="button"
-                            onClick={() => removeSkill(skill)}
-                            className="
-                              text-emerald-400/50
-                              transition
-                              hover:text-red-400
-                            "
-                          >
-                            <X size={11} />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </Section>
-
-                {/* =================================================
-                  INTERESTS
-              ================================================= */}
-
-                <Section
-                  title="Areas of Interest"
-                  description="Select the areas that match the member's interests"
-                  icon={<Sparkles size={17} />}
-                >
-                  <div className="flex flex-wrap gap-2">
-                    {interests.map((interest) => {
-                      const selected = formData.areaOfInterest.includes(interest);
-
-                      return (
-                        <button
-                          key={interest}
-                          type="button"
-                          onClick={() => toggleInterest(interest)}
-                          className={`
-                            rounded-lg
-                            border
-                            px-3
-                            py-2
-                            text-[10px]
-                            font-medium
-                            transition
-
-                            ${
-                              selected
-                                ? `
-                                  border-purple-500/30
-                                  bg-purple-500/10
-                                  text-purple-400
-                                `
-                                : `
-                                  border-white/[0.07]
-                                  bg-[#121519]
-                                  text-white/40
-                                  hover:border-white/15
-                                  hover:text-white/70
-                                `
-                            }
-                          `}
-                        >
-                          {interest}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </Section>
-
-                {/* =================================================
-                  INTERNAL NOTES
-              ================================================= */}
-
-                <Section
-                  title="Internal Notes"
-                  description="Private notes visible only to authorized members"
-                  icon={<StickyNote size={17} />}
-                >
-                  <textarea
-                    value={formData.internalNotes}
-                    onChange={(event) => updateField("internalNotes", event.target.value)}
-                    rows={4}
-                    placeholder="Add internal notes..."
-                    className="
-                    w-full
-                    resize-y
-                    rounded-xl
-                    border
-                    border-white/[0.07]
-                    bg-[#202126]
-                    px-3
-                    py-3
-                    text-xs
-                    leading-5
-                    text-zinc-200
-                    outline-none
-                    transition
-
-                    placeholder:text-zinc-600
-
-                    focus:border-emerald-500/50
-                    focus:ring-1
-                    focus:ring-emerald-500/10
-
-                    sm:text-sm
-                  "
-                  />
                 </Section>
               </div>
 
@@ -1055,112 +610,301 @@ const CreateNewMember = () => {
 
               <aside className="min-w-0 space-y-5">
                 {/* =================================================
-                  MEMBERSHIP
+                  SKILLS & INTERESTS
+              ================================================= */}
+                <Section
+                  title="Skills & Interests"
+                  description="Areas of expertise"
+                  icon={<Sparkles size={17} />}
+                >
+                  <div className="space-y-5">
+                    {/* Skills */}
+                    <div>
+                      <Label>Skills</Label>
+                      <div className="mt-1 flex gap-2">
+                        <input
+                          type="text"
+                          value={skillInput}
+                          onChange={(e) => setSkillInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              addSkill();
+                            }
+                          }}
+                          placeholder="e.g., React, Node.js"
+                          className="
+                          h-9
+                          w-full
+                          rounded-md
+                          border
+                          border-white/[0.07]
+                          bg-[#202126]
+                          px-3
+                          text-xs
+                          text-zinc-200
+                          outline-none
+                          transition
+                          focus:border-emerald-500/50
+                          focus:ring-1
+                          focus:ring-emerald-500/10
+                          sm:text-sm
+                        "
+                        />
+                        <button
+                          type="button"
+                          onClick={addSkill}
+                          className="
+                          flex
+                          h-9
+                          w-9
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-md
+                          bg-white/[0.05]
+                          text-white/60
+                          transition
+                          hover:bg-white/10
+                          hover:text-white
+                        "
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
+
+                      {currentValues.skills && currentValues.skills.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {currentValues.skills.map((skill: string) => (
+                            <span
+                              key={skill}
+                              className="
+                              inline-flex
+                              items-center
+                              gap-1.5
+                              rounded-md
+                              border
+                              border-white/10
+                              bg-white/[0.03]
+                              px-2
+                              py-1
+                              text-xs
+                              text-white/70
+                            "
+                            >
+                              {skill}
+                              <button
+                                type="button"
+                                onClick={() => removeSkill(skill)}
+                                className="text-white/40 hover:text-red-400"
+                              >
+                                <X size={12} />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Interests */}
+                    <div>
+                      <Label>Areas of Interest</Label>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {[
+                          "Web Development",
+                          "Cloud Computing",
+                          "Machine Learning",
+                          "Open Source",
+                          "Community Building",
+                        ].map((interest) => {
+                          const isSelected = currentValues.areaOfInterest?.includes(interest);
+                          return (
+                            <button
+                              key={interest}
+                              type="button"
+                              onClick={() => toggleInterest(interest)}
+                              className={`
+                              rounded-md border px-2 py-1 text-xs transition
+                              ${
+                                isSelected
+                                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                                  : "border-white/10 bg-white/[0.03] text-white/50 hover:bg-white/[0.08] hover:text-white"
+                              }
+                            `}
+                            >
+                              {interest}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </Section>
+
+                {/* =================================================
+                  INTERNAL NOTES
+              ================================================= */}
+                <Section
+                  title="Internal Notes"
+                  description="Private notes visible only to authorized members"
+                  icon={<StickyNote size={17} />}
+                >
+                  <Controller
+                    name="internalNotes"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        value={field.value}
+                        onChange={field.onChange}
+                        rows={4}
+                        placeholder="Add internal notes..."
+                        className="
+                        w-full
+                        resize-y
+                        rounded-xl
+                        border
+                        border-white/[0.07]
+                        bg-[#202126]
+                        px-3
+                        py-3
+                        text-xs
+                        leading-5
+                        text-zinc-200
+                        outline-none
+                        transition
+                        placeholder:text-zinc-600
+                        focus:border-emerald-500/50
+                        focus:ring-1
+                        focus:ring-emerald-500/10
+                        sm:text-sm
+                      "
+                      />
+                    )}
+                  />
+                </Section>
+
+                {/* =================================================
+                  STATUS & ROLE
               ================================================= */}
 
                 <Section
-                  title="Membership"
-                  description="Configure membership information"
+                  title="Status & Role"
+                  description="Set the member's position and status"
                   icon={<Users size={17} />}
                 >
                   <div className="space-y-4">
                     <div>
                       <Label>Primary Role</Label>
-
-                      <select
-                        value={formData.primaryRole}
-                        onChange={(event) => updateField("primaryRole", event.target.value)}
-                        className="
-                        h-9
-                        w-full
-                        appearance-none
-                        rounded-md
-                        border
-                        border-white/[0.07]
-                        bg-[#202126]
-                        px-3
-                        text-xs
-                        text-zinc-200
-                        outline-none
-                        transition
-                        focus:border-emerald-500/50
-                        focus:ring-1
-                        focus:ring-emerald-500/10
-                        sm:text-sm
-                      "
-                      >
-                        {roles.map((role) => (
-                          <option key={role} value={role}>
-                            {role}
-                          </option>
-                        ))}
-                      </select>
+                      <Controller
+                        name="primaryRole"
+                        control={control}
+                        render={({ field }) => (
+                          <select
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="
+                            h-9
+                            w-full
+                            appearance-none
+                            rounded-md
+                            border
+                            border-white/[0.07]
+                            bg-[#202126]
+                            px-3
+                            text-xs
+                            text-zinc-200
+                            outline-none
+                            transition
+                            focus:border-emerald-500/50
+                            focus:ring-1
+                            focus:ring-emerald-500/10
+                            sm:text-sm
+                          "
+                          >
+                            {roles.map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      />
                     </div>
 
                     <div>
                       <Label>Membership Status</Label>
-
-                      <select
-                        value={formData.membershipStatus}
-                        onChange={(event) => updateField("membershipStatus", event.target.value)}
-                        className="
-                        h-9
-                        w-full
-                        appearance-none
-                        rounded-md
-                        border
-                        border-white/[0.07]
-                        bg-[#202126]
-                        px-3
-                        text-xs
-                        text-zinc-200
-                        outline-none
-                        transition
-                        focus:border-emerald-500/50
-                        focus:ring-1
-                        focus:ring-emerald-500/10
-                        sm:text-sm
-                      "
-                      >
-                        {membershipStatuses.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
+                      <Controller
+                        name="membershipStatus"
+                        control={control}
+                        render={({ field }) => (
+                          <select
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="
+                            h-9
+                            w-full
+                            appearance-none
+                            rounded-md
+                            border
+                            border-white/[0.07]
+                            bg-[#202126]
+                            px-3
+                            text-xs
+                            text-zinc-200
+                            outline-none
+                            transition
+                            focus:border-emerald-500/50
+                            focus:ring-1
+                            focus:ring-emerald-500/10
+                            sm:text-sm
+                          "
+                          >
+                            {membershipStatuses.map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      />
                     </div>
 
                     <div>
                       <Label>Onboarding Source</Label>
-
-                      <select
-                        value={formData.onboardingSource}
-                        onChange={(event) => updateField("onboardingSource", event.target.value)}
-                        className="
-                        h-9
-                        w-full
-                        appearance-none
-                        rounded-md
-                        border
-                        border-white/[0.07]
-                        bg-[#202126]
-                        px-3
-                        text-xs
-                        text-zinc-200
-                        outline-none
-                        transition
-                        focus:border-emerald-500/50
-                        focus:ring-1
-                        focus:ring-emerald-500/10
-                        sm:text-sm
-                      "
-                      >
-                        {onboardingSources.map((source) => (
-                          <option key={source} value={source}>
-                            {source}
-                          </option>
-                        ))}
-                      </select>
+                      <Controller
+                        name="onboardingSource"
+                        control={control}
+                        render={({ field }) => (
+                          <select
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="
+                            h-9
+                            w-full
+                            appearance-none
+                            rounded-md
+                            border
+                            border-white/[0.07]
+                            bg-[#202126]
+                            px-3
+                            text-xs
+                            text-zinc-200
+                            outline-none
+                            transition
+                            focus:border-emerald-500/50
+                            focus:ring-1
+                            focus:ring-emerald-500/10
+                            sm:text-sm
+                          "
+                          >
+                            {onboardingSources.map((source) => (
+                              <option key={source} value={source}>
+                                {source}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      />
                     </div>
                   </div>
                 </Section>
@@ -1168,7 +912,6 @@ const CreateNewMember = () => {
                 {/* =================================================
                   PREVIEW
               ================================================= */}
-
                 <Section
                   title="Member Preview"
                   description="Preview of the profile information"
@@ -1187,9 +930,9 @@ const CreateNewMember = () => {
                       bg-[#121519]
                     "
                     >
-                      {formData.imageUrl ? (
+                      {currentValues.imageUrl ? (
                         <img
-                          src={formData.imageUrl}
+                          src={currentValues.imageUrl}
                           alt="Preview"
                           className="
                           h-full
@@ -1211,18 +954,15 @@ const CreateNewMember = () => {
                         </div>
                       )}
                     </div>
-
                     <div className="min-w-0">
                       <h3 className="truncate text-sm font-semibold text-white/80">
-                        {formData.firstName || "First"} {formData.lastName || "Last"}
+                        {currentValues.firstName || "First"} {currentValues.lastName || "Last"}
                       </h3>
-
                       <p className="mt-1 truncate text-[10px] text-white/35">
-                        {formData.email || "email@example.com"}
+                        {currentValues.email || "email@example.com"}
                       </p>
-
                       <div className="mt-2">
-                        <Badge variant="green">{formData.membershipStatus}</Badge>
+                        <Badge variant="green">{currentValues.membershipStatus}</Badge>
                       </div>
                     </div>
                   </div>
@@ -1236,11 +976,10 @@ const CreateNewMember = () => {
                   "
                   >
                     <div className="mb-2 text-[10px] text-white/35">Primary Role</div>
-
-                    <Badge variant="purple">{formData.primaryRole}</Badge>
+                    <Badge variant="purple">{currentValues.primaryRole}</Badge>
                   </div>
 
-                  {formData.areaOfInterest.length > 0 && (
+                  {currentValues.areaOfInterest && currentValues.areaOfInterest.length > 0 && (
                     <div
                       className="
                       mt-4
@@ -1250,9 +989,8 @@ const CreateNewMember = () => {
                     "
                     >
                       <div className="mb-2 text-[10px] text-white/35">Interests</div>
-
                       <div className="flex flex-wrap gap-1.5">
-                        {formData.areaOfInterest.map((interest) => (
+                        {currentValues.areaOfInterest.map((interest: string) => (
                           <Badge key={interest} variant="purple">
                             {interest}
                           </Badge>
@@ -1265,7 +1003,6 @@ const CreateNewMember = () => {
                 {/* =================================================
                   ACTIONS
               ================================================= */}
-
                 <Section
                   title="Actions"
                   description="Create or reset this member form"
@@ -1274,7 +1011,7 @@ const CreateNewMember = () => {
                   <div className="space-y-2">
                     <Button
                       type="submit"
-                      disabled={createMemberMutation.isPending}
+                      disabled={createMemberMutation.isPending || isSubmitting}
                       className="
                       !flex
                       !w-full
@@ -1287,7 +1024,7 @@ const CreateNewMember = () => {
                     "
                     >
                       <Save size={14} />
-                      {createMemberMutation.isPending ? "Creating..." : "Create Member"}
+                      {createMemberMutation.isPending || isSubmitting ? "Creating..." : "Create Member"}
                     </Button>
 
                     <Button

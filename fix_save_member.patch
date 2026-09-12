@@ -1,0 +1,81 @@
+--- src/features/Member/v1/Pages/MemberDetails.tsx
++++ src/features/Member/v1/Pages/MemberDetails.tsx
+@@ -19,6 +19,7 @@
+ import { Button } from "../../../../Components/Button";
+ import useFetchMemberProfile from "../hook/useFetchMemberProfile";
+ import useMembers from "../store/useMembers";
++import useUpdateMemberMutation from "../hook/useUpdateMemberMutation";
+ import TagEditor from "../Components/TagEditor";
+ 
+ import MemberProfile from "../section/MemberProfile";
+@@ -57,6 +58,7 @@
+   const targetSlug = id ? String(id) : storeSingleMember?.Slug || "abhishek-gupta";
+   const { isLoading: isPending } = useFetchMemberProfile(targetSlug);
+   useMemberPermissionsQuery(id);
++  const updateMemberMutation = useUpdateMemberMutation();
+   const assignPermissionsMutation = useAssignPermissionsMutation();
+ 
+   // Resolve active member from store, API, or fallback list
+@@ -199,28 +201,36 @@
+   const saveMember = () => {
+     if (!formData || !activeMember) return;
+     setIsSaving(true);
+ 
+-    // Commit local form state cleanly to the Zustand store once
+-    updateMember(activeMember._id, formData);
+-
+-    // Persist permissions via API if adjusted
+-    if (updatedPermissions && activeMember._id) {
+-      assignPermissionsMutation.mutate({
+-        memberId: activeMember._id,
+-        permission: updatedPermissions.map((p) => ({
+-          name: p.name,
+-          action: p.action || "read",
+-          resource: p.resource || "general",
+-          description: p.description,
+-          level: (p as any).level || 1,
+-        })),
+-      });
+-    }
+-
+-    setTimeout(() => {
+-      setIsSaving(false);
+-      setIsEdit(false);
+-      setIsEditSingleMember(false);
+-      setSaveSuccessNotice(true);
+-      setTimeout(() => setSaveSuccessNotice(false), 2000);
+-    }, 800);
++    updateMemberMutation.mutate(
++      { memberId: activeMember._id, data: formData },
++      {
++        onSuccess: () => {
++          // Commit local form state cleanly to the Zustand store once
++          updateMember(activeMember._id, formData);
++
++          // Persist permissions via API if adjusted
++          if (updatedPermissions && activeMember._id) {
++            assignPermissionsMutation.mutate({
++              memberId: activeMember._id,
++              permission: updatedPermissions.map((p) => ({
++                name: p.name,
++                action: p.action || "read",
++                resource: p.resource || "general",
++                description: p.description,
++                level: (p as any).level || 1,
++              })),
++            });
++          }
++
++          setIsSaving(false);
++          setIsEdit(false);
++          setIsEditSingleMember(false);
++          setSaveSuccessNotice(true);
++          setTimeout(() => setSaveSuccessNotice(false), 2000);
++        },
++        onError: () => {
++          setIsSaving(false);
++          Swal.fire("Error", "Failed to update member profile.", "error");
++        }
++      }
++    );
+   };

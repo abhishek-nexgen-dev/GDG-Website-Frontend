@@ -1,30 +1,27 @@
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import api from "../../../../utils/axios.utils";
 import useMembers from "../store/useMembers";
+import type { MemberType } from "../type/MemberDetails.type";
 
-type FetchVars = { Slug: string };
-type MemberResponse = any;
-
-const useFetchMemberProfile = () => {
-  return useMutation<MemberResponse, Error, FetchVars>({
-    mutationFn: async ({ Slug }) => {
+export const useFetchMemberProfile = (Slug: string) => {
+  return useQuery<MemberType | null, Error>({
+    queryKey: ["memberProfile", Slug],
+    queryFn: async () => {
+      if (!Slug || Slug === "me") return null;
       try {
         const response = await api.get(`/api/v1/find/memberBySlug/${Slug}`);
-        return response.data;
+        const data = response.data?.data;
+        if (data) {
+          useMembers.getState().setSingleMember(data);
+        }
+        return data || null;
       } catch {
-        // Safe fallback if backend is offline
         console.warn("[GDG Ranchi] Member profile API offline, utilizing state fallback.");
         return null;
       }
     },
-    onSuccess: (data) => {
-      if (data?.data) {
-        useMembers.getState().setSingleMember(data.data);
-      }
-    },
-    onError: (error) => {
-      console.warn("Member fetch notice:", error);
-    },
+    enabled: !!Slug && Slug !== "me",
+    staleTime: 5 * 60 * 1000,
   });
 };
 

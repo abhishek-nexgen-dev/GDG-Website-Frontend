@@ -1,0 +1,26 @@
+--- src/layout/constant/sideBarConstant.tsx
++++ src/layout/constant/sideBarConstant.tsx
+@@ -1,8 +1,7 @@
+-import { LayoutDashboard, Calendar, Images, Image, Users, Mail } from "lucide-react";
++import { LayoutDashboard, Calendar, Images, Image, Users } from "lucide-react";
+ import {
+   Event_Permissions,
+   Gallery_Permissions,
+   Member_Permissions,
+-  Email_Permissions,
+ } from "../../features/Permission/constant/Permission.constant";
+ 
+@@ -64,12 +63,6 @@
+       { label: "Add Member", link: "/member/create", permissionName: Member_Permissions.CREATE_MEMBER, permissionAction: "create" },
+     ],
+   },
+-  {
+-    label: "Emails",
+-    link: "/member/emails/send",
+-    icon: Mail,
+-    permissionName: Email_Permissions.SEND_EMAIL,
+-    permissionAction: "create",
+-  },
+ ];
+ 
+ export default sideBarConstant;

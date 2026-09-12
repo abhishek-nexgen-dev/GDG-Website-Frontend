@@ -1,0 +1,18 @@
+--- src/features/Member/v1/Pages/CreateNewMember.tsx
++++ src/features/Member/v1/Pages/CreateNewMember.tsx
+@@ -71,13 +71,9 @@
+   const currentValues = watch();
+ 
+   useEffect(() => {
+-    // Only save to draft if it's not empty/initial (prevents infinite loop on mount)
+-    // Actually, simply subscribing to changes and saving to draft is fine.
+-    const subscription = watch((value) => {
+-      setDraft(value as CreateMemberData);
+-    });
+-    return () => subscription.unsubscribe();
+-  }, [watch, setDraft]);
++    // Auto-save to draft
++    setDraft(currentValues);
++  }, [currentValues, setDraft]);
+ 
+   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

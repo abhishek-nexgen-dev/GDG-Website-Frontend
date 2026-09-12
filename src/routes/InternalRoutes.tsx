@@ -9,7 +9,6 @@ import ManageAlbumsPage from "../features/Album/Pages/ManageAlbumsPage";
 import CreateAlbumPage from "../features/Album/Pages/CreateAlbumPage";
 import ManageImagesPage from "../features/Image/Pages/ManageImagesPage";
 import UploadImagesPage from "../features/Image/Pages/UploadImagesPage";
-import SendBulkEmailPage from "../features/Email/Pages/SendEmailPage";
 import MemberDetails from "../features/Member/v1/Pages/MemberDetails";
 import Settings from "../features/Settings/Settings";
 import MemberViewEvent from "../features/Event/Pages/MemberViewEvent";
@@ -41,7 +40,6 @@ const InternalRoutes = () => {
         <Route path="images/manage" element={<ManageImagesPage />} />
         <Route path="images/upload" element={<UploadImagesPage />} />
         <Route path="image" element={<ManageImagesPage />} />
-        <Route path="emails/send" element={<SendBulkEmailPage />} />
         <Route path="Settings" element={<Settings />} />
         <Route path="settings" element={<Settings />} />
       </Route>
