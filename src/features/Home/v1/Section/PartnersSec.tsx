@@ -113,7 +113,7 @@ const PartnersSec = () => {
   return (
     <section
       ref={containerRef}
-      className="group relative overflow-hidden bg-[#050505] py-28"
+      className="group relative overflow-hidden py-28"
       onMouseMove={handleMouseMove}
     >
       {/* Interactive Global Spotlight */}

@@ -35,7 +35,7 @@ const EventCard = () => {
               {eventData.category}
             </span>
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/70 backdrop-blur-md transition-all duration-300 group-hover:bg-white group-hover:text-black">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/70 backdrop-blur-md transition-all duration-300 group-hover:bg-primary group-hover:text-white">
               <ArrowUpRight
                 size={17}
                 strokeWidth={1.8}

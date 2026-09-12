@@ -113,7 +113,7 @@ const EVENT_BANNER = ({ event }: EventBannerProps) => {
           <div className="mt-6 sm:mt-9 flex flex-col sm:flex-wrap gap-2 sm:gap-3">
             <button
               type="button"
-              className="group inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl bg-white px-4 sm:px-6 py-2.5 sm:py-3.5 text-xs sm:text-sm font-semibold text-black shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 active:translate-y-0"
+              className="group inline-flex items-center justify-center gap-2 sm:gap-2.5 rounded-xl bg-primary px-4 sm:px-6 py-2.5 sm:py-3.5 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 active:translate-y-0 hover:opacity-90"
             >
               Register Now
               <ArrowRight

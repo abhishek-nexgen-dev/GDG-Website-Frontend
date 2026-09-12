@@ -1,73 +1,141 @@
-import { BsCalendarEventFill } from "react-icons/bs";
-import { Sparkles, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Camera, Users, Heart, Star, UploadCloud } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const GalleryHero = () => {
   return (
-    <section className="relative pt-28 sm:pt-36 pb-12 flex flex-col items-center justify-between gap-12 px-4 sm:px-8 md:flex-row md:px-12 lg:px-[8%] xl:px-[10%]">
-      {/* Left Content */}
-      <div className="relative z-10 max-w-3xl">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs sm:text-sm font-semibold tracking-wider text-gray-300 backdrop-blur">
-          <Sparkles size={14} className="text-[#FBBC04]" />
-          COMMUNITY MEMORIES & GALLERY
-        </span>
+    <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pt-28 lg:pt-36 pb-16 lg:pb-24">
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        
+        {/* Left Content */}
+        <div className="relative z-10 max-w-2xl">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase mb-6">
+            Event Gallery
+          </p>
 
-        <h1 className="mt-6 text-4xl font-extrabold tracking-tight leading-tight sm:text-5xl lg:text-6xl text-white">
-          Every Picture Tells
-          <br />
-          <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#34A853] bg-clip-text text-transparent">
-            a Story of Innovation
-          </span>
-        </h1>
+          <h1 className="text-5xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl mb-6">
+            Moments<br />
+            That Build<br />
+            <span className="text-primary">
+              Community
+            </span>
+          </h1>
 
-        {/* Gradient Line */}
-        <div className="mt-6 h-1 w-48 rounded-full bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#34A853]" />
+          <p className="text-lg text-zinc-400 mb-10 max-w-lg leading-relaxed">
+            Photos, memories and stories from our events, workshops, and community meetups at GDG Ranchi.
+          </p>
 
-        <p className="mt-6 sm:mt-8 text-base leading-relaxed text-gray-300 sm:text-lg">
-          Every event tells a story of learning, collaboration, and innovation. Explore highlights
-          from our workshops, hackathons, tech talks, and community meetups where ideas became
-          projects, strangers became teammates, and every moment inspired the next generation of
-          developers.
-        </p>
-
-        {/* Stats row */}
-        <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-6">
-          <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-[#0e0e12] px-5 py-4 shadow-xl">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#4285F4]/15 text-[#4285F4]">
-              <ImageIcon size={24} />
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">1,200+</p>
-              <p className="text-xs sm:text-sm font-medium text-gray-400">Captured Photos</p>
-            </div>
+          <div className="flex flex-wrap items-center gap-4 mb-16">
+            <Link 
+              to="/events" 
+              className="group flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-105"
+            >
+              Explore Events 
+              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+            <button className="group flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-3.5 text-sm font-bold text-white transition-all hover:bg-white/10 hover:border-white/40">
+              <UploadCloud size={18} className="text-zinc-400 transition-colors group-hover:text-white" />
+              Contribute Photos
+            </button>
           </div>
 
-          <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-[#0e0e12] px-5 py-4 shadow-xl">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#34A853]/15 text-[#34A853]">
-              <BsCalendarEventFill size={22} />
+          {/* Stats Row */}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-6 border-t border-white/10 pt-8">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#4285F4]/10">
+                <Camera className="text-[#4285F4]" size={20} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white leading-none">2K+</p>
+                <p className="text-xs text-zinc-500 mt-1">Photos</p>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-black text-white">10+</p>
-              <p className="text-xs sm:text-sm font-medium text-gray-400">Events Covered</p>
+            
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#34A853]/10">
+                <Users className="text-[#34A853]" size={20} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white leading-none">25+</p>
+                <p className="text-xs text-zinc-500 mt-1">Events Covered</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#EA4335]/10">
+                <Heart className="text-[#EA4335]" size={20} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white leading-none">500+</p>
+                <p className="text-xs text-zinc-500 mt-1">Community Members</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#a142f4]/10">
+                <Star className="text-[#a142f4]" size={20} />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white leading-none">∞</p>
+                <p className="text-xs text-zinc-500 mt-1">Memories</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Right Visual */}
-      <div className="relative z-10 flex items-center justify-center shrink-0">
-        {/* Glow Behind Image */}
-        <div className="absolute h-72 w-72 sm:h-80 sm:w-80 rounded-full bg-gradient-to-r from-[#EA4335]/25 via-[#FBBC04]/20 to-[#34A853]/25 blur-[90px]" />
+        {/* Right Content - 3D Collage */}
+        <div className="hidden lg:block relative h-[600px] w-full perspective-1000 mt-10">
+          
+          {/* Top Image */}
+          <div className="absolute top-[2%] right-[10%] w-[280px] h-[180px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl rotate-[8deg] z-10 opacity-90 hover:opacity-100 hover:scale-105 hover:z-50 transition-all duration-500">
+             <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Gallery" className="w-full h-full object-cover" />
+          </div>
 
-        {/* Decorative Circles */}
-        <div className="absolute -left-4 top-8 h-4 w-4 rounded-full bg-[#EA4335]" />
-        <div className="absolute -right-2 top-16 h-3 w-3 rounded-full bg-[#FBBC04]" />
-        <div className="absolute bottom-8 -left-4 h-5 w-5 rounded-full bg-[#34A853]" />
+          {/* Middle Image (Main) */}
+          <div className="absolute top-[32%] left-[10%] w-[380px] h-[240px] rounded-2xl overflow-hidden border border-white/20 shadow-2xl -rotate-[3deg] z-20 hover:scale-105 hover:z-50 transition-all duration-500">
+            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80" alt="Gallery" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
+            <div className="absolute bottom-4 left-4">
+              <h3 className="text-white font-bold text-lg leading-tight">Google Developer Group</h3>
+              <p className="text-zinc-300 text-sm">Ranchi</p>
+            </div>
+          </div>
 
-        <img
-          src="/solar_gallery-bold.png"
-          alt="Gallery Visual"
-          className="relative z-10 w-[260px] sm:w-[320px] lg:w-[380px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-500 hover:scale-105"
-        />
+          {/* Bottom Left Image */}
+          <div className="absolute bottom-[2%] left-[2%] w-[240px] h-[160px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl rotate-[12deg] z-30 opacity-90 hover:opacity-100 hover:scale-105 hover:z-50 transition-all duration-500">
+             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="Gallery" className="w-full h-full object-cover" />
+          </div>
+
+          {/* Bottom Right Image */}
+          <div className="absolute bottom-[8%] right-[5%] w-[320px] h-[200px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl -rotate-[6deg] z-30 opacity-90 hover:opacity-100 hover:scale-105 hover:z-50 transition-all duration-500">
+             <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=800&q=80" alt="Gallery" className="w-full h-full object-cover" />
+          </div>
+
+          {/* Floating Text Accents */}
+          
+          {/* People Ideas Progress */}
+          <div className="absolute top-[8%] left-[25%] z-40 rotate-[15deg]">
+            <p className="font-caveat text-3xl font-medium text-white drop-shadow-md leading-tight">
+              People<br/>Ideas<br/>Progress
+            </p>
+          </div>
+
+          {/* Build Learn Belong */}
+          <div className="absolute bottom-[18%] left-[10%] z-40 rotate-[-12deg]">
+            <p className="font-caveat text-4xl font-bold text-[#34A853] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">
+              Build<br/>Learn<br/>Belong
+            </p>
+          </div>
+
+          {/* A Stronger Developer Community */}
+          <div className="absolute bottom-[35%] right-[2%] z-40 rotate-[-5deg]">
+            <p className="font-caveat text-[26px] font-bold text-[#4285F4] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">
+              A Stronger<br/>Developer<br/>Community
+            </p>
+          </div>
+
+          {/* Glow effects */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#4285F4]/20 blur-[100px] rounded-full z-0 pointer-events-none" />
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -34,24 +33,24 @@ const OrganizersSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden bg-[#000000] py-20 sm:py-24 text-white selection:bg-[#EA4335]/30"
+      className="relative overflow-hidden py-24 text-white selection:bg-[#EA4335]/30"
     >
-      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
         {/* Section Header */}
-        <div className="org-header mb-12 sm:mb-20 flex flex-col items-center text-center">
+        <div className="org-header mb-20 flex flex-col items-center text-center">
           {/* Badge */}
           <div className="flex justify-center">
-            <span className="rounded-full border border-white/10 bg-white/5 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
+            <span className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur">
               ✦ MEET THE TEAM
             </span>
           </div>
 
           {/* Heading */}
-          <h2 className="mt-6 sm:mt-8 text-center text-4xl sm:text-5xl lg:text-7xl font-black leading-none text-white">
+          <h2 className="mt-8 text-center text-5xl font-black leading-none text-white sm:text-6xl lg:text-7xl">
             Our <span className="text-[#1a73e8]">Organizers</span>
           </h2>
 
-          <p className="mx-auto mt-6 sm:mt-8 max-w-3xl text-center text-base sm:text-lg leading-8 sm:leading-9 text-gray-400">
+          <p className="mx-auto mt-8 max-w-3xl text-center text-lg leading-9 text-gray-400">
             The passionate team working behind the scenes to bring the GDG community together.
           </p>
         </div>
@@ -59,10 +58,10 @@ const OrganizersSec = () => {
         {/* Bento Grid */}
         <div className="org-grid grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6">
           {/* 1. Alice (Lead) */}
-          <div className="org-bento-item p-[1px] rounded-[1.5rem] bg-gradient-to-br from-[#EA4335]/60 via-transparent to-transparent md:col-span-2 lg:col-span-3 relative group shadow-2xl">
+          <div className="org-bento-item p-[1px] rounded-[1.5rem] md:col-span-2 lg:col-span-3 relative group shadow-2xl bg-white/5">
             <div className="relative overflow-hidden rounded-[1.5rem] bg-[#0A0A0C] h-[380px] w-full">
               {/* Background Glow */}
-              <div className="absolute top-0 left-0 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#EA4335]/15 blur-[100px]" />
+
 
               {/* Big Outline Text */}
               <div
@@ -237,7 +236,7 @@ const OrganizersSec = () => {
           </div>
 
           {/* 5. Evan (Design Lead) */}
-          <div className="org-bento-item p-[1px] rounded-[1.5rem] bg-gradient-to-t from-[#EA4335]/40 to-transparent md:col-span-2 lg:col-span-2 relative group shadow-2xl">
+          <div className="org-bento-item p-[1px] rounded-[1.5rem] md:col-span-2 lg:col-span-2 relative group shadow-2xl bg-white/5">
             <div className="relative overflow-hidden rounded-[1.5rem] bg-[#0A0A0C] h-[400px] w-full">
               {/* Top Left Icon */}
               <div className="absolute top-6 left-6 z-20">
@@ -306,17 +305,6 @@ const OrganizersSec = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* View All Team Link */}
-        <div className="mt-12 flex justify-center">
-          <Link
-            to="/teams"
-            className="inline-flex items-center gap-2.5 rounded-2xl border border-[#4285F4]/40 bg-[#4285F4]/15 px-8 py-3.5 text-sm font-bold text-[#8AB4F8] shadow-[0_0_25px_rgba(66,133,244,0.2)] transition-all hover:bg-[#4285F4] hover:text-white hover:shadow-[0_0_35px_rgba(66,133,244,0.5)]"
-          >
-            <span>Meet All Team Members & Leads</span>
-            <Users size={16} />
-          </Link>
         </div>
       </div>
     </section>

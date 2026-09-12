@@ -3,6 +3,7 @@ import PublicLayout from "../layout/PublicLayout";
 import HomePage from "../features/Home/v1/HomePage";
 import GalleryPage from "../features/Image/Pages/GalleryPage";
 import ImagePage from "../features/Image/Pages/ImagePage";
+import NewGalleryPage from "../features/Image/Pages/NewG/NewGalleryPage";
 import ViewAllTeamPage from "../features/Member/v1/Pages/ViewAllTeamPage";
 import LoginPage from "../features/Auth/v1/Page/LoginPage";
 import ForgotPasswordOtp from "../features/Auth/v1/Page/ForgotPasswordOtp";
@@ -31,6 +32,7 @@ const PublicRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot" element={<ForgotPasswordOtp />} />
       </Route>
+      <Route path="/newg" element={<NewGalleryPage />} />
       <Route path="/maintenance" element={<MaintenancePage />} />
       <Route path="/launching-soon" element={<LaunchingSoon />} />
       <Route path="/coming-soon" element={<ComingSoon />} />

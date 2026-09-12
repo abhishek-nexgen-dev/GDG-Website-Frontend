@@ -80,29 +80,29 @@ const AboutUsSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-[#050505] py-24 sm:py-32"
+      className="relative w-full py-24 lg:py-32"
     >
       {/* Background Glow */}
-      <div className="absolute left-0 top-0 h-[300px] w-[300px] sm:h-[600px] sm:w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
-      <div className="absolute bottom-0 right-0 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] translate-x-1/3 translate-y-1/3 rounded-full bg-[#EA4335]/10 blur-[120px]" />
+      <div className="absolute left-0 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24 lg:items-center">
           {/* Text Content */}
           <div className="flex flex-col justify-center">
             <div className="about-fade-in mb-6 flex items-center gap-3">
               <div className="flex gap-1.5">
-                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#EA4335]" />
-                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FBBC04]" />
-                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#34A853]" />
-                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#4285F4]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#EA4335]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#FBBC04]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#34A853]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#4285F4]" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-white/50">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-white/50">
                 About Us
               </span>
             </div>
 
-            <h2 className="about-fade-in mb-6 sm:mb-8 text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-white">
+            <h2 className="about-fade-in mb-8 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
               Building the next <br />
               <span className="text-primary">
                 generation of <br className="hidden sm:block" />
@@ -110,7 +110,7 @@ const AboutUsSec = () => {
               </span>
             </h2>
 
-            <div className="about-fade-in space-y-4 sm:space-y-6 text-base sm:text-lg leading-relaxed text-gray-400">
+            <div className="about-fade-in space-y-6 text-base leading-relaxed text-gray-400 sm:text-lg">
               <p>
                 GDG Ranchi is a vibrant developer community that brings together students,
                 professionals, and technology enthusiasts who are passionate about learning,
@@ -124,8 +124,8 @@ const AboutUsSec = () => {
               </p>
             </div>
 
-            <div className="about-fade-in mt-8 sm:mt-10">
-              <button className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm sm:text-base font-semibold text-white transition-all hover:bg-white/10">
+            <div className="about-fade-in mt-10">
+              <button className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-semibold text-white transition-all hover:bg-white/10">
                 <span>Read our full story</span>
                 <svg
                   className="transition-transform group-hover:translate-x-1"
@@ -147,9 +147,9 @@ const AboutUsSec = () => {
           </div>
 
           {/* Visual Composition */}
-          <div className="relative mt-8 sm:mt-12 lg:mt-0 h-[300px] sm:h-[450px] lg:h-[600px] flex items-center justify-center">
+          <div className="relative mt-10 lg:mt-0 lg:h-[600px] flex items-center justify-center">
             {/* Main Image */}
-            <div className="about-image-1 relative z-10 w-[85%] sm:w-4/5 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl lg:absolute lg:right-10 lg:top-10">
+            <div className="about-image-1 relative z-10 w-4/5 overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl lg:absolute lg:right-10 lg:top-10">
               <img
                 src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format"
                 alt="Audience at a tech event"
@@ -159,7 +159,7 @@ const AboutUsSec = () => {
             </div>
 
             {/* Overlapping Image */}
-            <div className="about-image-2 absolute -bottom-6 sm:-bottom-10 -left-2 sm:-left-4 z-20 w-3/5 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-[4px] sm:border-[6px] border-[#050505] shadow-2xl lg:-bottom-10 lg:-left-10">
+            <div className="about-image-2 absolute -bottom-10 -left-4 z-20 w-3/5 overflow-hidden rounded-[2rem] border-[6px] border-[#050505] shadow-2xl lg:-bottom-10 lg:-left-10">
               <img
                 src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format"
                 alt="Developers collaborating"

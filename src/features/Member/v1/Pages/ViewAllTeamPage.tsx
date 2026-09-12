@@ -1,54 +1,26 @@
-import { useState } from "react";
 import ViewAllTeamPageHeader from "../Components/ViewAllTeamPageHeader";
+import { CoreTeamTree } from "../section/CoreTeamTree";
+import { TeamLeadsGrid } from "../section/TeamLeadsGrid";
 import { AllTeam } from "../section/AllTeam";
-import { usePublicTeam } from "../hook/usePublicTeam";
+import { TeamCTA } from "../section/TeamCTA";
 
 const ViewAllTeamPage = () => {
-  const { members } = usePublicTeam();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("all");
-  };
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* Background Blur Effects */}
-      <div className="pointer-events-none absolute left-0 top-0 h-[450px] w-[450px] rounded-full bg-blue-600/10 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-purple-600/10 blur-[140px]" />
-
-      {/* Grid Background */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, white 1px, transparent 1px),
-              linear-gradient(to bottom, white 1px, transparent 1px)
-            `,
-            backgroundSize: "80px 80px",
-          }}
-        />
+    <div className="relative min-h-screen overflow-x-hidden text-white selection:bg-blue-500/30">
+      {/* Dynamic Background */}
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-40">
+        <div className="absolute left-[-10%] top-[-10%] h-[40vw] w-[40vw] rounded-full bg-blue-900/20 blur-[150px]" />
+        <div className="absolute right-[-10%] top-[40%] h-[30vw] w-[30vw] rounded-full bg-purple-900/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[20%] h-[35vw] w-[35vw] rounded-full bg-green-900/10 blur-[150px]" />
       </div>
 
-      {/* Header */}
-      <ViewAllTeamPageHeader
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        totalMembersCount={members.length}
-      />
-
-      {/* Team Section */}
-      <AllTeam
-        members={members}
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
-        onResetFilters={handleResetFilters}
-      />
+      {/* Main Content */}
+      <ViewAllTeamPageHeader />
+      <CoreTeamTree />
+      <TeamLeadsGrid />
+      <AllTeam />
+      <TeamCTA />
+      
     </div>
   );
 };

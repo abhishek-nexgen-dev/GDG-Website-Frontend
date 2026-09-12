@@ -42,7 +42,7 @@ export const useFetchGalleryBySlugQuery = (slug?: string) => {
         }
         return data || null;
       } catch (err) {
-        console.warn(`Could not fetch gallery for slug ${slug}, returning null:`, err);
+        console.warn("Could not fetch gallery for slug, returning null:", { slug }, err);
         return null;
       }
     },

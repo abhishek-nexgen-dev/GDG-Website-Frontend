@@ -96,7 +96,7 @@ const DashboardPage = () => {
 
         <button
           type="button"
-          className="group flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-white/90"
+          className="group flex w-fit items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
         >
           <Plus size={16} />
           Create Event
