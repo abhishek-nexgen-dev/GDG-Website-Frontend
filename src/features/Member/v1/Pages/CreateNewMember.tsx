@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -15,6 +15,8 @@ import {
   UserRound,
   Users,
   X,
+  Upload,
+  Loader2,
 } from "lucide-react";
 
 import Section from "../../../../Components/Section";
@@ -26,6 +28,7 @@ import { BsGithub, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-i
 import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 import PermissionDenied from "../../../Permission/Components/PermissionDenied";
 import useCreateMemberMutation from "../hook/useCreateMemberMutation";
+import uploadImage from "../../../../utils/uploadImage";
 
 // ============================================================
 // TYPES
@@ -195,8 +198,32 @@ const CreateNewMember = () => {
   const navigate = useNavigate();
   const createMemberMutation = useCreateMemberMutation();
   const [formData, setFormData] = useState<CreateMemberData>(initialMember);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [skillInput, setSkillInput] = useState("");
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingImage(true);
+      const res = await uploadImage(file);
+      updateField("imageUrl", res.secure_url);
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Upload Failed",
+        text: "Could not upload the image. Please try again or use a manual URL.",
+        icon: "error",
+        background: "#111116",
+        color: "#ffffff",
+      });
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
 
   // ==========================================================
   // BASIC FIELD UPDATE
@@ -667,13 +694,62 @@ const CreateNewMember = () => {
                       </div>
                     </div>
 
-                    <Input
-                      label="Image URL"
-                      type="url"
-                      value={formData.imageUrl}
-                      onChange={(value) => updateField("imageUrl", value)}
-                      placeholder="https://example.com/avatar.jpg"
-                    />
+                    <div className="flex flex-col gap-3 w-full">
+                      <Input
+                        label="Image URL"
+                        type="url"
+                        value={formData.imageUrl}
+                        onChange={(value) => updateField("imageUrl", value)}
+                        placeholder="https://example.com/avatar.jpg"
+                      />
+                      
+                      <div className="flex items-center gap-4">
+                        <div className="h-[1px] flex-1 bg-white/10" />
+                        <span className="text-xs font-medium text-white/40 uppercase tracking-widest">or</span>
+                        <div className="h-[1px] flex-1 bg-white/10" />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          ref={fileInputRef}
+                          onChange={handleImageUpload}
+                        />
+                        <button
+                          type="button"
+                          disabled={isUploadingImage}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="
+                            flex
+                            w-full
+                            items-center
+                            justify-center
+                            gap-2
+                            rounded-lg
+                            border
+                            border-white/10
+                            bg-white/[0.03]
+                            px-4
+                            py-2.5
+                            text-sm
+                            font-medium
+                            text-white/80
+                            transition
+                            hover:bg-white/[0.08]
+                            disabled:opacity-50
+                          "
+                        >
+                          {isUploadingImage ? (
+                            <Loader2 size={16} className="animate-spin text-emerald-400" />
+                          ) : (
+                            <Upload size={16} className="text-white/60" />
+                          )}
+                          {isUploadingImage ? "Uploading..." : "Upload Image"}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </Section>
 
