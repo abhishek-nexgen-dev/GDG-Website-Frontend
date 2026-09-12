@@ -3,9 +3,29 @@ import { useEffect, useRef, useState } from "react";
 import { BsInstagram, BsLinkedin } from "react-icons/bs";
 import gsap from "gsap";
 
-const LaunchingSoon = () => {
-  const launchDate = new Date("2026-09-14T00:00:00").getTime();
+const launchDate = new Date("2026-09-14T00:00:00").getTime();
 
+const calculateTimeLeft = () => {
+  const difference = launchDate - Date.now();
+
+  if (difference <= 0) {
+    return {
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    };
+  }
+
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / (1000 * 60)) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+  };
+};
+
+const LaunchingSoon = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const ganeshRef = useRef<HTMLImageElement>(null);
 
@@ -13,27 +33,7 @@ const LaunchingSoon = () => {
      COUNTDOWN
   ===================================================== */
 
-  const calculateTimeLeft = () => {
-    const difference = launchDate - Date.now();
-
-    if (difference <= 0) {
-      return {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-      };
-    }
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / (1000 * 60)) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -52,7 +52,11 @@ export interface EventTicket {
 // ============================================================
 
 export interface EventTimelineItem {
+  _id?: string;
+
   title: string;
+
+  description?: string;
 
   startAt: string;
 
@@ -60,8 +64,6 @@ export interface EventTimelineItem {
 }
 
 export interface EventFormData {
-  communityId?: string;
-
   title: string;
 
   shortDescription: string;
@@ -106,8 +108,6 @@ export interface EventFormData {
 export type CreateEventData = EventFormData;
 
 export interface UpdateEventData {
-  communityId?: string;
-
   title?: string;
 
   shortDescription?: string;
@@ -154,8 +154,6 @@ export interface UpdateEventData {
 export interface EventResponse {
   _id?: string;
   Slug?: string;
-
-  communityId?: string;
 
   title: string;
 
@@ -257,4 +255,32 @@ export interface EventStats {
   ongoingEvents: { value: number; label: string };
   completedEvents: { value: number; label: string };
   cancelledEvents: { value: number; label: string };
+}
+
+export interface PublicEvent {
+  _id: string;
+  Slug: string;
+  title: string;
+  shortDescription: string;
+  tags: string[];
+  category: string;
+  visibility: string;
+  status: EventStatus;
+  coverImageUrl: string;
+  registrationStartAt: string;
+  registrationEndAt: string;
+  venue?: {
+    venueName: string;
+    address: string;
+  };
+  redirectUrl?: string;
+}
+
+export type RegistrationFilter = "all" | EventStatus;
+
+export interface Filters {
+  search: string;
+  category: string;
+  status: RegistrationFilter;
+  selectedTags: string[];
 }

@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useState, Suspense } from "react";
 
 import Nav from "../Components/Nav";
 import { Footer } from "../Components/Footer";
 import { BackgroundWatermark } from "../Components/BackgroundWatermark";
-import { useState } from "react";
 
 const PublicLayout = () => {
   const [isUnderMaintenance] = useState(false);
@@ -17,7 +17,9 @@ const PublicLayout = () => {
       <Nav />
 
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={<div className="min-h-screen bg-[#010101]" />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       <BackgroundWatermark />

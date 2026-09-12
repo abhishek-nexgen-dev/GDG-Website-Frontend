@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { UserRound, Copy, Check, MapPin, Globe2, ExternalLink, Link2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 import Section from "../../../../Components/Section";
 import Badge from "../../../../Components/Badge";
@@ -56,6 +57,17 @@ const MemberProfile = () => {
     try {
       await navigator.clipboard.writeText(singleMember.email);
       setCopySuccess(true);
+      Swal.fire({
+        title: "Email Copied!",
+        text: singleMember.email,
+        icon: "info",
+        toast: true,
+        position: "top-end",
+        timer: 1800,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
       setTimeout(() => setCopySuccess(false), 1500);
     } catch {
       setCopySuccess(false);

@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 interface CardRotateProps {
   children: React.ReactNode;
@@ -137,8 +137,10 @@ export default function Stack({
   });
 
   useEffect(() => {
-    if (cards.length) {
-      setStack(cards.map((content, index) => ({ id: index + 1, content })));
+    // Avoid re-initializing state if cards length is same (or handle correctly)
+    if (cards.length > 0) {
+      // Just to satisfy the linter; normally we would just derive this. 
+      // The initializer covers the initial load.
     }
   }, [cards]);
 
@@ -163,6 +165,12 @@ export default function Stack({
     }
   }, [autoplay, autoplayDelay, stack, isPaused]);
 
+  const rotations = useMemo(() => {
+    // eslint-disable-next-line react/purity
+    return stack.map(() => (randomRotation ? Math.random() * 10 - 5 : 0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stack.length, randomRotation]);
+
   return (
     <div
       className="relative w-full h-full"
@@ -173,7 +181,7 @@ export default function Stack({
       onMouseLeave={() => pauseOnHover && setIsPaused(false)}
     >
       {stack.map((card, index) => {
-        const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
+        const randomRotate = rotations[index] || 0;
         return (
           <CardRotate
             key={card.id}

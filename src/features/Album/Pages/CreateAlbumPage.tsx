@@ -13,31 +13,21 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import Input from "../../../Components/Input";
 import Label from "../../../Components/Label";
 import Section from "../../../Components/Section";
 import { SearchableDropdown } from "../../../Components/SearchableDropdown";
-import api from "../../../utils/axios.utils";
 import uploadImage from "../../../utils/uploadImage";
 import useCreateAlbum from "../hooks/CreateAlbumForm.hook";
 import useCreateAlbumMutation from "../hooks/useCreateAlbumMutation";
+import useFetchAllEventNamesQuery from "../../Event/hook/useFetchAllEventNamesQuery";
 import Swal from "sweetalert2";
 
 type CoverMode = "upload" | "url";
 type AlbumStatus = "draft" | "published";
 // type Visibility = "public" | "private";
-
-interface EventItem {
-  title?: string;
-}
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80";
@@ -47,6 +37,8 @@ function ErrorMessage({ message }: { message?: string }) {
 
   return <p className="mt-1.5 text-xs text-red-400">{message}</p>;
 }
+
+const EMPTY_ARRAY: string[] = [];
 
 export default function CreateAlbumPage() {
   const form = useCreateAlbum();
@@ -68,25 +60,27 @@ export default function CreateAlbumPage() {
   const [localPreview, setLocalPreview] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  const [eventOptions, setEventOptions] = useState<string[]>([]);
-  const [isEventsLoading, setIsEventsLoading] = useState(true);
-  const [eventsError, setEventsError] = useState("");
+  const {
+    data: eventNamesData,
+    isLoading: isEventsLoading,
+    error: eventsError,
+  } = useFetchAllEventNamesQuery();
 
   const title = watch("title") ?? "";
   const eventName = watch("EventName") ?? "";
   const albumImageUrl = watch("albumImageUrl") ?? "";
   const description = watch("description") ?? "";
-  const tags = watch("tags") ?? [];
+  const tags = watch("tags") ?? EMPTY_ARRAY;
   const visibility = watch("visibility") ?? "public";
   const status = watch("status") ?? "draft";
 
-  const normalizedEventOptions = useMemo(
-    () =>
-      [...new Set(eventOptions)]
-        .filter(Boolean)
-        .sort((a, b) => a.localeCompare(b)),
-    [eventOptions],
-  );
+  const normalizedEventOptions = useMemo(() => {
+    if (!eventNamesData || !Array.isArray(eventNamesData)) return [];
+    const names = eventNamesData
+      .map((item: any) => (typeof item === "string" ? item : item?.title)?.trim())
+      .filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
+    return [...new Set(names)].sort((a, b) => a.localeCompare(b));
+  }, [eventNamesData]);
 
   const previewImage = useMemo(
     () => localPreview || albumImageUrl || DEFAULT_COVER,
@@ -100,60 +94,6 @@ export default function CreateAlbumPage() {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
     }
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchEvents = async () => {
-      try {
-        setIsEventsLoading(true);
-        setEventsError("");
-
-        const response = await api.get(
-          "/api/v1/findAllEventName",
-          {
-            signal: controller.signal,
-          },
-        );
-
-        const events = Array.isArray(response.data?.data)
-          ? response.data.data
-          : [];
-
-        const names = events
-          .map((event: EventItem) => event?.title?.trim())
-          .filter(
-            (name: unknown): name is string =>
-              typeof name === "string" && name.length > 0,
-          );
-
-        setEventOptions(names);
-      } catch (error: any) {
-        if (
-          controller.signal.aborted ||
-          error?.name === "CanceledError" ||
-          error?.code === "ERR_CANCELED"
-        ) {
-          return;
-        }
-
-        setEventOptions([]);
-        setEventsError(
-          "Unable to load events. Please try again.",
-        );
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsEventsLoading(false);
-        }
-      }
-    };
-
-    fetchEvents();
-
-    return () => {
-      controller.abort();
-    };
   }, []);
 
   useEffect(() => {
@@ -300,11 +240,7 @@ export default function CreateAlbumPage() {
         addTag();
       }
 
-      if (
-        event.key === "Backspace" &&
-        !tagInput &&
-        tags.length > 0
-      ) {
+      if (event.key === "Backspace" && !tagInput && tags.length > 0) {
         removeTag(tags[tags.length - 1]);
       }
     },
@@ -336,24 +272,22 @@ export default function CreateAlbumPage() {
 
         await mutateAsync(payload);
 
-          Swal.fire({
-        icon: 'success',
-        title: 'Album Created',
-        text: 'Your album has been successfully created!',
-        theme: 'dark',
-      });
+        Swal.fire({
+          icon: "success",
+          title: "Album Created",
+          text: "Your album has been successfully created!",
+          theme: "dark",
+        });
 
         resetFormState();
-       
-      } catch (error : any) {
+      } catch (error: any) {
         console.error("Failed to create album:", error);
-           Swal.fire({
-        icon: 'error',
-        title: 'Creation Failed',
-        text: error.message,
-        theme: 'dark',
-      });
-    
+        Swal.fire({
+          icon: "error",
+          title: "Creation Failed",
+          text: error.message,
+          theme: "dark",
+        });
       }
     },
     [mutateAsync, resetFormState],
@@ -365,10 +299,7 @@ export default function CreateAlbumPage() {
 
   const handleCreate = useCallback(
     (albumStatus: AlbumStatus) => {
-      handleSubmit(
-        (data) => onSubmit(data, albumStatus),
-        onInvalid,
-      )();
+      handleSubmit((data) => onSubmit(data, albumStatus), onInvalid)();
     },
     [handleSubmit, onInvalid, onSubmit],
   );
@@ -385,14 +316,10 @@ export default function CreateAlbumPage() {
             <div className="mb-2 flex items-center gap-2 text-xs">
               <span className="text-zinc-500">Albums</span>
               <span className="text-zinc-700">/</span>
-              <span className="truncate text-emerald-400">
-                Create New Album
-              </span>
+              <span className="truncate text-emerald-400">Create New Album</span>
             </div>
 
-            <h1 className="text-lg font-semibold tracking-tight">
-              Create New Album
-            </h1>
+            <h1 className="text-lg font-semibold tracking-tight">Create New Album</h1>
 
             <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
               Organize and showcase your event memories in one place.
@@ -405,9 +332,7 @@ export default function CreateAlbumPage() {
             className="flex shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] px-3 py-2 text-xs text-zinc-400 transition hover:bg-white/[0.04]"
           >
             <ArrowLeft size={14} />
-            <span className="hidden sm:inline">
-              Back to Albums
-            </span>
+            <span className="hidden sm:inline">Back to Albums</span>
           </button>
         </div>
       </header>
@@ -425,23 +350,17 @@ export default function CreateAlbumPage() {
                   <div className="flex items-center justify-between gap-3">
                     <Label required>Album Title</Label>
 
-                    <span className="text-xs text-zinc-600">
-                      {title.length}/100
-                    </span>
+                    <span className="text-xs text-zinc-600">{title.length}/100</span>
                   </div>
 
                   <Input
                     value={title}
-                    onChange={(value) =>
-                      updateField("title", value)
-                    }
+                    onChange={(value) => updateField("title", value)}
                     placeholder="e.g. RanchiHacks 2026"
                     maxLength={100}
                   />
 
-                  <ErrorMessage
-                    message={errors.title?.message}
-                  />
+                  <ErrorMessage message={errors.title?.message} />
                 </div>
 
                 <div>
@@ -450,18 +369,9 @@ export default function CreateAlbumPage() {
                   <SearchableDropdown
                     options={normalizedEventOptions}
                     value={eventName}
-                    onChange={(value) =>
-                      updateField("EventName", value)
-                    }
-                    placeholder={
-                      isEventsLoading
-                        ? "Loading events..."
-                        : "Select an event"
-                    }
-                    error={
-                      eventsError ||
-                      errors.EventName?.message
-                    }
+                    onChange={(value) => updateField("EventName", value)}
+                    placeholder={isEventsLoading ? "Loading events..." : "Select an event"}
+                    error={eventsError?.message || errors.EventName?.message}
                   />
                 </div>
 
@@ -469,27 +379,18 @@ export default function CreateAlbumPage() {
                   <div className="flex items-center justify-between gap-3">
                     <Label required>Description</Label>
 
-                    <span className="text-xs text-zinc-600">
-                      {description.length}/500
-                    </span>
+                    <span className="text-xs text-zinc-600">{description.length}/500</span>
                   </div>
 
                   <textarea
                     value={description}
-                    onChange={(event) =>
-                      updateField(
-                        "description",
-                        event.target.value,
-                      )
-                    }
+                    onChange={(event) => updateField("description", event.target.value)}
                     placeholder="Describe your album and event memories..."
                     maxLength={500}
                     className="h-32 w-full resize-none rounded-lg border border-white/[0.07] bg-[#202126] px-3 py-3 text-sm text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
                   />
 
-                  <ErrorMessage
-                    message={errors.description?.message}
-                  />
+                  <ErrorMessage message={errors.description?.message} />
                 </div>
               </div>
             </Section>
@@ -502,9 +403,7 @@ export default function CreateAlbumPage() {
               <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg bg-[#202126] p-1">
                 <button
                   type="button"
-                  onClick={() =>
-                    handleCoverModeChange("upload")
-                  }
+                  onClick={() => handleCoverModeChange("upload")}
                   className={`flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-xs font-medium transition ${
                     coverMode === "upload"
                       ? "bg-emerald-500 text-black shadow"
@@ -517,9 +416,7 @@ export default function CreateAlbumPage() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    handleCoverModeChange("url")
-                  }
+                  onClick={() => handleCoverModeChange("url")}
                   className={`flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-xs font-medium transition ${
                     coverMode === "url"
                       ? "bg-emerald-500 text-black shadow"
@@ -552,9 +449,7 @@ export default function CreateAlbumPage() {
                       <button
                         type="button"
                         disabled={isUploading}
-                        onClick={() =>
-                          fileInputRef.current?.click()
-                        }
+                        onClick={() => fileInputRef.current?.click()}
                         className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-white transition hover:bg-white/20 disabled:opacity-50"
                       >
                         <Upload size={13} />
@@ -584,26 +479,18 @@ export default function CreateAlbumPage() {
                   <button
                     type="button"
                     disabled={isUploading}
-                    onClick={() =>
-                      fileInputRef.current?.click()
-                    }
+                    onClick={() => fileInputRef.current?.click()}
                     className="flex min-h-56 w-full flex-col items-center justify-center rounded-xl border border-dashed border-emerald-500/30 bg-[#151a18] px-5 text-center transition hover:border-emerald-400/60 hover:bg-[#17201c] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
                       <Upload size={20} />
                     </div>
 
-                    <p className="text-sm font-medium text-zinc-300">
-                      Upload cover image
-                    </p>
+                    <p className="text-sm font-medium text-zinc-300">Upload cover image</p>
 
-                    <p className="mt-1 text-xs text-zinc-600">
-                      Click to browse from your device
-                    </p>
+                    <p className="mt-1 text-xs text-zinc-600">Click to browse from your device</p>
 
-                    <p className="mt-2 text-[11px] text-zinc-700">
-                      JPG, PNG or WEBP recommended
-                    </p>
+                    <p className="mt-2 text-[11px] text-zinc-700">JPG, PNG or WEBP recommended</p>
                   </button>
                 )
               ) : (
@@ -634,9 +521,7 @@ export default function CreateAlbumPage() {
                 </div>
               )}
 
-              <ErrorMessage
-                message={errors.albumImageUrl?.message}
-              />
+              <ErrorMessage message={errors.albumImageUrl?.message} />
             </Section>
 
             <Section
@@ -651,9 +536,7 @@ export default function CreateAlbumPage() {
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button
                       type="button"
-                      onClick={() =>
-                        updateField("visibility", "public")
-                      }
+                      onClick={() => updateField("visibility", "public")}
                       className={`rounded-xl border p-4 text-left transition ${
                         visibility === "public"
                           ? "border-emerald-500/50 bg-emerald-500/10"
@@ -663,16 +546,10 @@ export default function CreateAlbumPage() {
                       <div className="flex items-center gap-2">
                         <Eye
                           size={16}
-                          className={
-                            visibility === "public"
-                              ? "text-emerald-400"
-                              : "text-zinc-500"
-                          }
+                          className={visibility === "public" ? "text-emerald-400" : "text-zinc-500"}
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Public
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Public</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -682,9 +559,7 @@ export default function CreateAlbumPage() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        updateField("visibility", "private")
-                      }
+                      onClick={() => updateField("visibility", "private")}
                       className={`rounded-xl border p-4 text-left transition ${
                         visibility === "private"
                           ? "border-emerald-500/50 bg-emerald-500/10"
@@ -695,15 +570,11 @@ export default function CreateAlbumPage() {
                         <Lock
                           size={16}
                           className={
-                            visibility === "private"
-                              ? "text-emerald-400"
-                              : "text-zinc-500"
+                            visibility === "private" ? "text-emerald-400" : "text-zinc-500"
                           }
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Private
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Private</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -719,9 +590,7 @@ export default function CreateAlbumPage() {
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button
                       type="button"
-                      onClick={() =>
-                        updateField("status", "draft")
-                      }
+                      onClick={() => updateField("status", "draft")}
                       className={`rounded-xl border p-4 text-left transition ${
                         status === "draft"
                           ? "border-amber-500/50 bg-amber-500/10"
@@ -731,16 +600,10 @@ export default function CreateAlbumPage() {
                       <div className="flex items-center gap-2">
                         <FileText
                           size={16}
-                          className={
-                            status === "draft"
-                              ? "text-amber-400"
-                              : "text-zinc-500"
-                          }
+                          className={status === "draft" ? "text-amber-400" : "text-zinc-500"}
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Draft
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Draft</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -750,9 +613,7 @@ export default function CreateAlbumPage() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        updateField("status", "published")
-                      }
+                      onClick={() => updateField("status", "published")}
                       className={`rounded-xl border p-4 text-left transition ${
                         status === "published"
                           ? "border-emerald-500/50 bg-emerald-500/10"
@@ -762,16 +623,10 @@ export default function CreateAlbumPage() {
                       <div className="flex items-center gap-2">
                         <CheckCircle2
                           size={16}
-                          className={
-                            status === "published"
-                              ? "text-emerald-400"
-                              : "text-zinc-500"
-                          }
+                          className={status === "published" ? "text-emerald-400" : "text-zinc-500"}
                         />
 
-                        <span className="text-sm font-medium text-zinc-200">
-                          Published
-                        </span>
+                        <span className="text-sm font-medium text-zinc-200">Published</span>
                       </div>
 
                       <p className="mt-2 text-xs leading-relaxed text-zinc-600">
@@ -791,9 +646,7 @@ export default function CreateAlbumPage() {
                           key={tag}
                           className="flex max-w-full items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400"
                         >
-                          <span className="max-w-[180px] truncate">
-                            {tag}
-                          </span>
+                          <span className="max-w-[180px] truncate">{tag}</span>
 
                           <button
                             type="button"
@@ -807,28 +660,20 @@ export default function CreateAlbumPage() {
 
                       <input
                         value={tagInput}
-                        onChange={(event) =>
-                          setTagInput(event.target.value)
-                        }
+                        onChange={(event) => setTagInput(event.target.value)}
                         onKeyDown={handleTagKeyDown}
                         onBlur={addTag}
                         placeholder={
-                          tags.length
-                            ? "Add another tag..."
-                            : "Type a tag and press Enter"
+                          tags.length ? "Add another tag..." : "Type a tag and press Enter"
                         }
                         className="min-w-[120px] flex-1 bg-transparent px-1 py-1 text-sm text-zinc-300 outline-none placeholder:text-zinc-600"
                       />
 
-                      <ErrorMessage
-                    message={errors.tags?.message}
-                  />
+                      <ErrorMessage message={errors.tags?.message} />
                     </div>
                   </div>
 
-                  <p className="mt-2 text-xs text-zinc-600">
-                    Press Enter or comma to add a tag.
-                  </p>
+                  <p className="mt-2 text-xs text-zinc-600">Press Enter or comma to add a tag.</p>
                 </div>
               </div>
             </Section>
@@ -871,13 +716,10 @@ export default function CreateAlbumPage() {
 
                   <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs text-zinc-500">
                     <span className="flex items-center gap-2">
-                      <ImageIcon size={14} />
-                      0 Photos
+                      <ImageIcon size={14} />0 Photos
                     </span>
 
-                    <span className="capitalize">
-                      {visibility}
-                    </span>
+                    <span className="capitalize">{visibility}</span>
                   </div>
 
                   {tags.length > 0 && (
@@ -903,10 +745,7 @@ export default function CreateAlbumPage() {
         <div className="mx-auto flex w-full max-w-[1500px] flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="hidden items-center gap-2 sm:flex">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10">
-              <Check
-                size={13}
-                className="text-emerald-400"
-              />
+              <Check size={13} className="text-emerald-400" />
             </span>
 
             <span className="text-xs text-zinc-500">
@@ -932,11 +771,7 @@ export default function CreateAlbumPage() {
             >
               <Plus size={16} />
 
-              {isUploading
-                ? "Uploading..."
-                : isPending
-                  ? "Creating..."
-                  : "Create Album"}
+              {isUploading ? "Uploading..." : isPending ? "Creating..." : "Create Album"}
             </button>
           </div>
         </div>
@@ -944,4 +779,3 @@ export default function CreateAlbumPage() {
     </div>
   );
 }
-

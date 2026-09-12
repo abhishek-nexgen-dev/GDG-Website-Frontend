@@ -168,6 +168,20 @@ const AVAILABLE_PERMISSIONS_CONSTANT: Permission[] = [
     resource: "Permission",
     description: "Delete permissions",
   },
+
+  // Email & Communications
+  {
+    name: "email:send",
+    action: "create",
+    resource: "Email",
+    description: "Compose and send member broadcast emails",
+  },
+  {
+    name: "email:view",
+    action: "read",
+    resource: "Email",
+    description: "View sent emails and email composer",
+  },
 ];
 
 export default AVAILABLE_PERMISSIONS_CONSTANT;

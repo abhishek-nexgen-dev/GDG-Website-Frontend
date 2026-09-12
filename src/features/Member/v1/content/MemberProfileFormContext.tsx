@@ -24,6 +24,7 @@ export function MemberProfileFormProvider({ children }: MemberProfileFormProvide
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useMemberProfileFormContext() {
   const context = useContext(MemberProfileFormContext);
 

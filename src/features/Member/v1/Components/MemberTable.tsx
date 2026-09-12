@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, MoreVertical, Check, Trash2, Mail, Edit3, ShieldAlert } from "lucide-react";
 import type { fetchMembersType, memberStatusType } from "../type/MemberDetails.type";
 import { Link } from "react-router-dom";
+import PermissionChecker from "../../../Permission/Components/PermissionChecker";
 interface MemberTableProps {
   members: fetchMembersType[];
   selectedIds: string[];
@@ -189,13 +190,15 @@ const MemberTable = ({
                     {/* Actions */}
                     <td className="relative py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          to={`/member/profile/${member.Slug}`}
-                          title="View member details"
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
-                        >
-                          <Eye size={15} />
-                        </Link>
+                        <PermissionChecker permissionName="member:view" permissionAction="read">
+                          <Link
+                            to={`/member/profile/${member.Slug}`}
+                            title="View member details"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#262b33] bg-[#121519] text-white/50 transition hover:border-[#3a424e] hover:bg-[#1b2027] hover:text-white"
+                          >
+                            <Eye size={15} />
+                          </Link>
+                        </PermissionChecker>
 
                         <div className="relative">
                           <button
@@ -216,73 +219,88 @@ const MemberTable = ({
                                 onClick={() => setActiveMenuId(null)}
                               />
                               <div className="absolute right-0 top-9 z-30 w-44 rounded-xl border border-[#2b323d] bg-[#1b2027] p-1.5 shadow-xl">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    onViewMember(member);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
-                                >
-                                  <Eye size={14} />
-                                  <span>View Profile</span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    window.open(`mailto:${member.email}`);
-                                    setActiveMenuId(null);
-                                  }}
-                                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
-                                >
-                                  <Mail size={14} />
-                                  <span>Send Email</span>
-                                </button>
-
-                                {onChangeRole && (
+                                <PermissionChecker permissionName="member:view" permissionAction="read">
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const nextRole: string =
-                                        member.primaryRole === "Admin"
-                                          ? "Organizer"
-                                          : member.primaryRole === "Organizer"
-                                            ? "Member"
-                                            : "Admin";
-                                      onChangeRole(member._id, nextRole);
+                                      onViewMember(member);
                                       setActiveMenuId(null);
                                     }}
                                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
                                   >
-                                    <Edit3 size={14} />
-                                    <span>Toggle Role</span>
+                                    <Eye size={14} />
+                                    <span>View Profile</span>
                                   </button>
+                                </PermissionChecker>
+
+                                <PermissionChecker permissionName="email:send" permissionAction="create">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      window.open(`mailto:${member.email}`);
+                                      setActiveMenuId(null);
+                                    }}
+                                    className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
+                                  >
+                                    <Mail size={14} />
+                                    <span>Send Email</span>
+                                  </button>
+                                </PermissionChecker>
+
+                                {onChangeRole && (
+                                  <PermissionChecker permissionName="member:update" permissionAction="update">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const nextRole: string =
+                                          member.primaryRole === "Admin"
+                                            ? "Organizer"
+                                            : member.primaryRole === "Organizer"
+                                              ? "Member"
+                                              : "Admin";
+                                        onChangeRole(member._id, nextRole);
+                                        setActiveMenuId(null);
+                                      }}
+                                      className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
+                                    >
+                                      <Edit3 size={14} />
+                                      <span>Toggle Role</span>
+                                    </button>
+                                  </PermissionChecker>
                                 )}
 
                                 {onChangeStatus && (
-                                  <button
-                                    type="button"
-
-                                    className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
-                                  >
-                                    <ShieldAlert size={14} />
-                                    <span>Toggle Status</span>
-                                  </button>
+                                  <PermissionChecker permissionName="member:update" permissionAction="update">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const nextStatus: memberStatusType =
+                                          member.membershipStatus === "Active" ? "inactive" : "Active";
+                                        onChangeStatus(member._id, nextStatus);
+                                        setActiveMenuId(null);
+                                      }}
+                                      className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-white/80 transition hover:bg-[#232932] hover:text-white"
+                                    >
+                                      <ShieldAlert size={14} />
+                                      <span>Toggle Status</span>
+                                    </button>
+                                  </PermissionChecker>
                                 )}
 
                                 {onDeleteMember && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      onDeleteMember(member._id);
-                                      setActiveMenuId(null);
-                                    }}
-                                    className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-[#f87171] transition hover:bg-[#38181a] hover:text-rose-300"
-                                  >
-                                    <Trash2 size={14} />
-                                    <span>Remove Member</span>
-                                  </button>
+                                  <PermissionChecker permissionName="member:delete" permissionAction="delete">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        onDeleteMember(member._id);
+                                        setActiveMenuId(null);
+                                      }}
+                                      className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-[#f87171] transition hover:bg-[#38181a] hover:text-rose-300"
+                                    >
+                                      <Trash2 size={14} />
+                                      <span>Remove Member</span>
+                                    </button>
+                                  </PermissionChecker>
                                 )}
                               </div>
                             </>

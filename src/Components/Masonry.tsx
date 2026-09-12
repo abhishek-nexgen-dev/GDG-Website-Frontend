@@ -2,18 +2,21 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 import { gsap } from "gsap";
 
 const useMedia = (queries: string[], values: number[], defaultValue: number): number => {
-  const get = () => {
+  const [value, setValue] = useState<number>(() => {
     if (typeof window === "undefined") return defaultValue;
     return values[queries.findIndex((q) => matchMedia(q).matches)] ?? defaultValue;
-  };
-
-  const [value, setValue] = useState<number>(get);
+  });
 
   useEffect(() => {
-    const handler = () => setValue(get);
+    const handler = () => {
+      setValue(() => {
+        if (typeof window === "undefined") return defaultValue;
+        return values[queries.findIndex((q) => matchMedia(q).matches)] ?? defaultValue;
+      });
+    };
     queries.forEach((q) => matchMedia(q).addEventListener("change", handler));
     return () => queries.forEach((q) => matchMedia(q).removeEventListener("change", handler));
-  }, [queries]);
+  }, [queries, values, defaultValue]);
 
   return value;
 };
@@ -138,14 +141,13 @@ const Masonry: React.FC<MasonryProps> = ({
 
   // Dynamically load images and automatically infer aspect ratio
   useEffect(() => {
-    setImagesReady(false);
     preloadImagesWithDimensions(items.map((i) => i.img)).then((dims) => {
       setDimensions(dims);
       setImagesReady(true);
     });
   }, [items]);
 
-  const getInitialPosition = (item: GridItem) => {
+  const getInitialPosition = React.useCallback((item: GridItem) => {
     const containerRect = containerRef.current?.getBoundingClientRect();
     if (!containerRect) return { x: item.x, y: item.y };
 
@@ -172,7 +174,8 @@ const Masonry: React.FC<MasonryProps> = ({
       default:
         return { x: item.x, y: item.y + 100 };
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animateFrom]);
 
   const { grid, totalHeight } = useMemo(() => {
     if (!width || width <= 0) return { grid: [], totalHeight: 0 };
@@ -262,7 +265,7 @@ const Masonry: React.FC<MasonryProps> = ({
     });
 
     hasMounted.current = true;
-  }, [grid, imagesReady, stagger, animateFrom, blurToFocus, duration, ease]);
+  }, [grid, imagesReady, stagger, animateFrom, blurToFocus, duration, ease, getInitialPosition]);
 
   const handleMouseEnter = (element: HTMLElement) => {
     const img = element.querySelector("img");
@@ -343,7 +346,7 @@ const Masonry: React.FC<MasonryProps> = ({
     if (openInNewTab) {
       window.open(url, "_blank", "noopener,noreferrer");
     } else {
-      window.location.href = url;
+      window.location.assign(url);
     }
   };
 

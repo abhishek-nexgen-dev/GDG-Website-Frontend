@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 type SocialLink = {
   name: string;
   icon: React.ReactNode;
@@ -8,243 +10,153 @@ type TeamCardProps = {
   FullName: string;
   imageUrl: string;
   Role: string;
+  company?: string;
   SocialLink: SocialLink[];
+  onClick?: () => void;
 };
 
-const TeamCard = ({ imageUrl, FullName, Role, SocialLink }: TeamCardProps) => {
+// Map role to accent colors
+const getRoleAccent = (role: string) => {
+  const r = role.toLowerCase();
+  if (r.includes("organizer") || r.includes("lead")) {
+    return {
+      glow: "bg-blue-500/20 group-hover:bg-blue-500/35",
+      border: "group-hover:border-[#4285F4]/60",
+      text: "text-[#8AB4F8]",
+      dot: "bg-[#4285F4]",
+    };
+  }
+  if (r.includes("tech") || r.includes("engineer") || r.includes("data")) {
+    return {
+      glow: "bg-emerald-500/20 group-hover:bg-emerald-500/35",
+      border: "group-hover:border-[#34A853]/60",
+      text: "text-[#81C995]",
+      dot: "bg-[#34A853]",
+    };
+  }
+  if (r.includes("design")) {
+    return {
+      glow: "bg-amber-500/20 group-hover:bg-amber-500/35",
+      border: "group-hover:border-[#FBBC04]/60",
+      text: "text-[#FDD663]",
+      dot: "bg-[#FBBC04]",
+    };
+  }
+  return {
+    glow: "bg-rose-500/20 group-hover:bg-rose-500/35",
+    border: "group-hover:border-[#EA4335]/60",
+    text: "text-[#F28B82]",
+    dot: "bg-[#EA4335]",
+  };
+};
+
+const TeamCard = ({
+  imageUrl,
+  FullName,
+  Role,
+  company,
+  SocialLink,
+  onClick,
+}: TeamCardProps) => {
+  const [imageError, setImageError] = useState(false);
+  const accent = getRoleAccent(Role);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  };
+
   return (
-    <div className="group relative flex h-[50vh] w-[18vw] min-w-[260px] flex-col overflow-visible">
+    <div
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className="group relative flex w-full max-w-[340px] mx-auto min-h-[440px] flex-col overflow-visible text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]"
+    >
+      {/* Background Ambient Glow */}
       <div
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-0
-          z-0
-          h-[65%]
-          w-[80%]
-          -translate-x-1/2
-          rounded-full
-          bg-blue-500/20
-          blur-[80px]
-          transition-all
-          duration-700
-          group-hover:bg-blue-500/30
-          group-hover:blur-[100px]
-        "
+        className={`pointer-events-none absolute left-1/2 top-0 z-0 h-[65%] w-[85%] -translate-x-1/2 rounded-full blur-[80px] transition-all duration-700 ${accent.glow}`}
       />
 
+      {/* Profile Image Container */}
       <div
-        className="
-          absolute
-          left-1/2
-          top-[2%]
-          z-40
-          aspect-square
-          w-[92%]
-          -translate-x-1/2
-          rounded-full
-          border-[3px]
-          border-white/20
-          bg-gradient-to-br
-          from-zinc-500
-          via-zinc-800
-          to-black
-          p-2
-          shadow-[0_25px_70px_rgba(0,0,0,0.65)]
-          transition-all
-          duration-700
-          ease-out
-          group-hover:-translate-y-3
-          group-hover:scale-[1.03]
-          group-hover:border-blue-400/50
-          group-hover:shadow-[0_30px_80px_rgba(59,130,246,0.25)]
-        "
+        className={`absolute left-1/2 top-2 z-30 aspect-square w-[80%] max-w-[220px] -translate-x-1/2 rounded-full border-[3px] border-white/20 bg-gradient-to-br from-zinc-700 via-zinc-900 to-black p-2 shadow-[0_20px_60px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-105 ${accent.border}`}
       >
-        <div
-          className="
-            relative
-            h-full
-            w-full
-            overflow-hidden
-            rounded-full
-            border
-            border-white/10
-            bg-gradient-to-br
-            from-zinc-700
-            via-zinc-900
-            to-black
-          "
-        >
-          <img
-            src={imageUrl}
-            alt="Abhishek Gupta"
-            className="
-              h-full
-              w-full
-              object-cover
-              transition-transform
-              duration-700
-              ease-out
-              group-hover:scale-110
-            "
-          />
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900">
+          {!imageError ? (
+            <img
+              src={imageUrl}
+              alt={FullName}
+              onError={() => setImageError(true)}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-950 font-bold text-2xl text-white/90">
+              {getInitials(FullName)}
+            </div>
+          )}
 
-          <div
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              rounded-full
-              bg-gradient-to-t
-              from-black/50
-              via-transparent
-              to-white/10
-            "
-          />
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              left-[15%]
-              top-[8%]
-              h-[20%]
-              w-[35%]
-              rotate-[-25deg]
-              rounded-full
-              bg-white/10
-              blur-xl
-            "
-          />
+          <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-t from-black/50 via-transparent to-white/10" />
         </div>
 
+        {/* Active Status Badge */}
         <div
-          className="
-            absolute
-            bottom-[7%]
-            right-[8%]
-            flex
-            h-8
-            w-8
-            items-center
-            justify-center
-            rounded-full
-            border-[4px]
-            border-[#100F0F]
-            bg-green-400
-            shadow-[0_0_25px_rgba(74,222,128,0.7)]
-          "
+          className={`absolute bottom-[5%] right-[6%] flex h-6 w-6 items-center justify-center rounded-full border-[3px] border-[#100F0F] ${accent.dot} shadow-[0_0_15px_rgba(66,133,244,0.6)]`}
         >
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-white" />
+          <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
         </div>
       </div>
 
-      <div
-        className="
-          absolute
-          bottom-0
-          left-0
-          z-30
-          flex
-          h-[34%]
-          w-full
-          flex-col
-          items-center
-          rounded-xl
-          border
-          border-white/10
-          bg-[#100F0F]/80
-          px-3
+      {/* Info Card Content */}
+      <div className="mt-[160px] relative z-20 flex flex-1 flex-col items-center justify-between rounded-2xl border border-white/10 bg-[#100F0F]/85 p-6 pt-20 backdrop-blur-xl shadow-[0_15px_40px_rgba(0,0,0,0.4)] transition-all duration-500 group-hover:border-white/20 group-hover:bg-[#141416]/95">
+        <div className="flex flex-col items-center text-center">
+          <h3 className="text-xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-white">
+            {FullName}
+          </h3>
 
-          pb-[2vh]
-          py-[4vh]
-          backdrop-blur-xl
-          shadow-[0_-15px_50px_rgba(0,0,0,0.45)]
-          transition-all
-          duration-500
-          group-hover:border-white/20
-          group-hover:bg-[#151414]/90
-        "
-      >
-        <h2
-          className="
-            text-center
-            text-xl
-            font-extrabold
-            tracking-tight
-            text-white
-            transition-colors
-            duration-300
-          "
+          <span
+            className={`mt-1.5 inline-block text-xs font-semibold uppercase tracking-[0.14em] ${accent.text}`}
+          >
+            {Role}
+          </span>
+
+          {company && (
+            <p className="mt-2 line-clamp-1 max-w-[240px] text-xs text-gray-400">
+              {company}
+            </p>
+          )}
+        </div>
+
+        {/* Social Links */}
+        <div
+          className="mt-6 flex flex-wrap items-center justify-center gap-2.5"
+          onClick={(e) => e.stopPropagation()}
         >
-          {FullName}
-        </h2>
-
-        <h4
-          className="
-            mt-1
-            text-sm
-            font-semibold
-            uppercase
-            tracking-[0.15em]
-            text-blue-500
-          "
-        >
-          {Role}
-        </h4>
-
-        <div className="mt-4 flex items-center gap-2">
-          {SocialLink.map((social) => (
+          {SocialLink?.map((social) => (
             <a
               key={social.name}
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={social.name}
-              className="
-                relative
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/10
-                bg-white/[0.04]
-                text-white/50
-                backdrop-blur-md
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:border-blue-400/50
-                hover:bg-blue-500
-                hover:text-white
-                hover:shadow-[0_8px_25px_rgba(59,130,246,0.4)]
-              "
+              aria-label={`${FullName}'s ${social.name}`}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:-translate-y-1 hover:border-[#4285F4] hover:bg-[#4285F4] hover:text-white hover:shadow-[0_4px_16px_rgba(66,133,244,0.4)]"
             >
               <span className="text-sm">{social.icon}</span>
             </a>
           ))}
         </div>
       </div>
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          bottom-0
-          left-1/2
-          z-0
-          h-[20%]
-          w-[70%]
-          -translate-x-1/2
-          rounded-full
-          bg-blue-500/10
-          blur-[60px]
-        "
-      />
     </div>
   );
 };

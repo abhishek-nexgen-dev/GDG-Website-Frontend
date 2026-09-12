@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "tsc -b && vite build",
-    "format": "pnpm exec prettier . --write",
+    "format": "prettier . --write",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "@cloudinary/react": "^1.14.4",
@@ -17,6 +17,7 @@
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@monaco-editor/react": "^4.7.0",
+    "@sweetalert2/theme-dark": "^5.0.27",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/query-core": "^5.102.8",
     "@tanstack/react-query": "^5.102.8",
@@ -33,11 +34,13 @@
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.87.0",
     "react-icons": "^5.7.0",
+    "react-loader-spinner": "^8.0.2",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.3",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sweetalert2": "^11.26.25",
+    "sweetalert2-react-content": "^5.1.2",
     "swiper": "^14.2.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3",

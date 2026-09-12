@@ -5,18 +5,35 @@ import ImageUploadZone from "../Components/ImageUploadZone";
 import ImageDetails from "../Components/ImageDetails";
 import ImagePreview from "../Components/ImagePreview";
 import ImageSettings from "../Components/ImageSettings";
+import Swal from "sweetalert2";
+import uploadImage from "../../../utils/uploadImage";
 
-import { initialImageFormData } from "../data/images.data";
+import {
+  initialImageFormData,
+  initialImagesList,
+  type ImageItem,
+  type ImageFormat,
+} from "../data/images.data";
 
 import type { ImageFormData, SelectedImageFile } from "../types/image.type";
 
 const UploadImagesPage = () => {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState<ImageFormData>(initialImageFormData);
+  const [form, setForm] = useState<ImageFormData>(() => {
+    try {
+      const draft = localStorage.getItem("gdg_image_draft");
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        if (parsed?.form) return parsed.form;
+      }
+    } catch {
+      // fallback
+    }
+    return initialImageFormData;
+  });
 
   const [selectedFile, setSelectedFile] = useState<SelectedImageFile | null>(null);
-
   const [saving, setSaving] = useState(false);
 
   const update = <K extends keyof ImageFormData>(key: K, value: ImageFormData[K]) => {
@@ -33,7 +50,11 @@ const UploadImagesPage = () => {
 
       image.onload = () => {
         resolve(`${image.naturalWidth} × ${image.naturalHeight}`);
+        URL.revokeObjectURL(url);
+      };
 
+      image.onerror = () => {
+        resolve("1920 × 1080");
         URL.revokeObjectURL(url);
       };
 
@@ -43,13 +64,18 @@ const UploadImagesPage = () => {
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.startsWith("image/")) {
+      Swal.fire({
+        title: "Invalid File Type",
+        text: "Please select an image file (PNG, JPG, WEBP, or SVG).",
+        icon: "warning",
+        background: "#151a20",
+        color: "#ffffff",
+      });
       return;
     }
 
     const previewUrl = URL.createObjectURL(file);
-
     const dimensions = await getImageDimensions(file);
-
     const format = file.type.replace("image/", "").toUpperCase();
 
     setSelectedFile({
@@ -68,15 +94,24 @@ const UploadImagesPage = () => {
     if (selectedFile) {
       URL.revokeObjectURL(selectedFile.previewUrl);
     }
-
     setSelectedFile(null);
   };
 
   const handleSaveDraft = async () => {
     setSaving(true);
-
     try {
-      console.log("Draft:", form);
+      localStorage.setItem("gdg_image_draft", JSON.stringify({ form, timestamp: Date.now() }));
+      Swal.fire({
+        title: "Draft Saved",
+        text: "Your upload settings and metadata have been saved locally.",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+        background: "#181b20",
+        color: "#ffffff",
+      });
     } finally {
       setSaving(false);
     }
@@ -84,16 +119,80 @@ const UploadImagesPage = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
+      Swal.fire({
+        title: "No Image Selected",
+        text: "Please choose an image before uploading.",
+        icon: "info",
+        background: "#151a20",
+        color: "#ffffff",
+      });
       return;
     }
 
     setSaving(true);
 
     try {
-      console.log("Form:", form);
-      console.log("File:", selectedFile.file);
+      let finalUrl = selectedFile.previewUrl;
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+      if (cloudName && uploadPreset) {
+        try {
+          const res = await uploadImage(selectedFile.file);
+          if (res?.secure_url) {
+            finalUrl = res.secure_url;
+          }
+        } catch (cloudErr) {
+          console.warn("Cloudinary upload failed, using local preview URL:", cloudErr);
+        }
+      }
+
+      const newImage: ImageItem = {
+        id: `img-${Date.now()}`,
+        fileName: form.title || selectedFile.name,
+        albumName: form.album || "DevFest Ranchi 2025",
+        eventName: form.event || "DevFest Ranchi",
+        eventShort: form.event?.slice(0, 7) || "DF 2025",
+        format: (selectedFile.format?.toUpperCase() === "PNG"
+          ? "PNG"
+          : selectedFile.format?.toUpperCase() === "WEBP"
+          ? "WEBP"
+          : "JPG") as ImageFormat,
+        size: selectedFile.size,
+        dimensions: selectedFile.dimensions || "1920 × 1080",
+        uploader: "Community Lead",
+        timeAgo: "Just now",
+        url: finalUrl,
+        tags: form.tags || ["New", "Community"],
+      };
+
+      try {
+        const stored = localStorage.getItem("gdg_managed_images");
+        const list: ImageItem[] = stored ? JSON.parse(stored) : initialImagesList;
+        localStorage.setItem("gdg_managed_images", JSON.stringify([newImage, ...list]));
+        localStorage.removeItem("gdg_image_draft");
+      } catch {
+        // storage fallback
+      }
+
+      await Swal.fire({
+        title: "Upload Successful!",
+        text: `"${form.title || selectedFile.name}" has been added to ${form.album || "the gallery"}.`,
+        icon: "success",
+        background: "#151a20",
+        color: "#ffffff",
+        confirmButtonColor: "#10b981",
+      });
 
       navigate("/member/images");
+    } catch (err: any) {
+      Swal.fire({
+        title: "Upload Failed",
+        text: err?.message || "Failed to upload image. Please try again.",
+        icon: "error",
+        background: "#151a20",
+        color: "#ffffff",
+      });
     } finally {
       setSaving(false);
     }

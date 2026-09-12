@@ -1,10 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
-import Swal from "sweetalert2";
+
 import type { EventFormData } from "../type/Event.type";
 import uploadImage from "../../../utils/uploadImage";
 import uploadVideo from "../../../utils/uploadVideo";
 import api from "../../../utils/axios.utils";
 import { EventValidate } from "../Validation/event.validation";
+import showAlert from "../../../utils/showAlert";
 
 interface UploadImageParams {
   event: React.ChangeEvent<HTMLInputElement>;
@@ -19,6 +20,31 @@ interface UploadVideoParams {
   setVideoProgress: Dispatch<SetStateAction<number>>;
 }
 
+const getErrorMessage = (error: unknown, fallback: string): string => {
+  if (typeof error === "object" && error !== null) {
+    const apiError = error as {
+      response?: {
+        data?: {
+          message?: string;
+          error?: {
+            message?: string;
+          };
+        };
+      };
+      message?: string;
+    };
+
+    return (
+      apiError.response?.data?.error?.message ||
+      apiError.response?.data?.message ||
+      apiError.message ||
+      fallback
+    );
+  }
+
+  return fallback;
+};
+
 export const handleCoverImageUpload = async ({
   event,
   update,
@@ -29,28 +55,14 @@ export const handleCoverImageUpload = async ({
   if (!file) return;
 
   if (!file.type.startsWith("image/")) {
-    await Swal.fire({
-      icon: "warning",
-      title: "Invalid Image",
-      text: "Please select a valid image file.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert("warning", "Invalid Image", "Please select a valid image file.");
 
     event.target.value = "";
     return;
   }
 
   if (file.size > 5 * 1024 * 1024) {
-    await Swal.fire({
-      icon: "warning",
-      title: "Image Too Large",
-      text: "Cover image must be smaller than 5MB.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert("warning", "Image Too Large", "Cover image must be smaller than 5MB.");
 
     event.target.value = "";
     return;
@@ -61,18 +73,24 @@ export const handleCoverImageUpload = async ({
 
     const result = await uploadImage(file);
 
-    update("coverImageUrl", result.secure_url);
-  } catch (error: any) {
-    console.error("Cover image upload failed:", error?.response?.data || error);
+    if (!result?.secure_url) {
+      throw new Error("Image URL was not returned from the upload service.");
+    }
 
-    await Swal.fire({
-      icon: "error",
-      title: "Upload Failed",
-      text: error?.response?.data?.error?.message || "Failed to upload cover image.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
+    update("coverImageUrl", result.secure_url);
+
+    await showAlert("success", "Image Uploaded", "Cover image uploaded successfully.", {
+      timer: 1500,
+      showConfirmButton: false,
     });
+  } catch (error) {
+    console.error("Cover image upload failed:", error);
+
+    await showAlert(
+      "error",
+      "Upload Failed",
+      getErrorMessage(error, "Failed to upload cover image."),
+    );
   } finally {
     setUploadingImage(false);
     event.target.value = "";
@@ -90,28 +108,14 @@ export const handleIntroVideoUpload = async ({
   if (!file) return;
 
   if (!file.type.startsWith("video/")) {
-    await Swal.fire({
-      icon: "warning",
-      title: "Invalid Video",
-      text: "Please select a valid video file.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert("warning", "Invalid Video", "Please select a valid video file.");
 
     event.target.value = "";
     return;
   }
 
   if (file.size > 100 * 1024 * 1024) {
-    await Swal.fire({
-      icon: "warning",
-      title: "Video Too Large",
-      text: "Intro video must be smaller than 100MB.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert("warning", "Video Too Large", "Intro video must be smaller than 100MB.");
 
     event.target.value = "";
     return;
@@ -122,21 +126,28 @@ export const handleIntroVideoUpload = async ({
     setVideoProgress(0);
 
     const result = await uploadVideo(file, (progress) => {
-      setVideoProgress(progress);
+      setVideoProgress(Math.min(100, Math.max(0, progress)));
     });
+
+    if (!result?.secure_url) {
+      throw new Error("Video URL was not returned from the upload service.");
+    }
 
     update("introVideoUrl", result.secure_url);
-  } catch (error: any) {
-    console.error("Intro video upload failed:", error?.response?.data || error);
+    setVideoProgress(100);
 
-    await Swal.fire({
-      icon: "error",
-      title: "Upload Failed",
-      text: error?.response?.data?.error?.message || "Failed to upload intro video.",
-      background: "#18191d",
-      color: "#fff",
-      confirmButtonColor: "#059669",
+    await showAlert("success", "Video Uploaded", "Intro video uploaded successfully.", {
+      timer: 1500,
+      showConfirmButton: false,
     });
+  } catch (error) {
+    console.error("Intro video upload failed:", error);
+
+    await showAlert(
+      "error",
+      "Upload Failed",
+      getErrorMessage(error, "Failed to upload intro video."),
+    );
   } finally {
     setUploadingVideo(false);
     setVideoProgress(0);
@@ -144,34 +155,31 @@ export const handleIntroVideoUpload = async ({
   }
 };
 
-export const validateEvent = (form: EventFormData): boolean => {
-  console.log("__Issue in validator____");
-  const result = EventValidate.safeParse(form);
-  
-  console.log(result);
-  
-  if (!result.success) {
-    const issue = result.error.issues[0];
-    console.log(issue);
+export const validateEvent = async (form: EventFormData): Promise<boolean> => {
+  try {
+    const result = EventValidate.safeParse(form);
+    console.log(result);
 
-    Swal.fire({
-      icon: "warning",
-      title: "Check Event Details",
-      text: issue.message,
-      background: "#18191d",
-      color: "#e4e4e7",
-      confirmButtonColor: "#059669",
-      customClass: {
-        popup: "rounded-xl border border-white/[0.08]",
-        title: "text-base font-semibold",
-        htmlContainer: "text-xs text-zinc-400",
-      },
-    });
+    if (result.success) {
+      return true;
+    }
+
+    const issue = result.error.issues[0];
+
+    await showAlert(
+      "warning",
+      "Check Event Details",
+      issue?.message || "Please check the event details.",
+    );
+
+    return false;
+  } catch (error) {
+    console.error("Event validation failed:", error);
+
+    await showAlert("error", "Validation Failed", "Unable to validate event details.");
 
     return false;
   }
-
-  return true;
 };
 
 export const saveDraft = async (
@@ -179,49 +187,38 @@ export const saveDraft = async (
   setSaving: Dispatch<SetStateAction<boolean>>,
 ) => {
   try {
-    console.log('Save Draft Form Data', form)
-    if (!validateEvent(form)) {
-      return;
-    }
-
     setSaving(true);
+
+    const isValid = await validateEvent({
+      ...form,
+      status: "DRAFT",
+    });
+
+    if (!isValid) return;
 
     const payload = {
       ...form,
-      status: "DRAFT"
+      status: "DRAFT",
     };
-
-    console.log("Payload", payload);
 
     const { data } = await api.post("/api/v1/create/newEvent", payload);
 
-    console.log("Draft created:", data);
-
-    await Swal.fire({
-      icon: "success",
-      title: "Draft Saved",
-      text: "Your event draft has been saved successfully.",
-      background: "#18191d",
-      color: "#e4e4e7",
-      confirmButtonColor: "#059669",
+    await showAlert("success", "Draft Saved", "Your event draft has been saved successfully.", {
       timer: 1800,
       showConfirmButton: false,
     });
 
-    // return data;
-  } catch (error: any) {
-    console.error("Save draft failed:", error?.response?.data || error);
+    return data;
+  } catch (error) {
+    console.error("Save draft failed:", error);
 
-    await Swal.fire({
-      icon: "error",
-      title: "Save Failed",
-      text: error?.response?.data?.message || "Unable to save the event draft.",
-      background: "#18191d",
-      color: "#e4e4e7",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert(
+      "error",
+      "Save Failed",
+      getErrorMessage(error, "Unable to save the event draft."),
+    );
 
-    throw error;
+    return null;
   } finally {
     setSaving(false);
   }
@@ -231,51 +228,31 @@ export const publishEvent = async (
   form: EventFormData,
   setSaving: Dispatch<SetStateAction<boolean>>,
 ) => {
-  if (!validateEvent(form)) {
-    return;
-  }
-
   try {
     setSaving(true);
 
-    const payload = {
-      ...form,
-      status: form.status
-    };
+    const isValid = await validateEvent(form);
 
+    if (!isValid) return;
 
+    const { data } = await api.post("/api/v1/create/newEvent", form);
 
-    console.log("Payload", payload);
-
-    const { data } = await api.post("/api/v1/create/newEvent", payload);
-
-    console.log("Event published:", data);
-
-    await Swal.fire({
-      icon: "success",
-      title: "Event Published",
-      text: "Your event is now live.",
-      background: "#18191d",
-      color: "#e4e4e7",
-      confirmButtonColor: "#059669",
+    await showAlert("success", "Event Published", "Your event has been published successfully.", {
       timer: 1800,
       showConfirmButton: false,
     });
 
-    // return data;
-  } catch (error: any) {
-    console.error("Publish event failed:", error || error?.response?.data);
+    return data;
+  } catch (error) {
+    console.error("Publish event failed:", error);
 
-    await Swal.fire({
-      icon: "error",
-      title: "Publish Failed",
-      text: error?.response?.data?.message || "Something went wrong while publishing the event.",
-      background: "#18191d",
-      color: "#e4e4e7",
-      confirmButtonColor: "#059669",
-    });
+    await showAlert(
+      "error",
+      "Publish Failed",
+      getErrorMessage(error, "Something went wrong while publishing the event."),
+    );
 
-    throw error;
+    return null;
   } finally {
     setSaving(false);
   }

@@ -31,7 +31,7 @@ const EventVenue = ({ form, update }: Props) => {
               }}
             >
               {EventMode_Constant.map((val) => {
-                return <option value={val}>{val}</option>;
+                return <option key={val} value={val}>{val}</option>;
               })}
             </Select>
           </div>

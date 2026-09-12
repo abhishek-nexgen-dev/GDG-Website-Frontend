@@ -3,10 +3,14 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CalendarDays, Check, ChevronDown, Clock3, CircleDot, Flag, Play } from "lucide-react";
 
-import { singleEventData } from "../data/singleEventData";
 import { formatDate, formatTime } from "../utils/Event.utils";
+import type { EventTimelineItem } from "../type/Event.type";
 
-const Timeline = () => {
+interface TimelineProps {
+  timeline: EventTimelineItem[];
+}
+
+const Timeline = ({ timeline = [] }: TimelineProps) => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const headingRef = useRef<HTMLDivElement | null>(null);
 
@@ -14,8 +18,6 @@ const Timeline = () => {
   const nodeRefs = useRef<HTMLDivElement[]>([]);
 
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  const timeline = singleEventData.timeline ?? [];
 
   /* ================================================================
      GSAP ANIMATIONS
@@ -371,7 +373,7 @@ const Timeline = () => {
                         <div className="overflow-hidden">
                           <div className="border-t border-white/[0.08] pt-3">
                             <p className="text-xs leading-relaxed text-white/50 sm:text-sm">
-                              "No additional information is available for this schedule item."
+                              {item.description || "No additional information is available for this schedule item."}
                             </p>
                           </div>
                         </div>

@@ -17,10 +17,20 @@ const uploadVideo = async (
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("upload_preset", import.meta.env.CLOUDINARY_VIDEO_UPLOAD_PRESET);
+    const uploadPreset =
+      import.meta.env.VITE_CLOUDINARY_VIDEO_UPLOAD_PRESET ||
+      import.meta.env.CLOUDINARY_VIDEO_UPLOAD_PRESET ||
+      import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET ||
+      "";
+    formData.append("upload_preset", uploadPreset);
+
+    const cloudName =
+      import.meta.env.VITE_CLOUDINARY_CLOUD_NAME ||
+      import.meta.env.CLOUDINARY_CLOUD_NAME ||
+      "";
 
     const { data } = await axios.post<CloudinaryVideoResponse>(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/video/upload`,
+      `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
       formData,
       {
         onUploadProgress: (event) => {

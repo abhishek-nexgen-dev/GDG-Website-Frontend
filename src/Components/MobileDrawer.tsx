@@ -41,7 +41,9 @@ export function MobileDrawer({ onClose, activeLink, onNavigate }: MobileDrawerPr
         className="absolute top-0 right-0 flex h-full w-full max-w-[min(100%,320px)] flex-col bg-bg-secondary p-5 sm:max-w-sm sm:p-6"
       >
         <div className="mb-6 flex items-center justify-between gap-3">
-          <Logo size="sm" />
+          <Link to="/" onClick={onClose} className="inline-block" aria-label="GDG Ranchi Home">
+            <Logo size="sm" />
+          </Link>
           <button
             type="button"
             onClick={onClose}

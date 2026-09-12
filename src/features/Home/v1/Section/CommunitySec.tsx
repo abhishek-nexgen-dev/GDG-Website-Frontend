@@ -3,6 +3,7 @@ import { Users } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { showJoinCommunityModal } from "../../../../utils/communityAlert";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -98,7 +99,10 @@ const CommunitySec = () => {
 
           {/* Right Content */}
           <div className="flex w-full flex-col items-start gap-8 lg:w-auto lg:items-end">
-            <button className="group flex items-center justify-center gap-3 rounded-xl bg-[#1A73E8] px-8 py-4 font-semibold text-white transition-all hover:bg-[#1557B0] hover:shadow-[0_0_20px_rgba(66,133,244,0.3)]">
+            <button
+              onClick={showJoinCommunityModal}
+              className="group flex items-center justify-center gap-3 rounded-xl bg-[#1A73E8] px-8 py-4 font-semibold text-white transition-all hover:bg-[#1557B0] hover:shadow-[0_0_20px_rgba(66,133,244,0.3)]"
+            >
               Join Our Community
               <Users size={20} className="transition-transform group-hover:scale-110" />
             </button>

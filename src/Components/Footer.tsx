@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -5,9 +6,16 @@ import { Logo } from "./Logo";
 import { Button } from "./Button";
 import { Container } from "./Layout";
 import { ScrollReveal } from "./ScrollReveal";
-import { socialIconMap } from "./SocialIcons";
+import { TwitterIcon, LinkedinIcon, YoutubeIcon, InstagramIcon } from "./SocialIcons";
 import { footerExplore, footerResources, socialLinks } from "../data/navigation";
 import clsx from "clsx";
+
+const socialIconMap: Record<string, React.ReactNode> = {
+  twitter: <TwitterIcon className="h-4 w-4" />,
+  linkedin: <LinkedinIcon className="h-4 w-4" />,
+  youtube: <YoutubeIcon className="h-4 w-4" />,
+  instagram: <InstagramIcon className="h-4 w-4" />,
+};
 
 function FooterAccordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -48,7 +56,9 @@ export function Footer() {
         <ScrollReveal>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-4">
-              <Logo size="lg" />
+              <Link to="/" className="inline-block" aria-label="GDG Ranchi Home">
+                <Logo size="lg" />
+              </Link>
               <p className="mt-5 max-w-[280px] text-[14px] leading-[1.7] text-text-muted">
                 Google Developer Groups Ranchi is a community for developers to learn, connect, and
                 build with Google technologies.

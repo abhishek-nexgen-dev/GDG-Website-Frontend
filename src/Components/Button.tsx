@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
@@ -12,11 +13,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: ButtonSize;
   showArrow?: boolean;
   href?: string;
+  to?: string;
 }
+
+const MotionLink = motion(Link);
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { variant = "primary", size = "md", showArrow = false, className, children, href, ...props },
+    { variant = "primary", size = "md", showArrow = false, className, children, href, to, ...props },
     ref,
   ) => {
     const variants: Record<ButtonVariant, string> = {
@@ -39,6 +43,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       sizes[size],
       className,
     );
+
+    if (to) {
+      return (
+        <MotionLink
+          to={to}
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.97 }}
+          className={sharedClasses}
+          {...(props as any)}
+        >
+          {children}
+          {showArrow && <ArrowUpRight className="h-4 w-4 shrink-0" strokeWidth={2} />}
+        </MotionLink>
+      );
+    }
 
     if (href) {
       return (

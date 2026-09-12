@@ -20,7 +20,7 @@ const ManageAlbumsPage = () => {
 
   const { data, isLoading } = useFetchAlbums(page, limit);
 
-  const albums: Manage_Albums_Card[] = data ?? [];
+  const albums: Manage_Albums_Card[] = useMemo(() => data ?? [], [data]);
 
   const pagination = data?.pagination;
 

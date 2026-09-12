@@ -106,11 +106,9 @@ const ManageEvent = () => {
 
   const computedStats = useMemo(() => computeStats(events), [events]);
 
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(Math.max(1, totalPages));
-    }
-  }, [currentPage, totalPages]);
+  if (currentPage > Math.max(1, totalPages)) {
+    setCurrentPage(Math.max(1, totalPages));
+  }
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
