@@ -1,3 +1,5 @@
+@import "@fontsource-variable/inter";
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -645,9 +647,6 @@
     -webkit-text-fill-color: currentColor;
   }
 }
-
-@import "@fontsource-variable/inter";
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 

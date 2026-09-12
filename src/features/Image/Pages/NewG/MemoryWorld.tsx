@@ -136,14 +136,14 @@ export const MemoryWorld = ({
   // 0 = top of the page (end of journey)
   
   // Title fades out as you start moving forward (scrolling up from 1 to 0.95)
-  const titleOpacity = useTransform(scrollYProgress, [1, 0.95], [1, 0]);
-  const titleZ = useTransform(scrollYProgress, [1, 0.95], [0, 500]); // Flies slightly towards you
+  const titleOpacity = useTransform(scrollYProgress, [0.95, 1], [0, 1]);
+  const titleZ = useTransform(scrollYProgress, [0.95, 1], [500, 0]); // Flies slightly towards you
 
   // Max Z depth of the journey
   const TOTAL_DEPTH = 28000;
   
   // The camera moves forward by translating the world towards the screen (positive Z)
-  const cameraZ = useTransform(scrollYProgress, [1, 0], [0, TOTAL_DEPTH]);
+  const cameraZ = useTransform(scrollYProgress, [0, 1], [TOTAL_DEPTH, 0]);
 
   // Final logo configuration
   const logoZ = - (TOTAL_DEPTH + 1000); // So at max scroll, it's 1000px away
