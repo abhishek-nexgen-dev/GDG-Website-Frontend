@@ -11,7 +11,7 @@ import PartnersSec from "./Section/PartnersSec";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="overflow-x-clip bg-[#050505]">
       <HeroSec />
       <AboutUsSec />
 

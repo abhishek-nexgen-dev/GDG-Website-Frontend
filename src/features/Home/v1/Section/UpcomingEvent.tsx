@@ -8,7 +8,7 @@ const UpcomingEvent = () => {
 
   if (isPending) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+      <main className="flex min-h-screen items-center justify-center text-white">
         <p className="text-sm text-white/60">Loading upcoming events...</p>
       </main>
     );
@@ -16,7 +16,7 @@ const UpcomingEvent = () => {
 
   if (isError || !data) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+      <main className="flex min-h-screen items-center justify-center text-white">
         <p className="text-sm text-red-400">Failed to load upcoming events.</p>
       </main>
     );
@@ -26,8 +26,8 @@ const UpcomingEvent = () => {
 
   if (events.length === 0) {
     return (
-      <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative overflow-hidden py-24 lg:py-32">
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex min-h-[300px] items-center justify-center">
             <p className="text-sm text-white/40">No upcoming events available right now.</p>
           </div>
@@ -37,14 +37,13 @@ const UpcomingEvent = () => {
   }
 
   return (
-    <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-[8%] lg:py-[10vh] xl:px-[10%]">
+    <section className="relative overflow-hidden py-24 lg:py-32">
       {/* Background Effects */}
       <div className="pointer-events-none absolute left-[-100px] top-[-10px] h-80 w-80 rounded-full bg-amber-700/30 blur-[80px]" />
 
       <div className="pointer-events-none absolute bottom-0 right-[-100px] h-80 w-80 rounded-full bg-emerald-600/30 blur-[80px]" />
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* Section Header */}
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <ScrollReveal>
           <div className="mb-10 flex flex-col justify-between gap-5 sm:mb-12 md:flex-row md:items-end">
             <div>
@@ -58,7 +57,7 @@ const UpcomingEvent = () => {
 
               <h2 className="text-4xl font-black leading-none tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 Upcoming{" "}
-                <span className="bg-gradient-to-r from-[#EA4335] via-[#FBBC04] to-[#4285F4] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#FBBC04] to-[#4285F4] bg-clip-text text-transparent">
                   Events
                 </span>
               </h2>

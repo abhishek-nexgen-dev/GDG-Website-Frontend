@@ -37,7 +37,7 @@ export function BackgroundWatermark() {
 
   return (
     <section
-      className="relative flex h-[320px] items-center justify-center overflow-hidden select-none z-50"
+      className="relative flex h-[320px] items-center justify-center overflow-hidden select-none z-50 bg-transparent"
       onMouseEnter={() => {
         animate(radius, 240, {
           duration: 0.45,
@@ -65,26 +65,13 @@ export function BackgroundWatermark() {
         });
       }}
     >
-      {/* Background Glow */}
-      <motion.div
-        animate={{
-          scale: [1, 1.15, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute h-[420px] w-[420px] rounded-full bg-google-blue/10 blur-[140px]"
-      />
 
       {/* Outline */}
       <div
         className="
-    absolute
+    absolute inset-0
     flex
-    items-center
+    items-center justify-center
     gap-5
     whitespace-nowrap
     pointer-events-none
@@ -118,9 +105,9 @@ export function BackgroundWatermark() {
           opacity,
         }}
         className="
-    absolute
+    absolute inset-0
     flex
-    items-center
+    items-center justify-center
     gap-5
     whitespace-nowrap
     pointer-events-none
@@ -144,9 +131,6 @@ export function BackgroundWatermark() {
           GDG RANCHI
         </span>
       </motion.div>
-
-      {/* Bottom Glow */}
-      <div className="absolute bottom-0 h-24 w-full bg-gradient-to-t from-black via-black/40 to-transparent" />
     </section>
   );
 }

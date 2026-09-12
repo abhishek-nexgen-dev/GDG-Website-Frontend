@@ -30,19 +30,19 @@ function Nav() {
 
   return (
     <>
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-[var(--page-gutter)]">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-[100]">
         <div
           className={clsx(
-            "pointer-events-auto mx-auto w-full max-w-[var(--page-max)] transition-all duration-300 ease-out",
+            "pointer-events-auto mx-auto w-full max-w-7xl px-6 lg:px-8 transition-all duration-300 ease-out",
             scrolled ? "mt-3 sm:mt-4" : "mt-0 pt-4 sm:pt-5 lg:pt-6",
           )}
         >
           <div
             className={clsx(
-              "grid grid-cols-[1fr_auto] items-center gap-3 transition-all duration-300 ease-out lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]",
+              "flex items-center justify-between gap-6 transition-all duration-300 ease-out",
               scrolled
-                ? "rounded-[17px] border-b border-white/10 bg-black/40 px-3 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-5 sm:py-2.5"
-                : "px-0 py-0 rounded-[17px]",
+                ? "rounded-full border border-white/10 bg-[#0a0a0c]/80 px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-6 sm:py-2.5"
+                : "px-4 py-2 sm:px-6 rounded-full",
             )}
           >
             {/* Logo */}
@@ -85,7 +85,7 @@ function Nav() {
             {/* CTA + mobile menu */}
             <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
               <Link to="/login" className="hidden lg:block">
-                <Button variant="outline" size="sm" showArrow href="#community">
+                <Button className="bg-[#1a73e8] text-white border-transparent hover:bg-[#1557B0] hover:text-white" size="sm" showArrow href="#community">
                   Login
                 </Button>
               </Link>

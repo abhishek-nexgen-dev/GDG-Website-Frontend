@@ -88,7 +88,7 @@ const OrganizersSec = () => {
   );
 
   return (
-    <section ref={containerRef} className="relative overflow-hidden bg-[#050505] py-28">
+    <section ref={containerRef} className="relative overflow-hidden py-28">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute left-1/4 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[#4285F4]/10 blur-[140px]" />

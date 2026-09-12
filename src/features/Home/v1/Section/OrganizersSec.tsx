@@ -33,9 +33,9 @@ const OrganizersSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden bg-[#000000] py-24 text-white selection:bg-[#EA4335]/30"
+      className="relative overflow-hidden py-24 text-white selection:bg-[#EA4335]/30"
     >
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
         {/* Section Header */}
         <div className="org-header mb-20 flex flex-col items-center text-center">
           {/* Badge */}
@@ -58,10 +58,10 @@ const OrganizersSec = () => {
         {/* Bento Grid */}
         <div className="org-grid grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6">
           {/* 1. Alice (Lead) */}
-          <div className="org-bento-item p-[1px] rounded-[1.5rem] bg-gradient-to-br from-[#EA4335]/60 via-transparent to-transparent md:col-span-2 lg:col-span-3 relative group shadow-2xl">
+          <div className="org-bento-item p-[1px] rounded-[1.5rem] md:col-span-2 lg:col-span-3 relative group shadow-2xl bg-white/5">
             <div className="relative overflow-hidden rounded-[1.5rem] bg-[#0A0A0C] h-[380px] w-full">
               {/* Background Glow */}
-              <div className="absolute top-0 left-0 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#EA4335]/15 blur-[100px]" />
+
 
               {/* Big Outline Text */}
               <div
@@ -236,7 +236,7 @@ const OrganizersSec = () => {
           </div>
 
           {/* 5. Evan (Design Lead) */}
-          <div className="org-bento-item p-[1px] rounded-[1.5rem] bg-gradient-to-t from-[#EA4335]/40 to-transparent md:col-span-2 lg:col-span-2 relative group shadow-2xl">
+          <div className="org-bento-item p-[1px] rounded-[1.5rem] md:col-span-2 lg:col-span-2 relative group shadow-2xl bg-white/5">
             <div className="relative overflow-hidden rounded-[1.5rem] bg-[#0A0A0C] h-[400px] w-full">
               {/* Top Left Icon */}
               <div className="absolute top-6 left-6 z-20">

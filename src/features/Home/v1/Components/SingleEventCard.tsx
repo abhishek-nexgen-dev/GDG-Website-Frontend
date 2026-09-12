@@ -108,7 +108,7 @@ const SingleEventCard = (event: SingleEventProps) => {
 
             <Link
               to={`/event/${event.Slug}`}
-              className="group/button flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-xs font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_10px_30px_rgba(255,255,255,0.08)]"
+              className="group/button flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-[0_10px_30px_rgba(26,115,232,0.3)]"
             >
               {"View event"}
 

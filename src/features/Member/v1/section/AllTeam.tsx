@@ -1,95 +1,62 @@
-import TeamCard from "../Components/TeamCard";
+import { useState } from "react";
 import teamMembers from "../Constant/Team.Constant";
+import { Users } from "lucide-react";
+import { BentoTeamCard } from "../Components/BentoTeamCard";
+
+const FILTERS = ["All Teams", "Events", "Content", "Tech", "Partnerships", "Operations", "PR & Social"];
 
 export const AllTeam = () => {
-  let Organiser = teamMembers.filter(
-    (value) => value.role === "Organizer" || value.role === "Co-Organizer",
-  );
+  const [activeFilter, setActiveFilter] = useState("All Teams");
 
-  let find_Tech_Team = teamMembers.filter((value) => value.role == "Tech-Team");
+  // Get only regular members
+  const members = teamMembers.filter((m) => m.role === "Member");
 
-  let Find_Design_Team = teamMembers.filter((value) => value.role == "Design-Team");
-
-  let Find_Social_Media_Team = teamMembers.filter((value) => value.role == "Social-Media-Team");
+  // Filter based on active selection
+  const displayedMembers =
+    activeFilter === "All Teams"
+      ? members
+      : members.filter((m) => m.team.toLowerCase().includes(activeFilter.split(' ')[0].toLowerCase()));
 
   return (
-    <div>
-      <div className="flex flex-col relative z-10  gap-[2vw] px-6 pt-16  lg:px-[8%] xl:px-[10%]">
-        <h1 className="w-full text-center text-[3vh] font-extrabold">
-          Our <span className="text-blue-500">Organizers</span>
-        </h1>
+    <section className="relative z-10 mx-auto max-w-7xl px-6 py-16 lg:px-8">
+      {/* Header & Filter Row */}
+      <div className="mb-12 flex flex-col justify-between gap-6 border-b border-gray-800 pb-8 md:flex-row md:items-end">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/20 text-2xl text-blue-400">
+            <Users size={24} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold text-white">Team Members</h2>
+            <p className="text-sm text-gray-400">
+              The amazing folks who make it all happen.
+            </p>
+          </div>
+        </div>
 
-        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 pb-[3vh] sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-          {Organiser.map((data) => (
-            <TeamCard
-              key={data.id}
-              FullName={data.name}
-              Role={data.role}
-              imageUrl={data.image}
-              SocialLink={data.socialLinks}
-            />
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 md:gap-4">
+          {FILTERS.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                activeFilter === filter
+                  ? "bg-white/10 text-white shadow-inner"
+                  : "text-gray-500 hover:text-white"
+              }`}
+            >
+              {filter}
+            </button>
           ))}
-        </section>
+        </div>
       </div>
 
-      {/* Design Team */}
-
-      <div className="flex flex-col relative z-10  gap-[2vw] px-6 py-16  lg:px-[8%] xl:px-[10%]">
-        <h1 className="w-full text-center text-[3vh] font-extrabold">
-          Design <span className="text-blue-500">Team</span>
-        </h1>
-
-        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 pb-[3vh] sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-          {Find_Design_Team.map((data) => (
-            <TeamCard
-              key={data.id}
-              FullName={data.name}
-              Role={data.role}
-              imageUrl={data.image}
-              SocialLink={data.socialLinks}
-            />
-          ))}
-        </section>
+      {/* Grid */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {displayedMembers.map((member) => (
+          <BentoTeamCard key={member.id} member={member} />
+        ))}
       </div>
-
-      {/* Tech Team */}
-      <div className="flex flex-col relative z-10  gap-[2vw] px-6 py-16  lg:px-[8%] xl:px-[10%]">
-        <h1 className="w-full text-center text-[3vh] font-extrabold">
-          Tech <span className="text-blue-500">Team</span>
-        </h1>
-
-        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 pb-[3vh] sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-          {find_Tech_Team.map((data) => (
-            <TeamCard
-              key={data.id}
-              FullName={data.name}
-              Role={data.role}
-              imageUrl={data.image}
-              SocialLink={data.socialLinks}
-            />
-          ))}
-        </section>
-      </div>
-
-      {/* Social Media Team */}
-
-      <div className="flex flex-col relative z-10  gap-[2vw] px-6 py-16  lg:px-[8%] xl:px-[10%]">
-        <h1 className="w-full text-center text-[3vh] font-extrabold">
-          Social Media <span className="text-blue-500">Team</span>
-        </h1>
-
-        <section className="relative z-10 grid grid-cols-1 gap-[5vw] px-6 pb-[3vh] sm:grid-cols-2 lg:grid-cols-3 lg:px-[8%] xl:px-[10%]">
-          {Find_Social_Media_Team.map((data) => (
-            <TeamCard
-              key={data.id}
-              FullName={data.name}
-              Role={data.role}
-              imageUrl={data.image}
-              SocialLink={data.socialLinks}
-            />
-          ))}
-        </section>
-      </div>
-    </div>
+    </section>
   );
 };

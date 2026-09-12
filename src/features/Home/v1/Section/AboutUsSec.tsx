@@ -80,11 +80,11 @@ const AboutUsSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-[#050505] py-24 lg:py-32"
+      className="relative w-full py-24 lg:py-32"
     >
       {/* Background Glow */}
       <div className="absolute left-0 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
-      <div className="absolute bottom-0 right-0 h-[500px] w-[500px] translate-x-1/3 translate-y-1/3 rounded-full bg-[#EA4335]/10 blur-[120px]" />
+
 
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24 lg:items-center">

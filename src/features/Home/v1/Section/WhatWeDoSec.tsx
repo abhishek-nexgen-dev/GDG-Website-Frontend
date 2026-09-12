@@ -47,10 +47,10 @@ const WhatWeDoSec = () => {
   );
 
   return (
-    <section ref={containerRef} className="relative overflow-hidden bg-[#050505] py-28">
+    <section ref={containerRef} className="relative overflow-hidden py-28">
       {/* Background Glow */}
       <div className="absolute inset-0">
-        <div className="absolute left-0 top-40 h-96 w-96 rounded-full bg-[#EA4335]/10 blur-[140px]" />
+
         <div className="absolute right-0 top-32 h-96 w-96 rounded-full bg-[#34A853]/10 blur-[140px]" />
         <div className="absolute left-1/2 bottom-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
       </div>

@@ -32,7 +32,7 @@ const CommunitySec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative px-5 py-16 sm:px-8 md:px-12 lg:px-[8%] xl:px-[10%]"
+      className="relative py-24 lg:py-32 px-6 lg:px-8"
     >
       <div className="comm-content relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-[#0A0A0C] p-8 sm:p-12 lg:p-16">
         {/* Neon Blue Dotted World Map Background */}

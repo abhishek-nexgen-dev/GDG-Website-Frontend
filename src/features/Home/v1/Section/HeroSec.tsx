@@ -27,21 +27,21 @@ const HeroSec = () => {
 
   return (
     <section
-      className="relative flex min-h-screen items-center overflow-hidden bg-[#050505]"
+      className="relative flex min-h-screen items-center"
       onMouseMove={handleMouseMove}
     >
       {/* Background Glows */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -left-[10%] top-0 h-[500px] w-[500px] rounded-full bg-[#4285F4]/10 blur-[150px]" />
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute -left-[10%] top-10 h-[500px] w-[500px] rounded-full bg-[#4285F4]/10 blur-[150px]" />
         <div className="absolute -right-[10%] bottom-0 h-[600px] w-[600px] rounded-full bg-[#FBBC04]/10 blur-[150px]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-16 px-6 py-20 lg:flex-row lg:px-12">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-16 px-6 py-20 lg:flex-row lg:px-8">
         {/* Left Content */}
         <div className="w-full max-w-xl lg:w-1/2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0A0A0C] px-4 py-2 text-sm font-semibold text-white/70 shadow-lg">
+          {/* <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0A0A0C] px-4 py-2 text-sm font-semibold text-white/70 shadow-lg">
             <span className="text-[#34A853]">+</span> Google Developer Groups Ranchi
-          </div>
+          </div> */}
 
           <h1 className="mt-8 text-5xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Build. Learn. Connect.

@@ -57,11 +57,11 @@ const Achievement = () => {
   }, []);
 
   return (
-    <section className="relative w-full ">
+    <section className="relative w-full">
       {/* Background Glow */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Red */}
-        <div className="red-circle absolute left-[-12%] top-1/2 h-full w-[35vw] max-h-[650px] max-w-[650px] -translate-y-1/2 rounded-full bg-[#EA4335] opacity-90 blur-[180px]" />
+
 
         {/* Yellow */}
         <div className="yellow-circle absolute left-[18%] top-1/2  h-full w-[38vw] max-h-[720px] max-w-[720px] -translate-y-1/2 rounded-full bg-[#FBBC04] opacity-90 blur-[200px]" />

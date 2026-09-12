@@ -10,7 +10,7 @@ const PastEvents = () => {
 
   if (isPending) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+      <main className="flex min-h-screen items-center justify-center text-white">
         <p className="text-sm text-white/60">Loading past events...</p>
       </main>
     );
@@ -18,7 +18,7 @@ const PastEvents = () => {
 
   if (isError || !data) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+      <main className="flex min-h-screen items-center justify-center text-white">
         <p className="text-sm text-red-400">Failed to load past events.</p>
       </main>
     );
@@ -27,22 +27,25 @@ const PastEvents = () => {
   const events = Array.isArray(data) ? data : data.data || [];
 
   return (
-    <section className="relative overflow-hidden bg-[#050505] px-5 py-20 sm:px-8 sm:py-24 md:px-12 lg:px-[8%] lg:py-[12vh] xl:px-[10%]">
+    <section className="relative overflow-hidden py-24 lg:py-32">
       <div className="pointer-events-none absolute -left-40 top-1/3 h-80 w-80 rounded-full bg-[#4285F4]/[0.035] blur-[120px]" />
 
       <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#34A853]/[0.035] blur-[130px]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header */}
         <ScrollReveal>
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <h2 className="text-[2.8rem] font-black leading-[0.92] tracking-[-0.055em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                PAST EVENTS
-                <br />
-                <span className="bg-gradient-to-r from-[#4285F4] via-[#34A853] to-[#FBBC04] bg-clip-text text-transparent">
-                  Explore what we've hosted.
-                </span>
+          <div className="mb-10 flex flex-col justify-between gap-5 sm:mb-12 md:flex-row md:items-end">
+            <div>
+              <div className="mb-3 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--color-primary)]" />
+                <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-primary sm:text-xs">
+                  Explore what we've hosted
+                </p>
+              </div>
+
+              <h2 className="text-4xl font-black leading-none tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                Past <span className="text-primary">Events</span>
               </h2>
             </div>
 
