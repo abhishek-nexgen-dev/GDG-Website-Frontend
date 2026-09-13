@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import useMembers from "../store/useMembers";
-import type { fetchMembersType } from "../type/MemberDetails.type";
+import type { fetchMembersType, memberStatusType } from "../type/MemberDetails.type";
 import useFetchAllMembersQuery from "../hook/useFetchAllMembersQuery";
 import MemberStatsCards from "../Components/MemberStatsCards";
 import MemberFilterBar from "../Components/MemberFilterBar";
@@ -40,12 +40,15 @@ const MembersDashboardPage = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
+  const dataString = useMemo(() => JSON.stringify(data), [data]);
+
   // Sync API result into Zustand store
   useEffect(() => {
     if (isSuccess && data) {
       setMembers(data as any);
     }
-  }, [isSuccess, data, setMembers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, dataString, setMembers]);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
 
@@ -106,75 +109,82 @@ const MembersDashboardPage = () => {
     };
   }, [members]);
 
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);
     setSelectedIds([]);
-  };
+  }, []);
 
-  const handleRoleChange = (role: string) => {
+  const handleRoleChange = useCallback((role: string) => {
     setSelectedRole(role);
     setCurrentPage(1);
     setSelectedIds([]);
-  };
+  }, []);
 
-  const handleStatusChange = (status: string) => {
+  const handleStatusChange = useCallback((status: string) => {
     setSelectedStatus(status);
     setCurrentPage(1);
     setSelectedIds([]);
-  };
+  }, []);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     setSearchQuery("");
     setSelectedRole(ALL_FILTER);
     setSelectedStatus(ALL_FILTER);
     setCurrentPage(1);
     setSelectedIds([]);
-  };
+  }, []);
 
-  const handleSelectAll = (checked: boolean) => {
+  const handleSelectAll = useCallback((checked: boolean) => {
     if (!visibleMemberIds.length) return;
     if (checked) {
       setSelectedIds((prev) => Array.from(new Set([...prev, ...visibleMemberIds])));
     } else {
       setSelectedIds((prev) => prev.filter((id) => !visibleMemberIds.includes(id)));
     }
-  };
+  }, [visibleMemberIds]);
 
-  const handleSelectRow = (id: string, checked: boolean) => {
+  const handleSelectRow = useCallback((id: string, checked: boolean) => {
     setSelectedIds((prev) => {
       if (checked) return prev.includes(id) ? prev : [...prev, id];
       return prev.filter((selectedId) => selectedId !== id);
     });
-  };
+  }, []);
 
-  const handleClearSelection = () => setSelectedIds([]);
+  const handleClearSelection = useCallback(() => setSelectedIds([]), []);
 
-  const handleDeleteMember = (id: string) => {
+  const handleDeleteMember = useCallback((id: string) => {
     if (window.confirm("Delete this member?")) {
       deleteMember(id);
       if (selectedMemberId === id) setSelectedMemberId(null);
       setSelectedIds((prev) => prev.filter((sid) => sid !== id));
     }
-  };
+  }, [deleteMember, selectedMemberId]);
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = useCallback(() => {
     if (!selectedIds.length) return;
     if (window.confirm(`Delete ${selectedIds.length} selected members?`)) {
       selectedIds.forEach((id) => deleteMember(id));
       setSelectedIds([]);
     }
-  };
+  }, [selectedIds, deleteMember]);
 
-  const handleViewMember = (member: fetchMembersType) => {
+  const handleViewMember = useCallback((member: fetchMembersType) => {
     setSelectedMemberId(member._id);
     navigate(`/member/profile/${member.Slug}`);
-  };
+  }, [navigate]);
+
+  const handleChangeRole = useCallback((id: string, role: string) => {
+    updateMember(id, { primaryRole: role });
+  }, [updateMember]);
+
+  const handleChangeStatus = useCallback((id: string, status: memberStatusType) => {
+    updateMember(id, { membershipStatus: status });
+  }, [updateMember]);
 
   return (
     <main className="w-full min-w-0 px-4 py-5 text-white sm:px-6 lg:px-8">
       <MemberHeader />
-
       <PermissionChecker
         permissionAction="read"
         permissionName="member:view"
@@ -234,8 +244,8 @@ const MembersDashboardPage = () => {
             onSelectRow={handleSelectRow}
             onViewMember={handleViewMember}
             onDeleteMember={handleDeleteMember}
-            onChangeRole={(id, role) => updateMember(id, { primaryRole: role })}
-            onChangeStatus={(id, status) => updateMember(id, { membershipStatus: status })}
+            onChangeRole={handleChangeRole}
+            onChangeStatus={handleChangeStatus}
           />
         </section>
 

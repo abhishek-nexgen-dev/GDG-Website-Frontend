@@ -55,7 +55,9 @@ const CreateNewMember = () => {
 
   const [skillInput, setSkillInput] = useState("");
 
-  const { draft, setDraft, clearDraft } = useCreateMemberDraft();
+  const setDraft = useCreateMemberDraft((state) => state.setDraft);
+  const clearDraft = useCreateMemberDraft((state) => state.clearDraft);
+  const [initialDraft] = useState(() => useCreateMemberDraft.getState().draft);
 
   const {
     control,
@@ -64,14 +66,17 @@ const CreateNewMember = () => {
     reset,
     formState: { isSubmitting },
   } = useForm<CreateMemberData>({
-    defaultValues: draft,
+    defaultValues: initialDraft,
   });
 
   // Watch all values to auto-save to draft
   const currentValues = useWatch({ control }) as CreateMemberData;
 
   useEffect(() => {
-    setDraft(currentValues);
+    const handler = setTimeout(() => {
+      setDraft(currentValues);
+    }, 500); // Debounce to improve performance
+    return () => clearTimeout(handler);
   }, [currentValues, setDraft]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,11 +202,11 @@ const CreateNewMember = () => {
     });
   };
 
-  const handleReset = () => {
+  const handleReset = React.useCallback(() => {
     clearDraft();
-    reset(draft);
+    reset(useCreateMemberDraft.getState().draft);
     setSkillInput("");
-  };
+  }, [clearDraft, reset]);
 
   return (
     <PermissionChecker
