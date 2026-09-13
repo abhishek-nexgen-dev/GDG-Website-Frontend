@@ -216,7 +216,7 @@ const Settings = () => {
   const [settings, setSettings] = useState<UserSettings>(() => {
     try {
       const stored = localStorage.getItem("gdg_user_settings");
-      if (stored) {
+      if (stored && stored !== "undefined" && stored !== "null") {
         return JSON.parse(stored);
       }
     } catch {

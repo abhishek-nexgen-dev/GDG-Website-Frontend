@@ -23,7 +23,7 @@ const UploadImagesPage = () => {
   const [form, setForm] = useState<ImageFormData>(() => {
     try {
       const draft = localStorage.getItem("gdg_image_draft");
-      if (draft) {
+      if (draft && draft !== "undefined" && draft !== "null") {
         const parsed = JSON.parse(draft);
         if (parsed?.form) return parsed.form;
       }
@@ -168,7 +168,7 @@ const UploadImagesPage = () => {
 
       try {
         const stored = localStorage.getItem("gdg_managed_images");
-        const list: ImageItem[] = stored ? JSON.parse(stored) : initialImagesList;
+        const list: ImageItem[] = (stored && stored !== "undefined" && stored !== "null") ? JSON.parse(stored) : initialImagesList;
         localStorage.setItem("gdg_managed_images", JSON.stringify([newImage, ...list]));
         localStorage.removeItem("gdg_image_draft");
       } catch {

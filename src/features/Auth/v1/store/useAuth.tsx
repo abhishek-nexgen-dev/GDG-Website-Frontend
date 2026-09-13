@@ -14,7 +14,7 @@ interface UseAuthType {
 const getInitialPerms = (): Permission[] => {
   try {
     const stored = localStorage.getItem("gdg_auth_perms");
-    if (stored) {
+    if (stored && stored !== "undefined" && stored !== "null") {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed;
@@ -29,7 +29,7 @@ const getInitialPerms = (): Permission[] => {
 const getInitialUser = (): User | null => {
   try {
     const stored = localStorage.getItem("gdg_auth_user");
-    if (stored) {
+    if (stored && stored !== "undefined" && stored !== "null") {
       return JSON.parse(stored);
     }
   } catch (err) {

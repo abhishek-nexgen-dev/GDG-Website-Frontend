@@ -135,7 +135,7 @@ const DEFAULT_PROFILE: MemberType = {
 const getInitialSingleMember = (): MemberType => {
   try {
     const stored = localStorage.getItem("gdg_member_single_profile");
-    if (stored) {
+    if (stored && stored !== "undefined" && stored !== "null") {
       const parsed = JSON.parse(stored);
       if (parsed && parsed.firstName) {
         return parsed;

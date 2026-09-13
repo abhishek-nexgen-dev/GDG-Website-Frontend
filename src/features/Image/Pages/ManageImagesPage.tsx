@@ -17,7 +17,7 @@ const ManageImagesPage = () => {
   const [images, setImages] = useState<ImageItem[]>(() => {
     try {
       const stored = localStorage.getItem("gdg_managed_images");
-      if (stored) {
+      if (stored && stored !== "undefined" && stored !== "null") {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
