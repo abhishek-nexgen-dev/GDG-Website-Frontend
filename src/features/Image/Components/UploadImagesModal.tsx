@@ -19,9 +19,9 @@ const UploadImagesModal = ({
   eventOptions,
 }: UploadImagesModalProps) => {
   const { user } = useAuth();
-  const [selectedAlbum, setSelectedAlbum] = useState("Jharkhand Tech Summit 2026");
-  const [selectedEvent, setSelectedEvent] = useState("JTS 2026");
-  const [tagsInput, setTagsInput] = useState("Keynote, Summit, 2026");
+  const [selectedAlbum, setSelectedAlbum] = useState(albumOptions?.[0] || "");
+  const [selectedEvent, setSelectedEvent] = useState(eventOptions?.[0] || "");
+  const [tagsInput, setTagsInput] = useState("");
   const [fileName, setFileName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [fileSize, setFileSize] = useState("3.5 MB");
@@ -73,7 +73,7 @@ const UploadImagesModal = ({
       eventShort: selectedEvent,
       uploader: user?.firstName
         ? `${user.firstName} ${user.lastName || ""}`.trim()
-        : "Abhishek Gupta",
+        : "GDG Member",
       size: fileSize || "3.5 MB",
       format,
       tags,
@@ -150,7 +150,7 @@ const UploadImagesModal = ({
                 type="text"
                 value={fileName}
                 onChange={(e) => setFileName(e.target.value)}
-                placeholder="e.g. jts2026_keynote.jpg"
+                placeholder="e.g. photo.jpg"
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3.5 py-2 text-xs text-white placeholder-white/30 focus:border-[#22c55e] focus:outline-none"
               />
             </div>
@@ -169,23 +169,13 @@ const UploadImagesModal = ({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-white/60 mb-1.5">Target Album</label>
+              <label className="block text-xs font-medium text-white/60 mb-1.5">Album</label>
               <select
                 value={selectedAlbum}
                 onChange={(e) => setSelectedAlbum(e.target.value)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                {(albumOptions && albumOptions.length > 0
-                  ? albumOptions
-                  : [
-                      "Women Techmakers Ranchi Meetup",
-                      "DevFest Ranchi 2025",
-                      "Jharkhand Tech Summit 2026",
-                      "MERN Stack Workshop",
-                      "Dev Connect Meetup",
-                      "AI in Action - Tech Talk",
-                    ]
-                ).map((album) => (
+                {(albumOptions && albumOptions.length > 0 ? albumOptions : []).map((album) => (
                   <option key={album} value={album} className="bg-[#161a1f] text-white">
                     {album}
                   </option>
@@ -200,17 +190,7 @@ const UploadImagesModal = ({
                 onChange={(e) => setSelectedEvent(e.target.value)}
                 className="w-full rounded-xl border border-[#232830] bg-[#121519] px-3 py-2 text-xs text-white focus:border-[#22c55e] focus:outline-none"
               >
-                {(eventOptions && eventOptions.length > 0
-                  ? eventOptions
-                  : [
-                      "DevFest Ranchi",
-                      "WTM Ranchi",
-                      "JTS 2026",
-                      "MERN Workshop",
-                      "Dev Connect",
-                      "AI Talk",
-                    ]
-                ).map((evt) => (
+                {(eventOptions && eventOptions.length > 0 ? eventOptions : []).map((evt) => (
                   <option key={evt} value={evt} className="bg-[#161a1f] text-white">
                     {evt}
                   </option>

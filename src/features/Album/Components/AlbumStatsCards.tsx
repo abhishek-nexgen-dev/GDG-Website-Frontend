@@ -6,43 +6,44 @@ interface AlbumStatsCardsProps {
 }
 
 const AlbumStatsCards = ({ stats }: AlbumStatsCardsProps) => {
+  const safeStats = stats || ({} as Partial<AlbumStats>);
   const cards = [
     {
       title: "Total Albums",
-      value: stats.totalAlbums.value,
-      subtitle: stats.totalAlbums.trend,
+      value: safeStats.totalAlbums?.value ?? 0,
+      subtitle: safeStats.totalAlbums?.trend ?? "0 total albums",
       subtitleColor: "text-[#22c55e]",
       icon: Images,
       badgeStyle: "bg-[#143321] text-[#22c55e] border border-[#1c472d]",
     },
     {
       title: "Total Images",
-      value: stats.totalImages.value,
-      subtitle: stats.totalImages.trend,
+      value: safeStats.totalImages?.value ?? 0,
+      subtitle: safeStats.totalImages?.trend ?? "0 total images",
       subtitleColor: "text-[#60a5fa]",
       icon: Folder,
       badgeStyle: "bg-[#122844] text-[#3b82f6] border border-[#193961]",
     },
     {
       title: "Public Albums",
-      value: stats.publicAlbums.value,
-      subtitle: stats.publicAlbums.percentage,
+      value: safeStats.publicAlbums?.value ?? 0,
+      subtitle: safeStats.publicAlbums?.percentage ?? "0%",
       subtitleColor: "text-[#c084fc]",
       icon: Eye,
       badgeStyle: "bg-[#28163d] text-[#a855f7] border border-[#3b1f59]",
     },
     {
       title: "Private Albums",
-      value: stats.privateAlbums.value,
-      subtitle: stats.privateAlbums.percentage,
+      value: safeStats.privateAlbums?.value ?? 0,
+      subtitle: safeStats.privateAlbums?.percentage ?? "0%",
       subtitleColor: "text-[#f59e0b]",
       icon: Lock,
       badgeStyle: "bg-[#382410] text-[#f59e0b] border border-[#4e3216]",
     },
     {
       title: "Storage Used",
-      value: stats.storageUsed.value,
-      subtitle: stats.storageUsed.trend,
+      value: safeStats.storageUsed?.value ?? "—",
+      subtitle: safeStats.storageUsed?.trend ?? "Storage unavailable",
       subtitleColor: "text-[#06b6d4]",
       icon: HardDrive,
       badgeStyle: "bg-[#102d33] text-[#06b6d4] border border-[#164049]",

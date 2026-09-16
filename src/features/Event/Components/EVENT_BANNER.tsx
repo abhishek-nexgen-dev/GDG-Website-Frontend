@@ -71,7 +71,7 @@ const EVENT_BANNER = ({ event }: EventBannerProps) => {
               </div>
 
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {event.tags.slice(0, 6).map((tag) => (
+                {(Array.isArray(event.tags) ? event.tags : []).slice(0, 6).map((tag) => (
                   <span
                     key={tag}
                     className="rounded-lg border border-white/[0.08] bg-white/[0.035] px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] font-medium text-white/60 transition-all duration-300 hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300"
@@ -80,7 +80,7 @@ const EVENT_BANNER = ({ event }: EventBannerProps) => {
                   </span>
                 ))}
 
-                {event.tags.length > 6 && (
+                {Array.isArray(event.tags) && event.tags.length > 6 && (
                   <span className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2 sm:px-3 py-1 text-[9px] sm:text-[10px] font-medium text-white/40">
                     +{event.tags.length - 6} more
                   </span>

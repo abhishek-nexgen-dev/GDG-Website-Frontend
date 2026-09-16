@@ -37,6 +37,7 @@ type Particle = {
 };
 
 const hexToRgb = (hex: string): Rgb | null => {
+  if (!hex || typeof hex !== "string") return null;
   const clean = hex.replace("#", "").trim();
   if (!/^[0-9a-fA-F]{6}$/.test(clean)) return null;
   return {
