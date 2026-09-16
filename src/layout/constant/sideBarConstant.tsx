@@ -1,8 +1,7 @@
-import { LayoutDashboard, Calendar, Images, Image, Users } from "lucide-react";
+import { LayoutDashboard, Calendar, Images, Image } from "lucide-react";
 import {
   Event_Permissions,
   Gallery_Permissions,
-  Member_Permissions,
 } from "../../features/Permission/constant/Permission.constant";
 
 export interface SideBarItem {
@@ -83,27 +82,27 @@ const sideBarConstant: SideBarItem[] = [
       },
     ],
   },
-  {
-    label: "Members",
-    link: "/member/members",
-    icon: Users,
-    permissionName: Member_Permissions.VIEW_MEMBER,
-    permissionAction: "read",
-    subItems: [
-      {
-        label: "All Members",
-        link: "/member/members",
-        permissionName: Member_Permissions.VIEW_MEMBER,
-        permissionAction: "read",
-      },
-      {
-        label: "Add Member",
-        link: "/member/create",
-        permissionName: Member_Permissions.CREATE_MEMBER,
-        permissionAction: "create",
-      },
-    ],
-  },
+  // {
+  //   label: "Members",
+  //   link: "/member/members",
+  //   icon: Users,
+  //   permissionName: Member_Permissions.VIEW_MEMBER,
+  //   permissionAction: "read",
+  //   subItems: [
+  //     {
+  //       label: "All Members",
+  //       link: "/member/members",
+  //       permissionName: Member_Permissions.VIEW_MEMBER,
+  //       permissionAction: "read",
+  //     },
+  //     {
+  //       label: "Add Member",
+  //       link: "/member/create",
+  //       permissionName: Member_Permissions.CREATE_MEMBER,
+  //       permissionAction: "create",
+  //     },
+  //   ],
+  // },
 ];
 
 export default sideBarConstant;

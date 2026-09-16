@@ -1,5 +1,8 @@
 import { useState, useMemo } from "react";
 import { Plus, Download } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+import api from "../../../utils/axios.utils";
 
 import AlbumStatsCards from "../Components/AlbumStatsCards";
 import AlbumFilterBar from "../Components/AlbumFilterBar";
@@ -20,7 +23,12 @@ const ManageAlbumsPage = () => {
 
   const { data, isLoading } = useFetchAlbums(page, limit);
 
-  const albums: Manage_Albums_Card[] = useMemo(() => data ?? [], [data]);
+  const albums: Manage_Albums_Card[] = useMemo(() => {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray((data as any)?.data)) return (data as any).data;
+    if (Array.isArray((data as any)?.albums)) return (data as any).albums;
+    return [];
+  }, [data]);
 
   const pagination = data?.pagination;
 
@@ -28,13 +36,22 @@ const ManageAlbumsPage = () => {
     const query = searchQuery.trim().toLowerCase();
 
     return albums.filter((album) => {
+      const albumTitle = album.title || "";
+      const albumEventTitle =
+        typeof album.event === "object" && album.event !== null
+          ? album.event.title || ""
+          : typeof album.event === "string"
+            ? album.event
+            : "";
+      const albumDesc = album.description || "";
+
       const matchesSearch =
         !query ||
-        album.title.toLowerCase().includes(query) ||
-        album.event?.title?.toLowerCase().includes(query) ||
-        album.description?.toLowerCase().includes(query);
+        albumTitle.toLowerCase().includes(query) ||
+        albumEventTitle.toLowerCase().includes(query) ||
+        albumDesc.toLowerCase().includes(query);
 
-      const matchesEvent = selectedEvent === "All" || album.event?.title === selectedEvent;
+      const matchesEvent = selectedEvent === "All" || albumEventTitle === selectedEvent;
 
       const matchesVisibility =
         selectedVisibility === "All" || album.visibility === selectedVisibility;
@@ -48,7 +65,10 @@ const ManageAlbumsPage = () => {
   const computedStats = useMemo(() => {
     const total = albums.length;
 
-    const totalImages = albums.reduce((acc, album) => acc + album.imageCount, 0);
+    const totalImages = albums.reduce(
+      (acc, album) => acc + (album.imageCount ?? 0),
+      0,
+    );
 
     const publicCount = albums.filter((album) => album.visibility === "public").length;
 
@@ -86,6 +106,53 @@ const ManageAlbumsPage = () => {
     setPage(1);
   };
 
+  const queryClient = useQueryClient();
+
+  const handleDeleteAlbum = async (id: string) => {
+    const targetAlbum = albums.find((a) => a._id === id);
+    const result = await Swal.fire({
+      title: "Delete Album?",
+      text: `Are you sure you want to delete "${targetAlbum?.title || "this album"}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#27272a",
+      confirmButtonText: "Yes, delete",
+      background: "#151a20",
+      color: "#ffffff",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/api/v1/gallery/${id}`);
+        await queryClient.invalidateQueries({ queryKey: ["findAllGallery"] });
+        await queryClient.invalidateQueries({ queryKey: ["allAlbumNames"] });
+        Swal.fire({
+          title: "Deleted!",
+          text: "Album deleted successfully.",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          timer: 2500,
+          showConfirmButton: false,
+          background: "#181b20",
+          color: "#ffffff",
+        });
+      } catch (err: any) {
+        Swal.fire({
+          title: "Error",
+          text:
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to delete album.",
+          icon: "error",
+          background: "#181b20",
+          color: "#ffffff",
+        });
+      }
+    }
+  };
+
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
     selectedEvent !== "All" ||
@@ -95,14 +162,23 @@ const ManageAlbumsPage = () => {
   const handleExportCSV = () => {
     const headers = ["Title", "Event", "Images", "Visibility", "Status", "Created At"];
 
-    const rows = filteredAlbums.map((album) => [
-      `"${album.title}"`,
-      `"${album.event.title}"`,
-      album.imageCount,
-      album.visibility,
-      album.status,
-      `"${new Date(album.createdAt).toLocaleDateString()}"`,
-    ]);
+    const rows = filteredAlbums.map((album) => {
+      const eventTitle =
+        typeof album.event === "object" && album.event !== null
+          ? album.event.title || ""
+          : typeof album.event === "string"
+            ? album.event
+            : "";
+      const createdAtStr = album.createdAt ? new Date(album.createdAt).toLocaleDateString() : "";
+      return [
+        `"${album.title || ""}"`,
+        `"${eventTitle}"`,
+        album.imageCount ?? 0,
+        album.visibility || "public",
+        album.status || "published",
+        `"${createdAtStr}"`,
+      ];
+    });
 
     const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 
@@ -195,8 +271,7 @@ const ManageAlbumsPage = () => {
         ) : (
           <AlbumTable
             albums={filteredAlbums}
-
-            onDeleteAlbum={(id) => console.log(id)}
+            onDeleteAlbum={handleDeleteAlbum}
           />
         )}
       </div>

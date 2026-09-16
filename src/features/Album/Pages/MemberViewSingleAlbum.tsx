@@ -12,92 +12,50 @@ import {
   Tag,
   User,
   X,
+  AlertCircle,
 } from "lucide-react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import useFetchGalleryBySlugQuery from "../../Image/hooks/useFetchGalleryBySlugQuery";
+import useGalleryFetch from "../../Image/hooks/useGalleryFetch";
+import GDGLoader from "../../../Components/GDGLoader";
 
-const album = {
-  _id: "6a92c2ddae98b3657d46552c",
-  title: "Break The Pattern",
-  albumImageUrl:
-    "https://res.cloudinary.com/startup-grind/image/upload/c_scale,w_2560/c_crop,h_640,w_2560,y_0.0_mul_h_sub_0.0_mul_640/c_crop,h_640,w_2560/c_fill,dpr_2.0,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/event_banners/blob_6oW5Nxm",
-  imageCount: 12,
-  slug: "break-the-pattern",
-  description:
-    "Break the Pattern is a community-powered event organised by Google Developer Group Ranchi, in collaboration with Women Techmakers & Technovation, in association with EDC BIT Mesra, and supported by the Cloud Native Community Groups Ranchi.",
-  event: {
-    _id: "6a8e0f93a58d85240c98a6fb",
-    title: "Break The Pattern 2026",
-  },
-  images: [
-    {
-      _id: "img-1",
-      url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-1",
-      caption: "Opening session with the community",
-      featured: true,
-    },
-    {
-      _id: "img-2",
-      url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-2",
-      caption: "Community members enjoying the event",
-      featured: true,
-    },
-    {
-      _id: "img-3",
-      url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-3",
-      caption: "A memorable event moment",
-      featured: false,
-    },
-    {
-      _id: "img-4",
-      url: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-4",
-      caption: "Networking and conversations",
-      featured: false,
-    },
-    {
-      _id: "img-5",
-      url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-5",
-      caption: "Live event experience",
-      featured: false,
-    },
-    {
-      _id: "img-6",
-      url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80",
-      publicId: "gallery/image-6",
-      caption: "Event lights and atmosphere",
-      featured: false,
-    },
-  ],
-  tags: ["music", "festival", "live", "2026", "concert"],
-  visibility: "public",
-  status: "published",
-  uploadedBy: {
-    _id: "6a91c8c9fa1164f0601271c6",
-    name: "GDG Ranchi",
-  },
-  isDeleted: false,
-  createdAt: "2026-08-29T11:30:37.186Z",
-  updatedAt: "2026-09-02T09:15:22.186Z",
-};
-
-const formatDate = (date: string) =>
-  new Intl.DateTimeFormat("en-IN", {
+const formatDate = (date?: string) => {
+  if (!date) return "—";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "—";
+  return new Intl.DateTimeFormat("en-IN", {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }).format(new Date(date));
+  }).format(d);
+};
 
 const MemberViewSingleAlbum = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const querySlug = searchParams.get("slug") || "";
+
+  // If no slug in query param, fetch galleries list and select first
+  const { data: galleriesList, isLoading: isListLoading } = useGalleryFetch();
+  const activeSlug = querySlug || galleriesList?.data?.[0]?.slug || "";
+
+  const {
+    data: apiAlbum,
+    isLoading: isAlbumLoading,
+    isError,
+  } = useFetchGalleryBySlugQuery(activeSlug);
+
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
-  const selectedImage = useMemo(() => {
-    if (selectedImageIndex === null) return null;
+  const imagesList = useMemo(() => {
+    if (!apiAlbum?.images || !Array.isArray(apiAlbum.images)) return [];
+    return apiAlbum.images;
+  }, [apiAlbum]);
 
-    return album.images[selectedImageIndex];
-  }, [selectedImageIndex]);
+  const selectedImage = useMemo(() => {
+    if (selectedImageIndex === null || !imagesList[selectedImageIndex]) return null;
+    return imagesList[selectedImageIndex];
+  }, [selectedImageIndex, imagesList]);
 
   const openImage = useCallback((index: number) => {
     setSelectedImageIndex(index);
@@ -109,22 +67,20 @@ const MemberViewSingleAlbum = () => {
 
   const showPreviousImage = useCallback(() => {
     setSelectedImageIndex((current) => {
-      if (current === null) return null;
-
-      return current === 0 ? album.images.length - 1 : current - 1;
+      if (current === null || imagesList.length === 0) return null;
+      return current === 0 ? imagesList.length - 1 : current - 1;
     });
-  }, []);
+  }, [imagesList.length]);
 
   const showNextImage = useCallback(() => {
     setSelectedImageIndex((current) => {
-      if (current === null) return null;
-
-      return current === album.images.length - 1 ? 0 : current + 1;
+      if (current === null || imagesList.length === 0) return null;
+      return current === imagesList.length - 1 ? 0 : current + 1;
     });
-  }, []);
+  }, [imagesList.length]);
 
   const visibilityConfig = useMemo(() => {
-    return album.visibility === "public"
+    return apiAlbum?.visibility === "public"
       ? {
           label: "Public",
           icon: Eye,
@@ -135,15 +91,45 @@ const MemberViewSingleAlbum = () => {
           icon: Lock,
           className: "border-amber-500/20 bg-amber-500/10 text-amber-400",
         };
-  }, []);
+  }, [apiAlbum?.visibility]);
 
   const statusConfig = useMemo(() => {
-    return album.status === "published"
+    return apiAlbum?.status === "published"
       ? "border-lime-500/20 bg-lime-500/10 text-lime-400"
       : "border-zinc-500/20 bg-zinc-500/10 text-zinc-400";
-  }, []);
+  }, [apiAlbum?.status]);
+
+  if (isAlbumLoading || (isListLoading && !querySlug)) {
+    return <GDGLoader />;
+  }
+
+  if (isError || !apiAlbum) {
+    return (
+      <div className="min-h-screen bg-[#0b0d0c] text-white flex flex-col items-center justify-center p-6 text-center">
+        <div className="h-16 w-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-4">
+          <AlertCircle size={32} />
+        </div>
+        <h2 className="text-xl font-bold text-white">Album Not Found</h2>
+        <p className="mt-2 text-xs text-zinc-400 max-w-sm">
+          No album found with the specified slug. Please return to your albums dashboard.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/member/album")}
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 px-5 py-2.5 text-xs font-semibold text-white transition cursor-pointer"
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Albums</span>
+        </button>
+      </div>
+    );
+  }
 
   const VisibilityIcon = visibilityConfig.icon;
+  const eventTitle =
+    typeof apiAlbum.event === "object" && apiAlbum.event !== null
+      ? (apiAlbum.event as any).title || "GDG Event"
+      : apiAlbum.event || "GDG Event";
 
   return (
     <div className="min-h-screen bg-[#0b0d0c] text-white">
@@ -152,8 +138,8 @@ const MemberViewSingleAlbum = () => {
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
-              onClick={() => window.history.back()}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-white/[0.08] text-zinc-400 transition hover:bg-white/[0.04] hover:text-white"
+              onClick={() => navigate(-1)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-white/[0.08] text-zinc-400 transition hover:bg-white/[0.04] hover:text-white cursor-pointer"
               aria-label="Go back"
             >
               <ArrowLeft size={16} />
@@ -165,7 +151,7 @@ const MemberViewSingleAlbum = () => {
                 <span className="text-zinc-700">/</span>
                 <span className="text-zinc-600">Gallery</span>
                 <span className="text-zinc-700">/</span>
-                <span className="truncate text-lime-400">{album.title}</span>
+                <span className="truncate text-lime-400">{apiAlbum.title}</span>
               </div>
 
               <h1 className="mt-1 truncate text-sm font-semibold text-zinc-100 sm:text-base">
@@ -182,8 +168,11 @@ const MemberViewSingleAlbum = () => {
             <section className="overflow-hidden rounded-lg border border-white/[0.07] bg-[#101211]">
               <div className="relative aspect-[21/8] overflow-hidden bg-[#151816]">
                 <img
-                  src={album.albumImageUrl}
-                  alt={album.title}
+                  src={
+                    apiAlbum.albumImageUrl ||
+                    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80"
+                  }
+                  alt={apiAlbum.title}
                   className="h-full w-full object-cover"
                 />
 
@@ -194,7 +183,7 @@ const MemberViewSingleAlbum = () => {
                     <span
                       className={`rounded-md border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusConfig}`}
                     >
-                      {album.status}
+                      {apiAlbum.status || "published"}
                     </span>
 
                     <span
@@ -205,28 +194,32 @@ const MemberViewSingleAlbum = () => {
                     </span>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-white sm:text-2xl">{album.title}</h2>
+                  <h2 className="text-xl font-semibold text-white sm:text-2xl">
+                    {apiAlbum.title}
+                  </h2>
                 </div>
               </div>
 
               <div className="p-5 sm:p-6">
                 <div className="flex items-center gap-2 text-xs text-zinc-500">
                   <Images size={14} className="text-lime-400" />
-                  <span>{album.images.length} Images</span>
+                  <span>{imagesList.length} Images</span>
 
                   <span className="text-zinc-700">•</span>
 
                   <CalendarDays size={14} className="text-lime-400" />
-                  <span>{formatDate(album.createdAt)}</span>
+                  <span>{formatDate(apiAlbum.createdAt)}</span>
                 </div>
 
-                {album.description && (
+                {apiAlbum.description && (
                   <div className="mt-5 border-t border-white/[0.06] pt-5">
                     <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-600">
                       Description
                     </p>
 
-                    <p className="mt-2 text-sm leading-6 text-zinc-400">{album.description}</p>
+                    <p className="mt-2 text-sm leading-6 text-zinc-400">
+                      {apiAlbum.description}
+                    </p>
                   </div>
                 )}
               </div>
@@ -238,28 +231,28 @@ const MemberViewSingleAlbum = () => {
                   <h3 className="text-sm font-semibold text-zinc-200">Album Images</h3>
 
                   <p className="mt-1 text-xs text-zinc-600">
-                    {album.images.length} images in this album
+                    {imagesList.length} images in this album
                   </p>
                 </div>
 
                 <div className="flex h-8 items-center gap-2 rounded-md border border-white/[0.07] bg-white/[0.02] px-2.5 text-xs text-zinc-500">
                   <Images size={13} />
-                  {album.imageCount}
+                  {apiAlbum.imageCount ?? imagesList.length}
                 </div>
               </div>
 
-              {album.images.length > 0 ? (
+              {imagesList.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3 sm:gap-3 sm:p-5 lg:grid-cols-4">
-                  {album.images.map((image, index) => (
+                  {imagesList.map((image, index) => (
                     <button
-                      key={image._id}
+                      key={image._id || `img-${index}`}
                       type="button"
                       onClick={() => openImage(index)}
-                      className="group relative aspect-square overflow-hidden rounded-md bg-[#151816]"
+                      className="group relative aspect-square overflow-hidden rounded-md bg-[#151816] cursor-pointer"
                     >
                       <img
                         src={image.url}
-                        alt={image.caption}
+                        alt={image.caption || `Photo ${index + 1}`}
                         loading="lazy"
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                       />
@@ -299,15 +292,15 @@ const MemberViewSingleAlbum = () => {
               </div>
 
               <div className="divide-y divide-white/[0.05]">
-                <InfoRow label="Album ID" value={album._id} />
+                <InfoRow label="Album ID" value={apiAlbum._id} />
 
-                <InfoRow label="Slug" value={album.slug} />
+                <InfoRow label="Slug" value={apiAlbum.slug} />
 
-                <InfoRow label="Total Images" value={`${album.images.length} Images`} />
+                <InfoRow label="Total Images" value={`${imagesList.length} Images`} />
 
-                <InfoRow label="Created" value={formatDate(album.createdAt)} />
+                <InfoRow label="Created" value={formatDate(apiAlbum.createdAt)} />
 
-                <InfoRow label="Last Updated" value={formatDate(album.updatedAt)} />
+                <InfoRow label="Last Updated" value={formatDate(apiAlbum.updatedAt)} />
               </div>
             </section>
 
@@ -327,7 +320,7 @@ const MemberViewSingleAlbum = () => {
                       Event
                     </p>
 
-                    <p className="mt-1 truncate text-sm text-zinc-300">{album.event.title}</p>
+                    <p className="mt-1 truncate text-sm text-zinc-300">{eventTitle}</p>
                   </div>
                 </div>
 
@@ -338,16 +331,16 @@ const MemberViewSingleAlbum = () => {
 
                   <div className="min-w-0">
                     <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-600">
-                      Uploaded By
+                      Community
                     </p>
 
-                    <p className="mt-1 truncate text-sm text-zinc-300">{album.uploadedBy.name}</p>
+                    <p className="mt-1 truncate text-sm text-zinc-300">GDG Ranchi</p>
                   </div>
                 </div>
               </div>
             </section>
 
-            {album.tags.length > 0 && (
+            {Array.isArray(apiAlbum.tags) && apiAlbum.tags.length > 0 && (
               <section className="rounded-lg border border-white/[0.07] bg-[#101211]">
                 <div className="flex items-center gap-2 border-b border-white/[0.06] px-5 py-4">
                   <Tag size={14} className="text-lime-400" />
@@ -356,7 +349,7 @@ const MemberViewSingleAlbum = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-2 p-5">
-                  {album.tags.map((tag) => (
+                  {apiAlbum.tags.map((tag) => (
                     <span
                       key={tag}
                       className="rounded-md border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 text-xs text-zinc-500"
@@ -380,17 +373,17 @@ const MemberViewSingleAlbum = () => {
           <button
             type="button"
             onClick={closeImage}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-md border border-white/10 bg-black/40 text-zinc-300 transition hover:bg-white/10 hover:text-white"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-md border border-white/10 bg-black/40 text-zinc-300 transition hover:bg-white/10 hover:text-white cursor-pointer"
             aria-label="Close preview"
           >
             <X size={18} />
           </button>
 
-          {album.images.length > 1 && (
+          {imagesList.length > 1 && (
             <button
               type="button"
               onClick={showPreviousImage}
-              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md border border-white/10 bg-black/40 text-white transition hover:bg-white/10 sm:left-6"
+              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md border border-white/10 bg-black/40 text-white transition hover:bg-white/10 sm:left-6 cursor-pointer"
               aria-label="Previous image"
             >
               <ChevronLeft size={20} />
@@ -400,24 +393,26 @@ const MemberViewSingleAlbum = () => {
           <div className="flex max-h-full w-full max-w-6xl flex-col items-center">
             <img
               src={selectedImage.url}
-              alt={selectedImage.caption}
+              alt={selectedImage.caption || "Image Preview"}
               className="max-h-[78vh] max-w-full rounded-lg object-contain"
             />
 
             <div className="mt-4 flex w-full max-w-4xl items-center justify-between gap-4">
-              <p className="truncate text-sm text-zinc-300">{selectedImage.caption}</p>
+              <p className="truncate text-sm text-zinc-300">
+                {selectedImage.caption || apiAlbum.title}
+              </p>
 
               <span className="shrink-0 text-xs text-zinc-600">
-                {selectedImageIndex + 1} / {album.images.length}
+                {selectedImageIndex + 1} / {imagesList.length}
               </span>
             </div>
           </div>
 
-          {album.images.length > 1 && (
+          {imagesList.length > 1 && (
             <button
               type="button"
               onClick={showNextImage}
-              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md border border-white/10 bg-black/40 text-white transition hover:bg-white/10 sm:right-6"
+              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md border border-white/10 bg-black/40 text-white transition hover:bg-white/10 sm:right-6 cursor-pointer"
               aria-label="Next image"
             >
               <ChevronRight size={20} />

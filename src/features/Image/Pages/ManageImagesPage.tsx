@@ -11,9 +11,9 @@ import ImageListView from "../Components/ImageListView";
 import ImagePagination from "../Components/ImagePagination";
 import UploadImagesModal from "../Components/UploadImagesModal";
 import ImageViewModal from "../Components/ImageViewModal";
-import useGalleryFetch from "../hooks/useGalleryFetch";
 import { useFetchAllAlbumNamesQuery } from "../hooks/useFetchAllAlbumNamesQuery";
 import { useFetchAllEventNamesQuery } from "../../Event/hook/useFetchAllEventNamesQuery";
+import { useFetchAllImagesQuery } from "../hooks/useFetchAllImagesQuery";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../Auth/v1/store/useAuth";
 import api from "../../../utils/axios.utils";
@@ -23,45 +23,39 @@ const ManageImagesPage = () => {
   const queryClient = useQueryClient();
 
   // TanStack Queries for backend data
-  const { data: galleryData } = useGalleryFetch();
+  const { data: allImagesData } = useFetchAllImagesQuery();
   const { data: albumNamesData } = useFetchAllAlbumNamesQuery();
   const { data: eventNamesData } = useFetchAllEventNamesQuery();
 
   // Convert backend gallery images into ImageItems
   const backendImages: ImageItem[] = useMemo(() => {
-    if (!galleryData?.data || !Array.isArray(galleryData.data)) return [];
-    const items: ImageItem[] = [];
-    galleryData.data.forEach((gallery) => {
-      const gImages = (gallery as any).images;
-      if (Array.isArray(gImages)) {
-        gImages.forEach((img: any, idx: number) => {
-          const id = img._id || img.publicId || `${gallery.slug}-${idx}`;
-          items.push({
-            id,
-            publicId: img.publicId || id,
-            fileName: img.caption || `${gallery.title} Photo ${idx + 1}`,
-            url: img.url,
-            albumName: gallery.title,
-            albumSlug: gallery.slug,
-            galleryId: gallery._id,
-            eventName:
-              typeof gallery.event === "object"
-                ? (gallery.event as any)?.title || gallery.title
-                : gallery.event || gallery.title,
-            eventShort: (gallery.title || "GDG").slice(0, 7),
-            uploader: gallery.uploadedBy ? "GDG Organizer" : "Community Lead",
-            timeAgo: "Recently",
-            size: "3.2 MB",
-            format: "JPG",
-            dimensions: "1920 × 1080",
-            tags: (gallery as any).tags || ["Community", "Event"],
-            createdDate: (gallery as any).createdAt,
-          });
-        });
-      }
+    if (!allImagesData || !Array.isArray(allImagesData)) return [];
+    return allImagesData.map((img, idx) => {
+      const id = img._id || img.publicId || `img-${idx}`;
+      return {
+        id,
+        publicId: img.publicId || id,
+        fileName: img.caption || `${img.albumName || "Photo"} ${idx + 1}`,
+        url: img.url,
+        albumName: img.albumName || "General Album",
+        albumSlug: img.albumSlug || "",
+        galleryId: img.galleryId,
+        eventName: img.event || "GDG Event",
+        eventShort: String(img.event || img.albumName || "GDG").slice(0, 7),
+        uploader: img.uploadedBy ? "GDG Organizer" : "Community Lead",
+        timeAgo: "Recently",
+        size: "3.2 MB",
+        format: img.url?.toLowerCase().endsWith(".png")
+          ? "PNG"
+          : img.url?.toLowerCase().endsWith(".webp")
+            ? "WEBP"
+            : "JPG",
+        dimensions: "1920 × 1080",
+        tags: ["Community", "Event"],
+        createdDate: img.createdAt,
+      };
     });
-    return items;
-  }, [galleryData]);
+  }, [allImagesData]);
 
   // Local/staged uploads
   const [localImages, setLocalImages] = useState<ImageItem[]>(() => {
@@ -69,7 +63,29 @@ const ManageImagesPage = () => {
       const stored = localStorage.getItem("gdg_managed_images");
       if (stored && stored !== "undefined" && stored !== "null") {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const realOnly = parsed.filter(
+            (img: any) =>
+              img &&
+              !img.fileName?.includes("jts2026") &&
+              !img.fileName?.includes("team_hackathon") &&
+              !img.fileName?.includes("coding_session") &&
+              !img.fileName?.includes("speaker_session") &&
+              !img.fileName?.includes("audience.jpg") &&
+              !img.fileName?.includes("winners.jpg") &&
+              !img.fileName?.includes("ai_talk.jpg") &&
+              !img.fileName?.includes("workshop_day2") &&
+              !img.fileName?.includes("venue_outside") &&
+              !img.fileName?.includes("booth_area") &&
+              !img.fileName?.includes("panel_discussion") &&
+              !img.fileName?.includes("organizers_team") &&
+              img.albumName !== "Jharkhand Tech Summit 2026",
+          );
+          if (realOnly.length !== parsed.length) {
+            localStorage.setItem("gdg_managed_images", JSON.stringify(realOnly));
+          }
+          return realOnly;
+        }
       }
     } catch {
       // fallback
@@ -104,28 +120,14 @@ const ManageImagesPage = () => {
     if (Array.isArray(albumNamesData) && albumNamesData.length > 0) {
       return [...new Set(albumNamesData.map((a: any) => a.title).filter(Boolean))];
     }
-    return [
-      "Women Techmakers Ranchi Meetup",
-      "DevFest Ranchi 2025",
-      "Jharkhand Tech Summit 2026",
-      "MERN Stack Workshop",
-      "Dev Connect Meetup",
-      "AI in Action - Tech Talk",
-    ];
+    return [];
   }, [albumNamesData]);
 
   const eventOptions = useMemo(() => {
     if (Array.isArray(eventNamesData) && eventNamesData.length > 0) {
       return [...new Set(eventNamesData.map((e: any) => e.title).filter(Boolean))];
     }
-    return [
-      "DevFest Ranchi",
-      "WTM Ranchi",
-      "JTS 2026",
-      "MERN Workshop",
-      "Dev Connect",
-      "AI Talk",
-    ];
+    return [];
   }, [eventNamesData]);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -247,6 +249,7 @@ const ManageImagesPage = () => {
       });
       queryClient.invalidateQueries({ queryKey: ["gallery"] });
       queryClient.invalidateQueries({ queryKey: ["galleryBySlug"] });
+      queryClient.invalidateQueries({ queryKey: ["allImages"] });
     } catch (err) {
       console.warn("Backend delete sync note:", err);
     }

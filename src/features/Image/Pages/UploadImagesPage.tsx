@@ -183,7 +183,7 @@ const UploadImagesPage = () => {
         albumSlug,
         galleryId,
         eventName: form.event || "",
-        eventShort: form.event?.slice(0, 7) || "",
+        eventShort: form.event ? String(form.event).slice(0, 7) : "",
         format: (selectedFile.format?.toUpperCase() === "PNG"
           ? "PNG"
           : selectedFile.format?.toUpperCase() === "WEBP"

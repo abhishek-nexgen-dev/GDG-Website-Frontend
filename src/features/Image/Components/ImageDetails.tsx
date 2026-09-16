@@ -150,7 +150,7 @@ const ImageDetails = ({ form, update }: Props) => {
                   .filter(Boolean),
               )
             }
-            placeholder="keynote, speaker, jts2026"
+            placeholder="e.g. keynote, speaker, devfest"
             className="h-10 w-full rounded-lg border border-white/[0.08] bg-[#1a2027] px-3 text-xs text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50"
           />
         </div>
