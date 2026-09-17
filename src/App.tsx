@@ -3,6 +3,7 @@ import AppRoutes from "./routes/AppRoutes";
 import gsap from "gsap";
 import { ReactLenis } from "lenis/react";
 import type { LenisRef } from "lenis/react";
+import IntroPreloader from "./Components/IntroPreloader";
 
 import "lenis/dist/lenis.css";
 import { useEffect, useRef } from "react";
@@ -27,6 +28,8 @@ function App() {
 
   return (
     <>
+      <IntroPreloader />
+
       <ReactLenis
         ref={lenisRef}
         root

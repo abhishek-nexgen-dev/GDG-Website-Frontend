@@ -13,12 +13,6 @@ const iconSizes = {
   lg: 38,
 } as const;
 
-const textSizes = {
-  sm: "text-[13px]",
-  md: "text-[14px] sm:text-[15px]",
-  lg: "text-base sm:text-lg",
-} as const;
-
 export function Logo({ className, showText = true, size = "md" }: LogoProps) {
   const icon = iconSizes[size];
 
@@ -37,9 +31,14 @@ export function Logo({ className, showText = true, size = "md" }: LogoProps) {
         fetchPriority="high"
       />
       {showText && (
-        <span className={clsx("truncate font-semibold tracking-tight text-white", textSizes[size])}>
-          GDG <span className="font-normal text-text-secondary">Ranchi</span>
-        </span>
+        <div className="flex flex-col leading-tight min-w-0">
+          <span className="text-xs sm:text-[13px] font-semibold text-white tracking-tight leading-none">
+            Google Developer Groups
+          </span>
+          <span className="text-[11px] sm:text-xs text-white/60 font-medium tracking-tight mt-0.5">
+            Ranchi
+          </span>
+        </div>
       )}
     </span>
   );

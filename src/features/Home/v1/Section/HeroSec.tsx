@@ -1,150 +1,228 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Users } from "lucide-react";
-import React from "react";
+import { ArrowDown, ArrowRight, Calendar, MapPin, Users, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { showJoinCommunityModal } from "../../../../utils/communityAlert";
 
-const images = [
-  "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format",
-  "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800&auto=format",
-];
+// Ultra-smooth GPU-accelerated stagger variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.65,
+      ease: [0.22, 1, 0.36, 1], // Smooth cubic out curve
+    },
+  },
+};
 
 const HeroSec = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const shiftX1 = useTransform(mouseX, [-1000, 1000], [-15, 15]);
-  const shiftY1 = useTransform(mouseY, [-1000, 1000], [-15, 15]);
-
-  const shiftX2 = useTransform(mouseX, [-1000, 1000], [25, -25]);
-  const shiftY2 = useTransform(mouseY, [-1000, 1000], [25, -25]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    mouseX.set(clientX - innerWidth / 2);
-    mouseY.set(clientY - innerHeight / 2);
-  };
-
   return (
-    <section
-      className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#050505] pt-28 pb-16 lg:py-0"
-      onMouseMove={handleMouseMove}
-    >
-      {/* Background Glows */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -left-[10%] top-0 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-[#4285F4]/10 blur-[150px]" />
-        <div className="absolute -right-[10%] bottom-0 h-[400px] w-[400px] sm:h-[600px] sm:w-[600px] rounded-full bg-[#FBBC04]/10 blur-[150px]" />
+    <section className="relative flex min-h-[100dvh] w-full flex-col justify-between overflow-hidden bg-[#050505] text-white pt-24 sm:pt-28 lg:pt-32">
+      {/* ================= BACKGROUND GRID & RADAR ================= */}
+      <div className="absolute inset-0 pointer-events-none select-none">
+        {/* Subtle Grid */}
+        <div
+          className="h-full w-full opacity-[0.06] transform-gpu"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 1px, transparent 1px)
+            `,
+            backgroundSize: "64px 64px",
+            transform: "translateZ(0)",
+          }}
+        />
+
+        {/* Ambient Subtle Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.5)_60%,_#050505_100%)] pointer-events-none" />
+
+        {/* Big Center Radar Circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] sm:w-[520px] sm:h-[520px] lg:w-[680px] lg:h-[680px] rounded-full border border-white/[0.08] pointer-events-none transform-gpu" />
+
+        {/* Center Soundwave / Frequency Texture inside circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-1 sm:gap-1.5 opacity-[0.12] w-full max-w-[420px] sm:max-w-[560px] h-36 overflow-hidden pointer-events-none">
+          {[
+            18, 32, 24, 45, 60, 38, 75, 52, 90, 68, 100, 78, 115, 85, 120, 95, 110, 80, 105, 70,
+            90, 60, 80, 48, 65, 40, 55, 30, 45, 20, 35, 15,
+          ].map((height, i) => (
+            <div
+              key={i}
+              className="w-1 bg-white rounded-full transition-all duration-700"
+              style={{ height: `${height}%` }}
+            />
+          ))}
+        </div>
+
+        {/* Floating Accent: Left Red Square */}
+        <div className="absolute left-[8%] sm:left-[14%] lg:left-[18%] top-[32%] sm:top-[30%] w-3 h-3 sm:w-3.5 sm:h-3.5 bg-[#EA4335] rounded-[2px] shadow-[0_0_20px_rgba(234,67,53,0.8)] animate-pulse pointer-events-none" />
+
+        {/* Floating Accent: Right Green Square */}
+        <div className="absolute right-[8%] sm:right-[14%] lg:right-[18%] top-[32%] sm:top-[30%] w-3 h-3 sm:w-3.5 sm:h-3.5 bg-[#34A853] rounded-[2px] shadow-[0_0_20px_rgba(52,168,83,0.8)] animate-pulse pointer-events-none" />
+
+        {/* Floating Right Angled Handwritten Annotation */}
+        <div className="hidden lg:flex flex-col items-start absolute right-10 xl:right-20 top-[42%] -rotate-12 select-none pointer-events-none z-10">
+          <span className="text-white/80 font-serif italic text-sm xl:text-base font-bold tracking-wide leading-tight drop-shadow-md">
+            Same
+          </span>
+          <span className="text-white/80 font-serif italic text-sm xl:text-base font-bold tracking-wide leading-tight drop-shadow-md">
+            People
+          </span>
+          <span className="text-white/80 font-serif italic text-sm xl:text-base font-bold tracking-wide leading-tight drop-shadow-md">
+            Bigger
+          </span>
+          <span className="text-white font-serif italic text-sm xl:text-base font-bold tracking-wide leading-tight drop-shadow-md">
+            Possibilities
+          </span>
+          <div className="h-[2px] w-full bg-[#EA4335] mt-1 rounded-full shadow-[0_0_10px_rgba(234,67,53,0.9)]" />
+        </div>
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-12 sm:gap-16 px-4 sm:px-6 lg:flex-row lg:px-12">
-        {/* Left Content */}
-        <div className="w-full max-w-xl lg:w-1/2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0A0A0C] px-4 py-2 text-xs sm:text-sm font-semibold text-white/70 shadow-lg">
-            <span className="text-[#34A853]">+</span> Google Developer Groups Ranchi
-          </div>
+      {/* ================= CENTER CONTENT WITH GPU-ACCELERATED STAGGER ================= */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center my-auto transform-gpu"
+        style={{ transform: "translateZ(0)" }}
+      >
+        {/* 1. Top Tag Pill */}
+        <motion.div
+          variants={itemVariants}
+          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-4 py-1.5 backdrop-blur-md shadow-2xl transition-transform hover:scale-105 transform-gpu"
+        >
+          <span className="inline-flex items-center text-xs font-black tracking-tight">
+            <span className="text-[#EA4335]">&lt;</span>
+            <span className="text-[#FBBC04]">&gt;</span>
+          </span>
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-white/90">
+            GDG RANCHI 2026
+          </span>
+        </motion.div>
 
-          <h1 className="mt-6 sm:mt-8 text-4xl sm:text-5xl font-black leading-[1.1] tracking-tight text-white lg:text-7xl">
-            Build. Learn. Connect.
-            <br />
-            <span className="text-primary">Grow Together.</span>
-          </h1>
+        {/* 2. Main Headline */}
+        <motion.h1
+          variants={itemVariants}
+          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          className="mt-5 sm:mt-7 font-black tracking-tight text-center leading-[0.92] select-none transform-gpu"
+        >
+          <span className="block text-6xl sm:text-8xl md:text-9xl lg:text-[112px] xl:text-[124px] bg-gradient-to-b from-white via-[#f0f0f5] to-[#a2a2b0] bg-clip-text text-transparent drop-shadow-[0_12px_32px_rgba(255,255,255,0.08)]">
+            GDG
+          </span>
+          <span className="block text-6xl sm:text-8xl md:text-9xl lg:text-[112px] xl:text-[124px] bg-gradient-to-b from-white via-[#f0f0f5] to-[#a2a2b0] bg-clip-text text-transparent drop-shadow-[0_12px_32px_rgba(255,255,255,0.08)]">
+            RANCHI
+            <span className="inline-block w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full bg-[#4285F4] ml-2 sm:ml-3 mb-1 sm:mb-2 align-baseline shadow-[0_0_24px_rgba(66,133,244,0.9)]" />
+          </span>
+        </motion.h1>
 
-          <p className="mt-6 max-w-lg text-base sm:text-lg leading-relaxed text-white/60">
-            Join Ranchi's most vibrant developer community. Learn from Google technologies, connect
-            with fellow developers, and build projects that matter.
-          </p>
+        {/* 3. Tagline */}
+        <motion.div
+          variants={itemVariants}
+          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          className="mt-5 sm:mt-6 text-xs sm:text-sm md:text-base font-bold tracking-[0.28em] text-white/85 uppercase transform-gpu"
+        >
+          BUILD · LEARN · CONNECT · GROW
+        </motion.div>
 
-          <div className="mt-8 sm:mt-10 flex flex-wrap gap-4">
-            <button
-              onClick={showJoinCommunityModal}
-              className="relative overflow-hidden rounded-xl bg-[#4285F4] px-6 sm:px-8 py-3 sm:py-3.5 font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-[#3367d6] hover:shadow-[0_0_40px_rgba(66,133,244,0.4)] group"
-            >
-              <span className="relative z-10 text-sm sm:text-base">Join Community</span>
-              <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-all duration-1000 group-hover:translate-x-full" />
-            </button>
-            <Link
-              to="/events"
-              className="rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg"
-            >
-              Explore Events
-            </Link>
-          </div>
+        {/* 4. Description */}
+        <motion.p
+          variants={itemVariants}
+          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          className="mt-3.5 sm:mt-4 max-w-xl text-xs sm:text-sm md:text-[15px] leading-relaxed text-white/60 transform-gpu"
+        >
+          A thriving developer community in Ranchi, empowering students, professionals and creators
+          to learn, build and grow together with Google technologies.
+        </motion.p>
 
-          {/* Stats */}
-          <div className="mt-12 sm:mt-16 grid grid-cols-2 gap-6 sm:gap-8 sm:grid-cols-4">
-            <div>
-              <div className="text-3xl sm:text-4xl font-black text-[#4285F4]">
-                800<span className="text-[#4285F4]/70">+</span>
-              </div>
-              <div className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium tracking-wide text-white/50 uppercase">
-                Members
-              </div>
+        {/* 5. Call to Action Buttons */}
+        <motion.div
+          variants={itemVariants}
+          style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+          className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3.5 sm:gap-4 transform-gpu"
+        >
+          <button
+            type="button"
+            onClick={showJoinCommunityModal}
+            className="rounded-full bg-[#FBBC04] hover:bg-[#f5b200] text-black font-bold px-6 sm:px-8 py-3 text-xs sm:text-sm inline-flex items-center gap-2 shadow-[0_0_25px_rgba(251,188,4,0.35)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <span>Join Our Community</span>
+            <ArrowRight size={15} strokeWidth={2.5} />
+          </button>
+
+          <Link
+            to="/events"
+            className="rounded-full border border-white/20 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/35 text-white font-semibold px-6 sm:px-7 py-3 text-xs sm:text-sm inline-flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            <span>Explore Events</span>
+            <ArrowDown size={15} strokeWidth={2} />
+          </Link>
+        </motion.div>
+      </motion.div>
+
+      {/* ================= BOTTOM HIGHLIGHTS BAR & GOOGLE 4-COLOR STRIP ================= */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+        className="relative z-10 w-full border-t border-white/[0.08] bg-black/60 backdrop-blur-lg mt-12 sm:mt-16 transform-gpu"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center md:text-left">
+            {/* Highlight 1 */}
+            <div className="flex items-center justify-center md:justify-start gap-2.5">
+              <Calendar size={18} className="text-[#EA4335] shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white/90">
+                Year Round Events
+              </span>
             </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-black text-[#EA4335]">
-                25<span className="text-[#EA4335]/70">+</span>
-              </div>
-              <div className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium tracking-wide text-white/50 uppercase">
-                Events
-              </div>
+
+            {/* Highlight 2 */}
+            <div className="flex items-center justify-center md:justify-start gap-2.5">
+              <MapPin size={18} className="text-[#FBBC04] shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white/90">
+                Ranchi, Jharkhand
+              </span>
             </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-black text-[#FBBC04]">
-                15<span className="text-[#FBBC04]/70">+</span>
-              </div>
-              <div className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium tracking-wide text-white/50 uppercase">
-                Communities
-              </div>
+
+            {/* Highlight 3 */}
+            <div className="flex items-center justify-center md:justify-start gap-2.5">
+              <Users size={18} className="text-[#34A853] shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white/90">
+                Developers · Students · Creators
+              </span>
             </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-black text-[#34A853]">
-                4<span className="text-[#34A853]/70">+</span>
-              </div>
-              <div className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium tracking-wide text-white/50 uppercase">
-                Projects
-              </div>
+
+            {/* Highlight 4 */}
+            <div className="flex items-center justify-center md:justify-start gap-2.5">
+              <Zap size={18} className="text-[#FBBC04] shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white/90">
+                Workshops · Talks · Projects
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right Composition (Parallax Collage) */}
-        <div className="relative mt-12 w-full flex-1 items-center justify-center lg:mt-0 flex h-[400px] sm:h-[500px] lg:h-[600px]">
-          {/* Image 1 (Back Left) */}
-          <motion.div
-            style={{ x: shiftX1, y: shiftY1 }}
-            className="absolute left-[5%] lg:left-0 top-0 lg:top-10 h-[220px] w-[180px] sm:h-[260px] sm:w-[200px] lg:h-[300px] lg:w-[240px] -rotate-6 overflow-hidden rounded-2xl lg:rounded-3xl border-[3px] lg:border-[4px] border-[#0A0A0C] shadow-2xl transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-50"
-          >
-            <img
-              src={images[0]}
-              alt="Event 1"
-              className="h-full w-full object-cover grayscale transition-all duration-500 hover:grayscale-0"
-            />
-            <div className="absolute inset-0 bg-black/20" />
-          </motion.div>
-
-          {/* Image 2 (Front Center) */}
-          <motion.div
-            style={{ x: shiftX2, y: shiftY2 }}
-            className="absolute z-20 left-[25%] lg:left-auto lg:right-10 top-[20%] lg:top-[15%] h-[260px] w-[200px] sm:h-[320px] sm:w-[240px] lg:h-[380px] lg:w-[280px] rotate-3 overflow-hidden rounded-2xl lg:rounded-3xl border-[3px] lg:border-[4px] border-[#0A0A0C] shadow-[0_30px_60px_rgba(0,0,0,0.6)] transition-transform duration-500 hover:rotate-0 hover:scale-105 hover:z-50"
-          >
-            <img
-              src={images[1]}
-              alt="Event 2"
-              className="h-full w-full object-cover grayscale opacity-90 transition-all duration-500 hover:grayscale-0 hover:opacity-100"
-            />
-          </motion.div>
-
-          {/* Floating Action Button */}
-          <motion.button
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="absolute bottom-10 right-[5%] lg:bottom-20 lg:right-0 z-30 flex h-14 w-14 sm:h-16 sm:w-16 lg:h-16 lg:w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-[0_0_30px_rgba(26,115,232,0.3)] transition-transform hover:scale-110"
-          >
-            <Users size={24} strokeWidth={2.5} className="w-6 h-6" />
-          </motion.button>
+        {/* Google 4-Color Bottom Bar */}
+        <div className="h-1 w-full grid grid-cols-4">
+          <div className="bg-[#4285F4]" />
+          <div className="bg-[#EA4335]" />
+          <div className="bg-[#FBBC04]" />
+          <div className="bg-[#34A853]" />
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

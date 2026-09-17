@@ -5,7 +5,6 @@ import WhatWeDoSec from "./Section/WhatWeDoSec";
 import OrganizersSec from "./Section/OrganizersSec";
 import SponsorsSec from "./Section/SponsorsSec";
 import TestimonialsSec from "./Section/TestimonialsSec";
-import Achievement from "./Section/Achievement";
 
 const UpcomingEvent = lazy(() => import("./Section/UpcomingEvent"));
 const PastEvents = lazy(() => import("./Section/PastEvents"));
@@ -14,8 +13,6 @@ const HomePage = () => {
   return (
     <div className="overflow-x-clip">
       <HeroSec />
-
-      <Achievement />
 
       <AboutUsSec />
 
