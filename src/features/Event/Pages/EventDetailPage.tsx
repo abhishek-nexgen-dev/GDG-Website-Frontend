@@ -11,13 +11,12 @@ import AboutEvent from "../Components/AboutEvent";
 import Timeline from "../Components/Timeline";
 import EVENT_BANNER from "../Components/EVENT_BANNER";
 import HIGHLIGHTS_Sec from "../Section/HIGHLIGHTS_Sec";
-import EventMentors from "../Components/EventMentors";
-import EventJudges from "../Components/EventJudges";
+
 import EventRulesGuidelines from "../Components/EventRulesGuidelines";
 import usefetchEventDetaill from "../hook/usefetchEventDetaill";
 import GDGLoader from "../../../Components/GDGLoader";
 
-import { singleEventData } from "../data/singleEventData";
+
 
 const ViewSingleEventPage = () => {
   const { Slug } = useParams<{ Slug: string }>();
@@ -227,27 +226,8 @@ const ViewSingleEventPage = () => {
           </div>
         </section>
 
-        {/* ================= SPEAKERS & MENTORS SECTION ================= */}
-        <section className="mt-12 sm:mt-16">
-          <EventMentors
-            mentors={
-              event.mentors && event.mentors.length > 0
-                ? event.mentors
-                : singleEventData.mentors
-            }
-          />
-        </section>
-
-        {/* ================= JUDGES SECTION ================= */}
-        <section className="mt-12 sm:mt-16">
-          <EventJudges
-            judges={
-              event.judges && event.judges.length > 0
-                ? event.judges
-                : singleEventData.judges
-            }
-          />
-        </section>
+      
+    
       </div>
     </main>
   );
