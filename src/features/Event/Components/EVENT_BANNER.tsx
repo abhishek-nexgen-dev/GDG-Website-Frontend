@@ -20,7 +20,7 @@ const EVENT_BANNER = ({ event }: EventBannerProps) => {
   const eventDate = formatDateRange(eventStart, eventEnd);
 
   return (
-    <section className="relative mt-4 sm:mt-[6vh] lg:mt-[8vh] overflow-hidden rounded-3xl border border-white/10 bg-[#0b0b0f] shadow-2xl shadow-black/30">
+    <section className="relative mt-2 sm:mt-4 overflow-hidden rounded-3xl border border-white/10 bg-[#0b0b0f] shadow-2xl shadow-black/30">
       <div className="flex flex-col flex-col-reverse lg:flex-row items-stretch">
         {/* ================= LEFT — EVENT CONTENT ================= */}
         <div className="relative z-10 flex flex-col justify-center p-5 sm:p-8 lg:px-[3vw] lg:py-[4vw] flex-1">
