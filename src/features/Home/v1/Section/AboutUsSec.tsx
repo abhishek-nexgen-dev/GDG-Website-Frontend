@@ -80,7 +80,7 @@ const AboutUsSec = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-[#050505] py-24 sm:py-32"
+      className="relative w-full overflow-hidden bg-[#050505] pt-16 sm:pt-20 lg:pt-24 pb-24 sm:pb-32"
     >
       {/* Background Glow */}
       <div className="absolute left-0 top-0 h-[300px] w-[300px] sm:h-[600px] sm:w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#4285F4]/10 blur-[120px]" />
@@ -92,10 +92,10 @@ const AboutUsSec = () => {
           <div className="flex flex-col justify-center">
             <div className="about-fade-in mb-6 flex items-center gap-3">
               <div className="flex gap-1.5">
+                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#4285F4]" />
                 <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#EA4335]" />
                 <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FBBC04]" />
                 <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#34A853]" />
-                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#4285F4]" />
               </div>
               <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-white/50">
                 About Us
@@ -161,7 +161,7 @@ const AboutUsSec = () => {
             {/* Overlapping Image */}
             <div className="about-image-2 absolute -bottom-6 sm:-bottom-10 -left-2 sm:-left-4 z-20 w-3/5 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-[4px] sm:border-[6px] border-[#050505] shadow-2xl lg:-bottom-10 lg:-left-10">
               <img
-                src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?q=80&w=800&auto=format"
+                src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format"
                 alt="Developers collaborating"
                 className="w-full object-cover grayscale opacity-90 transition-all duration-700 hover:grayscale-0 hover:scale-105"
               />

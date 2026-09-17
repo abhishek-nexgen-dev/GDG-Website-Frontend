@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Calendar, MapPin, Users, Zap } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { showJoinCommunityModal } from "../../../../utils/communityAlert";
@@ -22,10 +22,19 @@ const itemVariants = {
     y: 0,
     transition: {
       duration: 0.65,
-      ease: [0.22, 1, 0.36, 1], // Smooth cubic out curve
+      ease: [0.22, 1, 0.36, 1] as const, // Smooth cubic out curve
     },
   },
 };
+
+const googleColors = ["text-[#4285F4]", "text-[#EA4335]", "text-[#FBBC04]", "text-[#34A853]"];
+
+// Repeating "GDG RANCHI" items with rotating Google accent colors
+const marqueeItems = Array.from({ length: 12 }, (_, i) => ({
+  id: i,
+  text: "GDG RANCHI",
+  accentColor: googleColors[i % googleColors.length],
+}));
 
 const HeroSec = () => {
   return (
@@ -171,52 +180,63 @@ const HeroSec = () => {
         </motion.div>
       </motion.div>
 
-      {/* ================= BOTTOM HIGHLIGHTS BAR & GOOGLE 4-COLOR STRIP ================= */}
+      {/* ================= BOTTOM HIGHLIGHTS MARQUEE & GOOGLE 4-COLOR STRIP ================= */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
         style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
-        className="relative z-10 w-full border-t border-white/[0.08] bg-black/60 backdrop-blur-lg mt-12 sm:mt-16 transform-gpu"
+        className="relative z-10 w-full border-t border-white/10 bg-[#070709]/95 backdrop-blur-xl mt-8 sm:mt-12 transform-gpu"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center md:text-left">
-            {/* Highlight 1 */}
-            <div className="flex items-center justify-center md:justify-start gap-2.5">
-              <Calendar size={18} className="text-[#EA4335] shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white/90">
-                Year Round Events
-              </span>
+        <div className="relative w-full overflow-hidden py-4 sm:py-5 [mask-image:linear-gradient(to_right,transparent,black_48px,black_calc(100%-48px),transparent)]">
+          {/* Subtle edge fades for smooth entry/exit */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-14 sm:w-24 bg-gradient-to-r from-[#050505] to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-14 sm:w-24 bg-gradient-to-l from-[#050505] to-transparent z-10" />
+
+          {/* Marquee ticker - continuous non-stop moving */}
+          <div
+            className="flex w-max animate-marquee-left pointer-events-none select-none hover:![animation-play-state:running]"
+            style={{ "--marquee-duration": "26s" } as React.CSSProperties}
+          >
+            {/* Primary Track */}
+            <div className="flex shrink-0 items-center gap-8 sm:gap-12 pr-8 sm:pr-12">
+              {marqueeItems.map((item) => (
+                <div key={`m1-${item.id}`} className="flex items-center gap-8 sm:gap-12 shrink-0">
+                  <span className="text-lg sm:text-xl md:text-2xl lg:text-[26px] font-black tracking-[0.24em] uppercase text-white whitespace-nowrap drop-shadow-[0_2px_12px_rgba(255,255,255,0.08)]">
+                    {item.text}
+                  </span>
+                  <span
+                    className={`${item.accentColor} text-sm sm:text-base md:text-lg font-bold shrink-0 drop-shadow-[0_0_10px_currentColor]`}
+                  >
+                    ✦
+                  </span>
+                </div>
+              ))}
             </div>
 
-            {/* Highlight 2 */}
-            <div className="flex items-center justify-center md:justify-start gap-2.5">
-              <MapPin size={18} className="text-[#FBBC04] shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white/90">
-                Ranchi, Jharkhand
-              </span>
-            </div>
-
-            {/* Highlight 3 */}
-            <div className="flex items-center justify-center md:justify-start gap-2.5">
-              <Users size={18} className="text-[#34A853] shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white/90">
-                Developers · Students · Creators
-              </span>
-            </div>
-
-            {/* Highlight 4 */}
-            <div className="flex items-center justify-center md:justify-start gap-2.5">
-              <Zap size={18} className="text-[#FBBC04] shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white/90">
-                Workshops · Talks · Projects
-              </span>
+            {/* Cloned Track (for seamless infinite loop) */}
+            <div
+              className="flex shrink-0 items-center gap-8 sm:gap-12 pr-8 sm:pr-12"
+              aria-hidden="true"
+            >
+              {marqueeItems.map((item) => (
+                <div key={`m2-${item.id}`} className="flex items-center gap-8 sm:gap-12 shrink-0">
+                  <span className="text-lg sm:text-xl md:text-2xl lg:text-[26px] font-black tracking-[0.24em] uppercase text-white whitespace-nowrap drop-shadow-[0_2px_12px_rgba(255,255,255,0.08)]">
+                    {item.text}
+                  </span>
+                  <span
+                    className={`${item.accentColor} text-sm sm:text-base md:text-lg font-bold shrink-0 drop-shadow-[0_0_10px_currentColor]`}
+                  >
+                    ✦
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Google 4-Color Bottom Bar */}
-        <div className="h-1 w-full grid grid-cols-4">
+        <div className="h-1.5 w-full grid grid-cols-4 shadow-[0_0_16px_rgba(66,133,244,0.35)]">
           <div className="bg-[#4285F4]" />
           <div className="bg-[#EA4335]" />
           <div className="bg-[#FBBC04]" />
